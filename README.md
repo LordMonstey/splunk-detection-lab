@@ -25,14 +25,8 @@ The environment was validated end-to-end with successful ingestion of:
   - `windows`
   - `sysmon`
 
-```text
-+---------------------+          TCP 9997           +------------------------+
-| Windows VM          |  ------------------------>  | Debian Splunk Server   |
-| - Sysmon            |                             | - Splunk Enterprise    |
-| - Universal Forwarder|                            | - Search & Reporting   |
-| - WinEvent inputs   |                             | - windows/sysmon index |
-+---------------------+                             +------------------------+
-```
+<img width="1489" height="869" alt="image" src="https://github.com/user-attachments/assets/7d9e55da-dade-44fc-a146-0bbe5a28b99e" />
+
 
 ## What This Project Demonstrates
 
