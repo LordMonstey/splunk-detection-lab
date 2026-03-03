@@ -25,7 +25,8 @@ The environment was validated end-to-end with successful ingestion of:
   - `windows`
   - `sysmon`
 
-<img width="1489" height="869" alt="image" src="https://github.com/user-attachments/assets/7d9e55da-dade-44fc-a146-0bbe5a28b99e" />
+<img width="1489" height="869" alt="image" src="https://github.com/user-attachments/assets/e35f663b-e78a-451a-a5d6-a80219c61b67" />
+
 
 
 ## What This Project Demonstrates
