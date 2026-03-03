@@ -1,0 +1,42 @@
+# Process creation
+index=sysmon EventCode=1
+| table _time host Image CommandLine ParentImage User
+| sort - _time
+
+# Network connections
+index=sysmon EventCode=3
+| table _time host Image SourceIp SourcePort DestinationIp DestinationPort Protocol
+| sort - _time
+
+# File creation
+index=sysmon EventCode=11
+| table _time host Image TargetFilename User
+| sort - _time
+
+# Registry changes
+index=sysmon (EventCode=12 OR EventCode=13 OR EventCode=14)
+| table _time host EventCode Image TargetObject Details User
+| sort - _time
+
+# Encoded PowerShell
+index=sysmon EventCode=1 Image="*\\powershell.exe" (CommandLine="*-enc*" OR CommandLine="*-encodedcommand*")
+| table _time host User ParentImage Image CommandLine
+| sort - _time
+
+# Office spawning script engines
+index=sysmon EventCode=1
+(ParentImage="*\\WINWORD.EXE" OR ParentImage="*\\EXCEL.EXE" OR ParentImage="*\\OUTLOOK.EXE")
+(Image="*\\cmd.exe" OR Image="*\\powershell.exe" OR Image="*\\wscript.exe" OR Image="*\\cscript.exe" OR Image="*\\mshta.exe")
+| table _time host User ParentImage Image CommandLine
+| sort - _time
+
+# LOLBins with network activity
+index=sysmon EventCode=3
+(Image="*\\powershell.exe" OR Image="*\\rundll32.exe" OR Image="*\\regsvr32.exe" OR Image="*\\mshta.exe")
+| table _time host User Image DestinationIp DestinationPort Protocol
+| sort - _time
+
+# PowerShell Operational log
+index=windows sourcetype="XmlWinEventLog:Microsoft-Windows-PowerShell/Operational"
+| table _time host EventCode Message
+| sort - _time
