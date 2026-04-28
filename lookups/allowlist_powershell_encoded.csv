@@ -1,0 +1,3 @@
+parent_process_name,command_pattern,reason,added_by,added_date
+ccmexec.exe,*,SCCM client compliance scripts,LordMonstey,2026-04-28
+explorer.exe,profile.ps1,User profile loading,LordMonstey,2026-04-28
