@@ -1,204 +1,135 @@
 # Splunk Detection Lab
 
-A defensive Splunk lab built to ingest Windows telemetry, normalize Sysmon events, and validate practical SPL detection use cases.
+A single-host Splunk Enterprise lab focused on **detection engineering** and **SOC L2/L3 investigation workflows** for Windows endpoints. Telemetry is collected via Sysmon-modular and the Splunk Universal Forwarder, normalized to CIM, and used to develop, test, and tune behavioral detections mapped to MITRE ATT&CK.
 
-## Project Summary
+This repository is structured as a *detection-as-code* project: every rule has a written hypothesis, an SPL implementation, a tuning strategy, known false positives, an Atomic Red Team validation test, and a runbook for the analyst on call.
 
-This repository documents a complete single-host Splunk deployment on Debian with a Windows telemetry source using Sysmon and Splunk Universal Forwarder. The lab is designed for detection engineering, SOC validation, and interview portfolio demonstration.
-
-The environment was validated end-to-end with successful ingestion of:
-
-- Windows Security log
-- Windows System log
-- Windows Application log
-- Windows PowerShell log
-- Microsoft-Windows-PowerShell/Operational
-- Microsoft-Windows-Sysmon/Operational
+---
 
 ## Architecture
 
-- **Splunk Server:** Debian 12, Splunk Enterprise / Splunk Free capable
-- **Telemetry Source:** Windows VM
-- **Windows Sensor Stack:** Sysmon + Splunk Universal Forwarder
-- **Transport:** Splunk-to-Splunk forwarding over TCP 9997
-- **Indexes:**
-  - `windows`
-  - `sysmon`
-
-```text
-+---------------------+          TCP 9997           +------------------------+
-| Windows VM          |  ------------------------>  | Debian Splunk Server   |
-| - Sysmon            |                             | - Splunk Enterprise    |
-| - Universal Forwarder|                            | - Search & Reporting   |
-| - WinEvent inputs   |                             | - windows/sysmon index |
-+---------------------+                             +------------------------+
+```
++---------------------+        TCP/9997        +-----------------------+
+|  Windows 10/11 VM   |  ───────────────────▶  |  Debian 12 (Splunk)   |
+|  Sysmon-modular     |                        |  Splunk Enterprise    |
+|  Splunk UF 9.x      |                        |  Indexes: win, sysmon |
++---------------------+                        |  CIM, macros, lookups |
+                                               +-----------------------+
 ```
 
-## What This Project Demonstrates
+Diagram (mermaid) and detailed component breakdown: [`docs/architecture.md`](docs/architecture.md).
 
-- Splunk deployment and service configuration on Linux
-- Windows telemetry onboarding with Universal Forwarder
-- Sysmon deployment and validation
-- Custom index design for telemetry separation
-- SPL search development for process, network, and persistence use cases
-- Practical troubleshooting of ingestion paths
-- Clear documentation suitable for analyst, engineer, or detection validation roles
+---
 
-## Repository Layout
+## What this lab demonstrates
 
-```text
+| Capability | Where to look |
+|---|---|
+| Detection-as-code workflow | [`detections/`](detections/) |
+| ATT&CK coverage tracking | [`coverage/`](coverage/) |
+| CIM-normalized data with macros | [`macros/macros.conf`](macros/macros.conf) |
+| Purple-team validation (Atomic Red Team) | [`tests/atomic/`](tests/atomic/) |
+| Analyst runbooks for L2/L3 triage | [`docs/runbooks/`](docs/runbooks/) |
+| Sysmon-modular deployment & rationale | [`docs/adr/0001-sysmon-modular.md`](docs/adr/0001-sysmon-modular.md) |
+| Threat hunting hypotheses (non-alerting) | [`hunting/`](hunting/) |
+
+---
+
+## Repository layout
+
+```
 splunk-detection-lab/
-├─ README.md
-├─ docs/
-│  ├─ architecture.md
-│  ├─ debian-splunk-install.md
-│  ├─ windows-sysmon-uf-install.md
-│  ├─ validation-checklist.md
-│  └─ screenshots.md
-├─ conf/
-│  ├─ splunk/
-│  │  └─ indexes.conf
-│  └─ windows/
-│     ├─ inputs.conf
-│     └─ outputs.conf
-├─ spl/
-│  ├─ baseline_searches.spl
-│  └─ detection_queries.spl
-├─ scripts/
-│  ├─ Initialize-LocalRepo.ps1
-│  └─ Publish-GitHubRepo.ps1
-└─ screenshots/
+├── README.md
+├── CONVENTIONS.md              # naming, rule format, ATT&CK mapping rules
+├── CHANGELOG.md
+├── detections/                 # one file per detection (YAML front-matter + SPL)
+│   ├── _template.md
+│   └── win_proc_<id>_<name>.md
+├── hunting/                    # hypothesis-driven SPL queries (not alerts)
+├── tests/
+│   └── atomic/                 # Atomic Red Team test mappings + evidence
+├── macros/                     # macros.conf – CIM-friendly building blocks
+├── lookups/                    # asset.csv, identity.csv, suspicious_*.csv
+├── conf/
+│   ├── splunk/local/           # indexes.conf, props.conf, transforms.conf
+│   ├── sysmon/                 # sysmon-modular merged config + version pin
+│   └── uf/                     # inputs.conf, outputs.conf for the forwarder
+├── dashboards/                 # SimpleXML dashboards (SOC overview, MITRE)
+├── coverage/                   # ATT&CK Navigator JSON layer + coverage.md
+├── docs/
+│   ├── architecture.md
+│   ├── adr/                    # Architecture Decision Records
+│   ├── runbooks/               # one per detection family
+│   └── screenshots/
+├── scripts/                    # helper scripts (validation, Atomic launcher)
+└── .github/workflows/          # SPL/YAML lint on every push
 ```
 
-## Lab Build Highlights
+---
 
-### Debian Splunk Server
-- Installed Splunk Enterprise on Debian 12
-- Enabled systemd boot start
-- Created dedicated indexes for `windows` and `sysmon`
-- Enabled receiving on TCP 9997
-- Exposed Splunk Web on TCP 8000
+## Detection lifecycle
 
-### Windows Telemetry Source
-- Installed Sysmon with XML configuration
-- Installed Splunk Universal Forwarder
-- Configured WinEventLog stanzas for Windows and Sysmon channels
-- Forwarded telemetry to the Splunk receiver at `192.168.1.113:9997`
+Every rule in [`detections/`](detections/) follows the same lifecycle, documented per file:
 
-## Validation
+1. **Hypothesis** – what adversary behavior we are trying to surface
+2. **Data source** – Sysmon EID / Windows EID / CIM data model
+3. **Logic (SPL)** – the search itself, written against macros, not raw indexes
+4. **Known false positives** – enumerated, not hand-waved
+5. **Tuning** – allowlists, thresholds, references to lookups
+6. **Validation** – exact Atomic Red Team test that triggers the rule, with evidence
+7. **Response** – pointer to the runbook in [`docs/runbooks/`](docs/runbooks/)
 
-The following validation searches confirmed working ingestion:
+The full template lives at [`detections/_template.md`](detections/_template.md).
 
-```spl
-index=windows OR index=sysmon
-| stats count by index, sourcetype
-```
+---
 
-```spl
-index=sysmon
-| stats count by sourcetype
-```
+## ATT&CK coverage (target)
 
-Expected successful sourcetypes include:
+Initial scope is the techniques most relevant to a Windows SOC L2/L3 analyst. Live coverage is rendered in `coverage/coverage.md` and the matching ATT&CK Navigator layer in `coverage/navigator-layer.json`.
 
-- `XmlWinEventLog:Application`
-- `XmlWinEventLog:System`
-- `XmlWinEventLog:Security`
-- `XmlWinEventLog:Windows PowerShell`
-- `XmlWinEventLog:Microsoft-Windows-PowerShell/Operational`
-- `XmlWinEventLog:Microsoft-Windows-Sysmon/Operational`
+| Tactic | Techniques in scope |
+|---|---|
+| Initial Access | T1566.001 |
+| Execution | T1059.001, T1059.003, T1204.002 |
+| Persistence | T1547.001, T1053.005, T1136.001 |
+| Privilege Escalation | T1055, T1134 |
+| Defense Evasion | T1218 (rundll32, regsvr32, mshta), T1027, T1140, T1562.001, T1112 |
+| Credential Access | T1003.001, T1110, T1558 |
+| Discovery | T1087, T1018, T1057 |
+| Lateral Movement | T1021.001, T1021.002 |
+| Collection / Impact | T1486, T1490 |
+| Command & Control | T1071.001, T1090 |
 
-## Example Detection Searches
+---
 
-### Process Creation
-```spl
-index=sysmon EventCode=1
-| table _time host Image CommandLine ParentImage User
-| sort - _time
-```
+## Quickstart
 
-### Network Connections
-```spl
-index=sysmon EventCode=3
-| table _time host Image SourceIp SourcePort DestinationIp DestinationPort Protocol
-| sort - _time
-```
+The lab is reproducible from scratch:
 
-### PowerShell Activity
-```spl
-index=windows sourcetype="XmlWinEventLog:Microsoft-Windows-PowerShell/Operational"
-| table _time host EventCode Message
-| sort - _time
-```
+1. Stand up the Splunk server – [`docs/install-splunk-debian.md`](docs/install-splunk-debian.md)
+2. Onboard the Windows endpoint – [`docs/install-windows-endpoint.md`](docs/install-windows-endpoint.md)
+3. Apply Splunk configs from [`conf/splunk/local/`](conf/splunk/local/) and restart
+4. Apply UF configs from [`conf/uf/`](conf/uf/)
+5. Deploy the Sysmon-modular merged config from [`conf/sysmon/`](conf/sysmon/)
+6. Validate ingestion – [`docs/validation.md`](docs/validation.md)
+7. Run the purple-team test suite – `scripts/run-atomic-suite.ps1`
 
-### Service Installation
-```spl
-index=windows EventCode=7045
-| table _time host Service_Name ImagePath StartType Account_Name
-| sort - _time
-```
+---
 
-## Quick Start
+## Limitations & honest caveats
 
-### 1. Splunk Server
-Follow the Debian installation guide in [`docs/debian-splunk-install.md`](docs/debian-splunk-install.md).
+This is a single-host lab. In a production SOC the following would be different and are deliberately **out of scope** here:
 
-### 2. Windows Endpoint
-Follow the Windows onboarding guide in [`docs/windows-sysmon-uf-install.md`](docs/windows-sysmon-uf-install.md).
+- No domain controller — AD-related techniques (Kerberoasting, DCSync) are not validated end-to-end
+- No EDR — detections rely solely on Sysmon + Windows event channels
+- No SOAR — runbooks are markdown, not Phantom/XSOAR playbooks
+- No deployment server — UF configs are pushed manually
+- Risk-Based Alerting is implemented in raw SPL into a `risk` index, not via Enterprise Security
 
-### 3. Configure Files
-- Splunk indexes: [`conf/splunk/indexes.conf`](conf/splunk/indexes.conf)
-- Windows forwarder inputs: [`conf/windows/inputs.conf`](conf/windows/inputs.conf)
-- Windows forwarder outputs: [`conf/windows/outputs.conf`](conf/windows/outputs.conf)
+A production-grade follow-up plan is documented in [`docs/production-gap.md`](docs/production-gap.md).
 
-### 4. Validate Data
-Run the checks in [`docs/validation-checklist.md`](docs/validation-checklist.md).
+---
 
-## Screenshots
+## License
 
-Add your own screenshots under [`screenshots/`](screenshots/) and reference them here. Suggested captures:
-
-- Splunk Search showing `index=windows OR index=sysmon | stats count by index, sourcetype`
-- Splunk Search showing `index=sysmon | stats count by sourcetype`
-- Sample `EventCode=1` process creation events
-- Splunk Web search dashboard overview
-
-See [`docs/screenshots.md`](docs/screenshots.md) for naming suggestions.
-
-## Recommended Portfolio Positioning
-
-This project is a strong fit for roles involving:
-
-- SOC Analyst
-- Detection Engineer
-- Security Analyst
-- Threat Detection / Content Engineering
-- SIEM Engineering
-- Blue Team lab validation
-
-In interviews, this repo supports discussion around:
-
-- data onboarding
-- telemetry quality
-- event source coverage
-- SPL logic
-- troubleshooting methodology
-- defensive lab design
-
-## Tools Used
-
-- Splunk Enterprise / Splunk Free
-- Splunk Universal Forwarder
-- Sysmon
-- PowerShell
-- Debian 12
-- Git
-- GitHub CLI
-
-## Notes
-
-- This lab was built for defensive telemetry ingestion and detection validation.
-- Splunk Free mode can be enabled for a permanent single-instance lab with daily ingest limits.
-- lab local IPs & passwords ar dummy for the lab ofc do not take that as an exemple.
-
-
+MIT. Use, fork, criticize.

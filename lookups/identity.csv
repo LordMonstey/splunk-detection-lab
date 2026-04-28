@@ -1,0 +1,4 @@
+user,full_name,role,is_privileged,department,manager
+lordmonstey,Lab Operator,SOC Analyst,true,security,self
+testuser,Test User,Standard User,false,lab,lordmonstey
+SYSTEM,NT AUTHORITY,Service Account,true,system,n/a
