@@ -1,0 +1,35 @@
+name: lint
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  yaml-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install yamllint
+        run: pip install yamllint
+      - name: Lint YAML front-matter in detections
+        run: |
+          set -e
+          for f in detections/*.md; do
+            [ "$(basename "$f")" = "_template.md" ] && continue
+            python3 scripts/extract_frontmatter.py "$f" | yamllint -d "{extends: default, rules: {line-length: disable, document-start: disable}}" -
+          done
+
+  detection-schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate detection schema
+        run: python3 scripts/validate_detections.py
+
+  conf-syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate .conf stanza syntax
+        run: python3 scripts/validate_conf.py

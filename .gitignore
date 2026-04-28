@@ -1,20 +1,12 @@
-# OS
 .DS_Store
-Thumbs.db
-
-# Editor
-.vscode/
-.idea/
-
-# Logs
-*.log
-
-# Python
+*.swp
+*.bak
 __pycache__/
 *.pyc
 
-# PowerShell transcripts
-*.txt
+screenshots/scratch/
+tests/atomic/evidence/raw/
 
-# Local screenshots or exports
-*.tmp
+local_secrets.conf
+*.pem
+*.key

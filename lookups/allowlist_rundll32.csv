@@ -1,0 +1,3 @@
+parent_process_name,command_pattern,reason,added_by,added_date
+explorer.exe,shell32.dll;Control_RunDLL,Windows Control Panel applet,lordmonstey,2025-04-27
+services.exe,*,Service host benign baseline,lordmonstey,2025-04-27

@@ -1,0 +1,3 @@
+host,ip,os,environment,owner,criticality,vlan
+WIN10-LAB01,192.168.1.50,Windows 10 Pro,lab,lordmonstey,medium,user
+SPLUNK01,192.168.1.113,Debian 12,lab,lordmonstey,high,mgmt

@@ -1,0 +1,23 @@
+{
+  "name": "splunk-detection-lab coverage",
+  "versions": { "attack": "14", "navigator": "5.0.0", "layer": "4.5" },
+  "domain": "enterprise-attack",
+  "description": "Detection coverage for the splunk-detection-lab repo. Regenerated from coverage/coverage.md.",
+  "filters": { "platforms": ["Windows"] },
+  "sorting": 3,
+  "layout": { "layout": "side", "showName": true, "showID": false, "showAggregateScores": false, "countUnscored": false },
+  "techniques": [
+    { "techniqueID": "T1218.011", "score": 50, "comment": "rundll32 unusual parent — testing", "color": "" },
+    { "techniqueID": "T1547.001", "score": 50, "comment": "run key modification — testing", "color": "" },
+    { "techniqueID": "T1136.001", "score": 50, "comment": "local account creation — testing", "color": "" },
+    { "techniqueID": "T1059.001", "score": 50, "comment": "powershell encoded command — testing", "color": "" },
+    { "techniqueID": "T1003.001", "score": 50, "comment": "lsass access — testing", "color": "" },
+    { "techniqueID": "T1110.001", "score": 50, "comment": "kerberos brute force — testing", "color": "" },
+    { "techniqueID": "T1562.001", "score": 50, "comment": "defender tamper — testing", "color": "" }
+  ],
+  "gradient": { "colors": ["#ffffff","#ffe066","#3ad55c"], "minValue": 0, "maxValue": 100 },
+  "legendItems": [
+    { "label": "Production (validated)", "color": "#3ad55c" },
+    { "label": "Testing (written, not validated)", "color": "#ffe066" }
+  ]
+}
