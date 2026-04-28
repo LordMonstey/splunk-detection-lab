@@ -1,0 +1,4 @@
+source_image_pattern,signer,reason,added_by,added_date
+*\\MsMpEng.exe,Microsoft Windows,Defender real-time scanning,LordMonstey,2026-04-28
+*\\MsSense.exe,Microsoft Windows,Defender for Endpoint,LordMonstey,2026-04-28
+*\\csrss.exe,Microsoft Windows,Client Server Runtime,LordMonstey,2026-04-28
