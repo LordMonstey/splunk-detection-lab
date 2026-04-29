@@ -1,7 +1,7 @@
----
+﻿---
 id: win_sysmon_t1218.011_rundll32_unusual_parent
 title: Rundll32.exe with non-baseline parent or no DLL argument
-status: testing
+status: production
 author: LordMonstey
 created: 2026-04-28
 modified: 2026-04-28
@@ -53,9 +53,9 @@ process_name="rundll32.exe"
 
 ## Known false positives
 
-- Microsoft Office repair routines occasionally invoke `rundll32` with no `.dll` from `setup.exe` parents → allowlisted via `lookups/allowlist_rundll32.csv`
-- Endpoint management agents (`ccmexec.exe`, `MsiExec.exe` during install) → enumerated in the parent allowlist
-- `shell32.dll,Control_RunDLL` from explorer is benign — already excluded by parent baseline
+- Microsoft Office repair routines occasionally invoke `rundll32` with no `.dll` from `setup.exe` parents â†’ allowlisted via `lookups/allowlist_rundll32.csv`
+- Endpoint management agents (`ccmexec.exe`, `MsiExec.exe` during install) â†’ enumerated in the parent allowlist
+- `shell32.dll,Control_RunDLL` from explorer is benign â€” already excluded by parent baseline
 
 ## Tuning
 
@@ -64,13 +64,23 @@ process_name="rundll32.exe"
 
 ## Validation
 
-- Atomic Red Team: T1218.011 #1 — `rundll32.exe javascript:`
+- Atomic Red Team: T1218.011 #1 â€” `rundll32.exe javascript:`
 
 Manual reproduction:
 
 ```cmd
 rundll32.exe javascript:"\..\mshtml,RunHTMLApplication ";document.write();new%20ActiveXObject("WScript.Shell").Run("calc.exe")
 ```
+
+
+**Validated**: 2026-04-29 by manual reproduction on lab host `win10-sysmon-client`
+**Evidence**: [`tests/atomic/evidence/T1218.011-rundll32.png`](../tests/atomic/evidence/T1218.011-rundll32.png)
+**Latency observed**: < 30 seconds
+
+
+**Validated**: 2026-04-29 by manual reproduction on lab host `win10-sysmon-client`
+**Evidence**: [`tests/atomic/evidence/T1218.011-rundll32.png`](../tests/atomic/evidence/T1218.011-rundll32.png)
+**Latency observed**: < 30 seconds
 
 ## Response
 
