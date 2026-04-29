@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "splunk-detection-lab coverage",
   "versions": { "attack": "14", "navigator": "5.0.0", "layer": "4.5" },
   "domain": "enterprise-attack",
@@ -22,7 +22,7 @@
     { "techniqueID": "T1562.001", "score": 50, "comment": "Defender tampering + AMSI bypass" },
     { "techniqueID": "T1222.001", "score": 50, "comment": "icacls Everyone:F" },
     { "techniqueID": "T1112",     "score": 50, "comment": "Persistence-helper registry keys" },
-    { "techniqueID": "T1003.001", "score": 50, "comment": "LSASS process access (EID 10)" },
+    { $1100, "comment": "LSASS process access (EID 10)" },
     { "techniqueID": "T1110.001", "score": 50, "comment": "Brute force burst on 4625" },
     { "techniqueID": "T1110.003", "score": 50, "comment": "Password spray" },
     { "techniqueID": "T1105",     "score": 50, "comment": "Curl/bitsadmin + cradle + certutil download" }
