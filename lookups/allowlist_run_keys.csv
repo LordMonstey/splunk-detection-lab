@@ -1,3 +1,7 @@
 writer,details_pattern,reason,added_by,added_date
 SpotifyMigrator.exe,*Spotify*,Spotify auto-launch on user login,LordMonstey,2026-04-28
 Update.exe,*Discord*,Discord auto-update,LordMonstey,2026-04-28
+OneDriveSetup.exe,*OneDrive*,OneDrive auto-update cleanup observed in lab,LordMonstey,2026-04-29
+reg.exe,*atomic-test-runkey*,Atomic validation harness; remove after lab use,LordMonstey,2026-04-29
+OneDriveSetup.exe,*OneDrive*,OneDrive auto-update cleanup observed in lab,LordMonstey,2026-04-29
+reg.exe,*atomic-test-runkey*,Atomic validation harness; remove after lab use,LordMonstey,2026-04-29

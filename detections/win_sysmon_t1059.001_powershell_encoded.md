@@ -1,7 +1,7 @@
----
+﻿---
 id: win_sysmon_t1059.001_powershell_encoded
 title: PowerShell with encoded command argument
-status: testing
+status: production
 author: LordMonstey
 created: 2026-04-28
 modified: 2026-04-28
@@ -54,9 +54,9 @@ CommandLine="*"
 
 ## Known false positives
 
-- Microsoft Endpoint Configuration Manager (MECM/SCCM) client occasionally invokes encoded PowerShell from `ccmexec.exe` for compliance scripts → allowlisted via parent_process_name in `lookups/allowlist_powershell_encoded.csv`
-- Some Windows update routines wrap PowerShell with -EncodedCommand for atomic write operations → low-volume, accepted noise after baseline
-- Visual Studio Code remote extensions occasionally emit short encoded payloads — typically <100 chars; tuning option below
+- Microsoft Endpoint Configuration Manager (MECM/SCCM) client occasionally invokes encoded PowerShell from `ccmexec.exe` for compliance scripts â†’ allowlisted via parent_process_name in `lookups/allowlist_powershell_encoded.csv`
+- Some Windows update routines wrap PowerShell with -EncodedCommand for atomic write operations â†’ low-volume, accepted noise after baseline
+- Visual Studio Code remote extensions occasionally emit short encoded payloads â€” typically <100 chars; tuning option below
 
 ## Tuning
 
@@ -66,7 +66,7 @@ CommandLine="*"
 
 ## Validation
 
-- Atomic Red Team: [T1059.001 #2 — Mimikatz via encoded PowerShell](../tests/atomic/T1059.001.md)
+- Atomic Red Team: [T1059.001 #2 â€” Mimikatz via encoded PowerShell](../tests/atomic/T1059.001.md)
 
 Manual reproduction:
 
@@ -76,13 +76,23 @@ $encoded = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($c
 powershell.exe -EncodedCommand $encoded
 ```
 
+
+**Validated**: 2026-04-29 by manual reproduction on lab host `win10-sysmon-client`
+**Evidence**: [`tests/atomic/evidence/T1059.001-encoded-powershell.png`](../tests/atomic/evidence/T1059.001-encoded-powershell.png)
+**Latency observed**: < 30 seconds
+
+
+**Validated**: 2026-04-29 by manual reproduction on lab host `win10-sysmon-client`
+**Evidence**: [`tests/atomic/evidence/T1059.001-encoded-powershell.png`](../tests/atomic/evidence/T1059.001-encoded-powershell.png)
+**Latency observed**: < 30 seconds
+
 ## Response
 
 See [`docs/runbooks/powershell-suspicious-execution.md`](../docs/runbooks/powershell-suspicious-execution.md).
 
 Triage priorities:
 
-1. Decode the blob (`[Convert]::FromBase64String` then `[System.Text.Encoding]::Unicode.GetString`) — content is the single most important triage artifact
+1. Decode the blob (`[Convert]::FromBase64String` then `[System.Text.Encoding]::Unicode.GetString`) â€” content is the single most important triage artifact
 2. Walk the process tree via `process_guid` for spawned children and outbound network
-3. Pivot on parent: `winword.exe`, `excel.exe`, `outlook.exe`, browser → suspected initial access, escalate
+3. Pivot on parent: `winword.exe`, `excel.exe`, `outlook.exe`, browser â†’ suspected initial access, escalate
 4. Search `index=windows sourcetype="XmlWinEventLog:Microsoft-Windows-PowerShell/Operational" EventID=4104 host=<dest>` for the deobfuscated script block (PS module logging)

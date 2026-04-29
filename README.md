@@ -1,3 +1,25 @@
+﻿## Validated detections - sample evidence
+
+| Technique | Detection | Evidence |
+|---|---|---|
+| T1059.001 - PowerShell encoded | [`win_sysmon_t1059.001_powershell_encoded`](detections/win_sysmon_t1059.001_powershell_encoded.md) | ![T1059.001](tests/atomic/evidence/T1059.001-encoded-powershell.png) |
+| T1547.001 - Run key persistence | [`win_sysmon_t1547.001_run_key_modification`](detections/win_sysmon_t1547.001_run_key_modification.md) | ![T1547.001](tests/atomic/evidence/T1547.001-run-key.png) |
+| T1218.011 - Rundll32 LOLBin | [`win_sysmon_t1218.011_rundll32_unusual_parent`](detections/win_sysmon_t1218.011_rundll32_unusual_parent.md) | ![T1218.011](tests/atomic/evidence/T1218.011-rundll32.png) |
+
+OneDrive entries visible in the run-key screenshot are real false positives - documented and tuned in [`lookups/allowlist_run_keys.csv`](lookups/allowlist_run_keys.csv).
+
+---
+## Validated detections - sample evidence
+
+| Technique | Detection | Evidence |
+|---|---|---|
+| T1059.001 - PowerShell encoded | [`win_sysmon_t1059.001_powershell_encoded`](detections/win_sysmon_t1059.001_powershell_encoded.md) | ![T1059.001](tests/atomic/evidence/T1059.001-encoded-powershell.png) |
+| T1547.001 - Run key persistence | [`win_sysmon_t1547.001_run_key_modification`](detections/win_sysmon_t1547.001_run_key_modification.md) | ![T1547.001](tests/atomic/evidence/T1547.001-run-key.png) |
+| T1218.011 - Rundll32 LOLBin | [`win_sysmon_t1218.011_rundll32_unusual_parent`](detections/win_sysmon_t1218.011_rundll32_unusual_parent.md) | ![T1218.011](tests/atomic/evidence/T1218.011-rundll32.png) |
+
+OneDrive entries visible in the run-key screenshot are real false positives - documented and tuned in [`lookups/allowlist_run_keys.csv`](lookups/allowlist_run_keys.csv).
+
+---
 # Splunk Detection Lab
 
 A single-host Splunk Enterprise lab focused on **detection engineering** and **SOC L2/L3 investigation workflows** for Windows endpoints. Telemetry is collected via Sysmon-modular and the Splunk Universal Forwarder, normalized to CIM, and used to develop, test, and tune behavioral detections mapped to MITRE ATT&CK.
@@ -10,7 +32,7 @@ This repository is structured as a *detection-as-code* project: every rule has a
 
 ```
 +---------------------+        TCP/9997        +-----------------------+
-|  Windows 10/11 VM   |  ───────────────────▶  |  Debian 12 (Splunk)   |
+|  Windows 10/11 VM   |  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–¶  |  Debian 12 (Splunk)   |
 |  Sysmon-modular     |                        |  Splunk Enterprise    |
 |  Splunk UF 9.x      |                        |  Indexes: win, sysmon |
 +---------------------+                        |  CIM, macros, lookups |
@@ -39,30 +61,30 @@ Diagram (mermaid) and detailed component breakdown: [`docs/architecture.md`](doc
 
 ```
 splunk-detection-lab/
-├── README.md
-├── CONVENTIONS.md              # naming, rule format, ATT&CK mapping rules
-├── CHANGELOG.md
-├── detections/                 # one file per detection (YAML front-matter + SPL)
-│   ├── _template.md
-│   └── win_proc_<id>_<name>.md
-├── hunting/                    # hypothesis-driven SPL queries (not alerts)
-├── tests/
-│   └── atomic/                 # Atomic Red Team test mappings + evidence
-├── macros/                     # macros.conf – CIM-friendly building blocks
-├── lookups/                    # asset.csv, identity.csv, suspicious_*.csv
-├── conf/
-│   ├── splunk/local/           # indexes.conf, props.conf, transforms.conf
-│   ├── sysmon/                 # sysmon-modular merged config + version pin
-│   └── uf/                     # inputs.conf, outputs.conf for the forwarder
-├── dashboards/                 # SimpleXML dashboards (SOC overview, MITRE)
-├── coverage/                   # ATT&CK Navigator JSON layer + coverage.md
-├── docs/
-│   ├── architecture.md
-│   ├── adr/                    # Architecture Decision Records
-│   ├── runbooks/               # one per detection family
-│   └── screenshots/
-├── scripts/                    # helper scripts (validation, Atomic launcher)
-└── .github/workflows/          # SPL/YAML lint on every push
+â”œâ”€â”€ README.md
+â”œâ”€â”€ CONVENTIONS.md              # naming, rule format, ATT&CK mapping rules
+â”œâ”€â”€ CHANGELOG.md
+â”œâ”€â”€ detections/                 # one file per detection (YAML front-matter + SPL)
+â”‚   â”œâ”€â”€ _template.md
+â”‚   â””â”€â”€ win_proc_<id>_<name>.md
+â”œâ”€â”€ hunting/                    # hypothesis-driven SPL queries (not alerts)
+â”œâ”€â”€ tests/
+â”‚   â””â”€â”€ atomic/                 # Atomic Red Team test mappings + evidence
+â”œâ”€â”€ macros/                     # macros.conf â€“ CIM-friendly building blocks
+â”œâ”€â”€ lookups/                    # asset.csv, identity.csv, suspicious_*.csv
+â”œâ”€â”€ conf/
+â”‚   â”œâ”€â”€ splunk/local/           # indexes.conf, props.conf, transforms.conf
+â”‚   â”œâ”€â”€ sysmon/                 # sysmon-modular merged config + version pin
+â”‚   â””â”€â”€ uf/                     # inputs.conf, outputs.conf for the forwarder
+â”œâ”€â”€ dashboards/                 # SimpleXML dashboards (SOC overview, MITRE)
+â”œâ”€â”€ coverage/                   # ATT&CK Navigator JSON layer + coverage.md
+â”œâ”€â”€ docs/
+â”‚   â”œâ”€â”€ architecture.md
+â”‚   â”œâ”€â”€ adr/                    # Architecture Decision Records
+â”‚   â”œâ”€â”€ runbooks/               # one per detection family
+â”‚   â””â”€â”€ screenshots/
+â”œâ”€â”€ scripts/                    # helper scripts (validation, Atomic launcher)
+â””â”€â”€ .github/workflows/          # SPL/YAML lint on every push
 ```
 
 ---
@@ -71,13 +93,13 @@ splunk-detection-lab/
 
 Every rule in [`detections/`](detections/) follows the same lifecycle, documented per file:
 
-1. **Hypothesis** – what adversary behavior we are trying to surface
-2. **Data source** – Sysmon EID / Windows EID / CIM data model
-3. **Logic (SPL)** – the search itself, written against macros, not raw indexes
-4. **Known false positives** – enumerated, not hand-waved
-5. **Tuning** – allowlists, thresholds, references to lookups
-6. **Validation** – exact Atomic Red Team test that triggers the rule, with evidence
-7. **Response** – pointer to the runbook in [`docs/runbooks/`](docs/runbooks/)
+1. **Hypothesis** â€“ what adversary behavior we are trying to surface
+2. **Data source** â€“ Sysmon EID / Windows EID / CIM data model
+3. **Logic (SPL)** â€“ the search itself, written against macros, not raw indexes
+4. **Known false positives** â€“ enumerated, not hand-waved
+5. **Tuning** â€“ allowlists, thresholds, references to lookups
+6. **Validation** â€“ exact Atomic Red Team test that triggers the rule, with evidence
+7. **Response** â€“ pointer to the runbook in [`docs/runbooks/`](docs/runbooks/)
 
 The full template lives at [`detections/_template.md`](detections/_template.md).
 
@@ -106,13 +128,13 @@ Initial scope is the techniques most relevant to a Windows SOC L2/L3 analyst. Li
 
 The lab is reproducible from scratch:
 
-1. Stand up the Splunk server – [`docs/install-splunk-debian.md`](docs/install-splunk-debian.md)
-2. Onboard the Windows endpoint – [`docs/install-windows-endpoint.md`](docs/install-windows-endpoint.md)
+1. Stand up the Splunk server â€“ [`docs/install-splunk-debian.md`](docs/install-splunk-debian.md)
+2. Onboard the Windows endpoint â€“ [`docs/install-windows-endpoint.md`](docs/install-windows-endpoint.md)
 3. Apply Splunk configs from [`conf/splunk/local/`](conf/splunk/local/) and restart
 4. Apply UF configs from [`conf/uf/`](conf/uf/)
 5. Deploy the Sysmon-modular merged config from [`conf/sysmon/`](conf/sysmon/)
-6. Validate ingestion – [`docs/validation.md`](docs/validation.md)
-7. Run the purple-team test suite – `scripts/run-atomic-suite.ps1`
+6. Validate ingestion â€“ [`docs/validation.md`](docs/validation.md)
+7. Run the purple-team test suite â€“ `scripts/run-atomic-suite.ps1`
 
 ---
 
@@ -120,10 +142,10 @@ The lab is reproducible from scratch:
 
 This is a single-host lab. In a production SOC the following would be different and are deliberately **out of scope** here:
 
-- No domain controller — AD-related techniques (Kerberoasting, DCSync) are not validated end-to-end
-- No EDR — detections rely solely on Sysmon + Windows event channels
-- No SOAR — runbooks are markdown, not Phantom/XSOAR playbooks
-- No deployment server — UF configs are pushed manually
+- No domain controller â€” AD-related techniques (Kerberoasting, DCSync) are not validated end-to-end
+- No EDR â€” detections rely solely on Sysmon + Windows event channels
+- No SOAR â€” runbooks are markdown, not Phantom/XSOAR playbooks
+- No deployment server â€” UF configs are pushed manually
 - Risk-Based Alerting is implemented in raw SPL into a `risk` index, not via Enterprise Security
 
 A production-grade follow-up plan is documented in [`docs/production-gap.md`](docs/production-gap.md).
