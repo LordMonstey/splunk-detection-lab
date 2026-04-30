@@ -1,7 +1,7 @@
 ---
 id: win_secevt_t1136.001_local_account_creation
 title: Local user account created on a workstation
-status: testing
+status: production
 author: LordMonstey
 created: 2026-04-28
 modified: 2026-04-28
@@ -72,6 +72,17 @@ Cleanup:
 net localgroup Administrators atomic-test /delete
 net user atomic-test /delete
 ```
+
+
+**Validated**: 2026-04-30 via Atomic Red Team T1136.001-4 (Create a new user in a command prompt) on lab host `win10-sysmon-client`.
+
+Detection pivots on Windows Security EID 4720 (account created). Lab requires `auditpol /set /category:'Account Management' /success:enable` for this to work - this is a real production gotcha worth documenting.
+
+**Evidence**: ![evidence](../tests/atomic/evidence/T1136.001-local-account.png)
+
+**Test command**: `Invoke-AtomicTest T1136.001 -TestNumbers 4`
+
+**Cleanup**: `Invoke-AtomicTest T1136.001 -TestNumbers 4 -Cleanup`
 
 ## Response
 

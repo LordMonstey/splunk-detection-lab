@@ -1,7 +1,7 @@
 ---
 id: win_sysmon_t1218.005_mshta_execution
 title: Mshta.exe executing remote or HTA content
-status: testing
+status: production
 author: LordMonstey
 created: 2026-04-28
 modified: 2026-04-28
@@ -66,6 +66,17 @@ Manual reproduction:
 ```cmd
 mshta.exe vbscript:Close(Execute("CreateObject(""Wscript.Shell"").Run ""calc.exe"""))
 ```
+
+
+**Validated**: 2026-04-30 via Atomic Red Team T1218.005-2 (Mshta executes VBScript to execute malicious command) on lab host `win10-sysmon-client`.
+
+The CommandLine `mshta vbscript:Execute("CreateObject(...).Run(...)")` is the smoking gun. Atomic launches it via cmd.exe spawning powershell, but in real attacks mshta is usually launched by Office macros or HTA download cradles.
+
+**Evidence**: ![evidence](../tests/atomic/evidence/T1218.005-mshta-vbscript.png)
+
+**Test command**: `Invoke-AtomicTest T1218.005 -TestNumbers 2`
+
+**Cleanup**: `Invoke-AtomicTest T1218.005 -TestNumbers 2 -Cleanup`
 
 ## Response
 

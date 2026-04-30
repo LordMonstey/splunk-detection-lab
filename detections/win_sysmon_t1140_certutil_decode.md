@@ -1,7 +1,7 @@
 ---
 id: win_sysmon_t1140_certutil_decode
 title: Certutil.exe used to decode Base64 payloads
-status: testing
+status: production
 author: LordMonstey
 created: 2026-04-28
 modified: 2026-04-28
@@ -78,6 +78,17 @@ Cleanup:
 ```cmd
 del b64.txt out.txt
 ```
+
+
+**Validated**: 2026-04-30 via Atomic Red Team T1140-2 (Certutil Rename and Decode) on lab host `win10-sysmon-client`.
+
+T1140-2 renames certutil before use, which defeats simple `Image=*\\certutil.exe` filters. The detection should pivot on Sysmon `OriginalFileName=CertUtil.exe` (extracted from the PE header) instead. This is a real defense-evasion lesson worth noting in the rule.
+
+**Evidence**: ![evidence](../tests/atomic/evidence/T1140-certutil-decode.png)
+
+**Test command**: `Invoke-AtomicTest T1140 -TestNumbers 2`
+
+**Cleanup**: `Invoke-AtomicTest T1140 -TestNumbers 2 -Cleanup`
 
 ## Response
 
