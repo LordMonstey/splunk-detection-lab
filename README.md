@@ -1,15 +1,29 @@
-## Validated detections - sample evidence
+## Validated detections
 
-| Technique | Detection | Evidence |
-|---|---|---|
-| T1059.001 - PowerShell encoded | [`win_sysmon_t1059.001_powershell_encoded`](detections/win_sysmon_t1059.001_powershell_encoded.md) | ![T1059.001](tests/atomic/evidence/T1059.001-encoded-powershell.png) |
-| T1547.001 - Run key persistence | [`win_sysmon_t1547.001_run_key_modification`](detections/win_sysmon_t1547.001_run_key_modification.md) | ![T1547.001](tests/atomic/evidence/T1547.001-run-key.png) |
-| T1218.011 - Rundll32 LOLBin | [`win_sysmon_t1218.011_rundll32_unusual_parent`](detections/win_sysmon_t1218.011_rundll32_unusual_parent.md) | ![T1218.011](tests/atomic/evidence/T1218.011-rundll32.png) |
+Eight detections validated end-to-end via Atomic Red Team or manual reproduction. Each row links to the detection rule and a Splunk screenshot showing the rule firing on real telemetry.
 
-OneDrive entries visible in the run-key screenshot are real false positives - documented and tuned in [`lookups/allowlist_run_keys.csv`](lookups/allowlist_run_keys.csv).
+| ATT&CK | Detection | Test method | Evidence |
+|---|---|---|---|
+| T1003.001 | [LSASS access via ProcDump](detections/win_sysmon_t1003.001_lsass_access_suspicious.md) | `Invoke-AtomicTest T1003.001 -TestNumbers 1` | [screenshot](tests/atomic/evidence/T1003.001-detection-fired.png) |
+| T1059.001 | [PowerShell encoded command](detections/win_sysmon_t1059.001_powershell_encoded.md) | manual | [screenshot](tests/atomic/evidence/T1059.001-encoded-powershell.png) |
+| T1136.001 | [Local account creation](detections/win_secevt_t1136.001_local_account_creation.md) | `Invoke-AtomicTest T1136.001 -TestNumbers 4` | [screenshot](tests/atomic/evidence/T1136.001-local-account.png) |
+| T1140 | [Certutil decode](detections/win_sysmon_t1140_certutil_decode.md) | `Invoke-AtomicTest T1140 -TestNumbers 2` | [screenshot](tests/atomic/evidence/T1140-certutil-decode.png) |
+| T1218.005 | [Mshta execution](detections/win_sysmon_t1218.005_mshta_execution.md) | `Invoke-AtomicTest T1218.005 -TestNumbers 2` | [screenshot](tests/atomic/evidence/T1218.005-mshta-vbscript.png) |
+| T1218.010 | [Regsvr32 (Squiblydoo)](detections/win_sysmon_t1218.010_regsvr32_remote.md) | `Invoke-AtomicTest T1218.010 -TestNumbers 1` | [screenshot](tests/atomic/evidence/T1218.010-regsvr32-squiblydoo.png) |
+| T1218.011 | [Rundll32 LOLBin](detections/win_sysmon_t1218.011_rundll32_unusual_parent.md) | manual | [screenshot](tests/atomic/evidence/T1218.011-rundll32.png) |
+| T1547.001 | [Run key persistence](detections/win_sysmon_t1547.001_run_key_modification.md) | manual | [screenshot](tests/atomic/evidence/T1547.001-run-key.png) |
+
+Featured screenshots:
+
+![T1003.001 LSASS](tests/atomic/evidence/T1003.001-detection-fired.png)
+*T1003.001 - LSASS dump via ProcDump caught by access mask filtering. Sysmon-modular even tags the technique natively in `RuleName`.*
+
+![T1218.010 Squiblydoo](tests/atomic/evidence/T1218.010-regsvr32-squiblydoo.png)
+*T1218.010 - regsvr32 Squiblydoo bypass via local .sct scriptlet.*
+
+The OneDrive entries visible in the run-key screenshot are real false positives observed in the lab, documented and tuned in [`lookups/allowlist_run_keys.csv`](lookups/allowlist_run_keys.csv). Detection engineering doesn't end at "the rule fires"; it ends at "the rule fires only when it should."
 
 ---
-
 # Splunk Detection Lab
 
 A single-host Splunk Enterprise lab focused on **detection engineering** and **SOC L2/L3 investigation workflows** for Windows endpoints. Telemetry is collected via Sysmon-modular and the Splunk Universal Forwarder, normalized to CIM, and used to develop, test, and tune behavioral detections mapped to MITRE ATT&CK.
