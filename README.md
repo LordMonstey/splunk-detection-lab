@@ -1,161 +1,162 @@
-## Validated detections
+# Splunk Platform & Detection Engineering Lab
 
-Eight detections validated end-to-end via Atomic Red Team or manual reproduction. Each row links to the detection rule and a Splunk screenshot showing the rule firing on real telemetry.
+[![Portfolio](https://img.shields.io/badge/OPEN_INTERACTIVE_PORTFOLIO-55e6a5?style=for-the-badge&labelColor=07111c)](https://lordmonstey.github.io/splunk-detection-lab/)
+[![Content validation](https://img.shields.io/badge/DETECTIONS-18-57b7ff?style=flat-square&labelColor=07111c)](detections/)
+[![Production](https://img.shields.io/badge/VALIDATED-8-55e6a5?style=flat-square&labelColor=07111c)](coverage/coverage.md)
+[![Splunk](https://img.shields.io/badge/SPLUNK-10.2.1-ffcc66?style=flat-square&labelColor=07111c)](conf/splunk/)
 
-| ATT&CK | Detection | Test method | Evidence |
-|---|---|---|---|
-| T1003.001 | [LSASS access via ProcDump](detections/win_sysmon_t1003.001_lsass_access_suspicious.md) | `Invoke-AtomicTest T1003.001 -TestNumbers 1` | [screenshot](tests/atomic/evidence/T1003.001-detection-fired.png) |
-| T1059.001 | [PowerShell encoded command](detections/win_sysmon_t1059.001_powershell_encoded.md) | manual | [screenshot](tests/atomic/evidence/T1059.001-encoded-powershell.png) |
-| T1136.001 | [Local account creation](detections/win_secevt_t1136.001_local_account_creation.md) | `Invoke-AtomicTest T1136.001 -TestNumbers 4` | [screenshot](tests/atomic/evidence/T1136.001-local-account.png) |
-| T1140 | [Certutil decode](detections/win_sysmon_t1140_certutil_decode.md) | `Invoke-AtomicTest T1140 -TestNumbers 2` | [screenshot](tests/atomic/evidence/T1140-certutil-decode.png) |
-| T1218.005 | [Mshta execution](detections/win_sysmon_t1218.005_mshta_execution.md) | `Invoke-AtomicTest T1218.005 -TestNumbers 2` | [screenshot](tests/atomic/evidence/T1218.005-mshta-vbscript.png) |
-| T1218.010 | [Regsvr32 (Squiblydoo)](detections/win_sysmon_t1218.010_regsvr32_remote.md) | `Invoke-AtomicTest T1218.010 -TestNumbers 1` | [screenshot](tests/atomic/evidence/T1218.010-regsvr32-squiblydoo.png) |
-| T1218.011 | [Rundll32 LOLBin](detections/win_sysmon_t1218.011_rundll32_unusual_parent.md) | manual | [screenshot](tests/atomic/evidence/T1218.011-rundll32.png) |
-| T1547.001 | [Run key persistence](detections/win_sysmon_t1547.001_run_key_modification.md) | manual | [screenshot](tests/atomic/evidence/T1547.001-run-key.png) |
+An evidence-backed portfolio project spanning both sides of reliable security
+monitoring: **Splunk platform administration** and **detection engineering**.
 
-Featured screenshots:
+The public portfolio is a static, sanitized snapshot. It does not depend on a
+running lab VM and exposes no Splunk management endpoint.
 
-![T1003.001 LSASS](tests/atomic/evidence/T1003.001-detection-fired.png)
-*T1003.001 - LSASS dump via ProcDump caught by access mask filtering. Sysmon-modular even tags the technique natively in `RuleName`.*
+[Open the interactive case files](https://lordmonstey.github.io/splunk-detection-lab/)
 
-![T1218.010 Squiblydoo](tests/atomic/evidence/T1218.010-regsvr32-squiblydoo.png)
-*T1218.010 - regsvr32 Squiblydoo bypass via local .sct scriptlet.*
+![Static public Splunk portfolio](screenshots/10-public-portfolio-hero.png)
 
-The OneDrive entries visible in the run-key screenshot are real false positives observed in the lab, documented and tuned in [`lookups/allowlist_run_keys.csv`](lookups/allowlist_run_keys.csv). Detection engineering doesn't end at "the rule fires"; it ends at "the rule fires only when it should."
+The public experience is backed by a real implementation inside Splunk:
 
----
-# Splunk Detection Lab
+![Custom Splunk Engineering Command Center](screenshots/09-splunk-engineering-command-center.png)
 
-A single-host Splunk Enterprise lab focused on **detection engineering** and **SOC L2/L3 investigation workflows** for Windows endpoints. Telemetry is collected via Sysmon-modular and the Splunk Universal Forwarder, normalized to CIM, and used to develop, test, and tune behavioral detections mapped to MITRE ATT&CK.
+## What this proves
 
-This repository is structured as a *detection-as-code* project: every rule has a written hypothesis, an SPL implementation, a tuning strategy, known false positives, an Atomic Red Team validation test, and a runbook for the analyst on call.
+| Capability | Implemented evidence |
+|---|---|
+| Platform administration | Dedicated indexes, retention, inputs, parsing, routing, license recovery, effective-config validation |
+| Windows onboarding | Sysmon plus Security, System, and Application channels through a Universal Forwarder |
+| Detection-as-code | 18 versioned saved searches with hypotheses, SPL, tuning, severity, risk, response, and promotion status |
+| Validation | 8 rules reproduced with Atomic Red Team or controlled manual tests and committed screenshots |
+| Content operations | 5–15 minute schedules, macro abstraction, lookups, release gates, ATT&CK coverage |
+| Analyst usability | Custom native Splunk command center, public investigation workbench, and response runbooks |
 
----
+## Verified lab snapshot
+
+| Platform signal | Value |
+|---|---:|
+| Splunk Enterprise | 10.2.1 |
+| Lifetime events indexed | 19,946 |
+| Current searchable window | 473 |
+| Saved searches deployed | 18 |
+| Production / validated rules | 8 |
+| Testing candidates | 10 |
+| Endpoint retention | 90 days |
+| Risk / notable retention | 365 days |
+
+These values were captured from the running control plane and exported as a
+fixed portfolio snapshot. The site never calls the VM or the Splunk REST API.
 
 ## Architecture
 
-```
-+---------------------+        TCP/9997        +-----------------------+
-|  Windows 10/11 VM   |  ───────────────────▶  |  Debian 12 (Splunk)   |
-|  Sysmon-modular     |                        |  Splunk Enterprise    |
-|  Splunk UF 9.x      |                        |  Indexes: win, sysmon |
-+---------------------+                        |  CIM, macros, lookups |
-                                               +-----------------------+
-```
-
-Diagram (mermaid) and detailed component breakdown: [`docs/architecture.md`](docs/architecture.md).
-
----
-
-## What this lab demonstrates
-
-| Capability | Where to look |
-|---|---|
-| Detection-as-code workflow | [`detections/`](detections/) |
-| ATT&CK coverage tracking | [`coverage/`](coverage/) |
-| CIM-normalized data with macros | [`macros/macros.conf`](macros/macros.conf) |
-| Purple-team validation (Atomic Red Team) | [`tests/atomic/`](tests/atomic/) |
-| Analyst runbooks for L2/L3 triage | [`docs/runbooks/`](docs/runbooks/) |
-| Sysmon-modular deployment & rationale | [`docs/adr/0001-sysmon-modular.md`](docs/adr/0001-sysmon-modular.md) |
-| Threat hunting hypotheses (non-alerting) | [`hunting/`](hunting/) |
-
----
-
-## Repository layout
-
-```
-splunk-detection-lab/
-├── README.md
-├── CONVENTIONS.md              # naming, rule format, ATT&CK mapping rules
-├── CHANGELOG.md
-├── detections/                 # one file per detection (YAML front-matter + SPL)
-│   ├── _template.md
-│   └── win_proc_<id>_<name>.md
-├── hunting/                    # hypothesis-driven SPL queries (not alerts)
-├── tests/
-│   └── atomic/                 # Atomic Red Team test mappings + evidence
-├── macros/                     # macros.conf – CIM-friendly building blocks
-├── lookups/                    # asset.csv, identity.csv, suspicious_*.csv
-├── conf/
-│   ├── splunk/local/           # indexes.conf, props.conf, transforms.conf
-│   ├── sysmon/                 # sysmon-modular merged config + version pin
-│   └── uf/                     # inputs.conf, outputs.conf for the forwarder
-├── dashboards/                 # SimpleXML dashboards (SOC overview, MITRE)
-├── coverage/                   # ATT&CK Navigator JSON layer + coverage.md
-├── docs/
-│   ├── architecture.md
-│   ├── adr/                    # Architecture Decision Records
-│   ├── runbooks/               # one per detection family
-│   └── screenshots/
-├── scripts/                    # helper scripts (validation, Atomic launcher)
-└── .github/workflows/          # SPL/YAML lint on every push
+```text
+Windows endpoint               Debian Splunk server               Detection layer
+----------------               --------------------               ---------------
+Sysmon                 ─┐
+Security               ─┼─ Universal Forwarder ─TCP/9997─> indexes: sysmon/windows
+System                 ─┤                                   │
+Application            ─┘                                   ├─ macros / field aliases
+                                                            ├─ lookups / event types
+                                                            └─ 18 scheduled detections
 ```
 
----
+See [the full architecture](docs/architecture.md), [deployment decisions](docs/adr/),
+and [production gaps](docs/production-gap.md).
 
-## Detection lifecycle
+## Validated detections
 
-Every rule in [`detections/`](detections/) follows the same lifecycle, documented per file:
+| ATT&CK | Detection | Test method | Evidence |
+|---|---|---|---|
+| T1003.001 | [Suspicious LSASS process access](detections/win_sysmon_t1003.001_lsass_access_suspicious.md) | Atomic Red Team | [Splunk result](tests/atomic/evidence/T1003.001-detection-fired.png) |
+| T1059.001 | [PowerShell encoded command](detections/win_sysmon_t1059.001_powershell_encoded.md) | Controlled manual test | [Splunk result](tests/atomic/evidence/T1059.001-encoded-powershell.png) |
+| T1136.001 | [Local account creation](detections/win_secevt_t1136.001_local_account_creation.md) | Atomic Red Team | [Splunk result](tests/atomic/evidence/T1136.001-local-account.png) |
+| T1140 | [Certutil download or decode](detections/win_sysmon_t1140_certutil_decode.md) | Atomic Red Team | [Splunk result](tests/atomic/evidence/T1140-certutil-decode.png) |
+| T1218.005 | [Mshta execution](detections/win_sysmon_t1218.005_mshta_execution.md) | Atomic Red Team | [Splunk result](tests/atomic/evidence/T1218.005-mshta-vbscript.png) |
+| T1218.010 | [Regsvr32 scriptlet execution](detections/win_sysmon_t1218.010_regsvr32_remote.md) | Atomic Red Team | [Splunk result](tests/atomic/evidence/T1218.010-regsvr32-squiblydoo.png) |
+| T1218.011 | [Rundll32 with unusual parent](detections/win_sysmon_t1218.011_rundll32_unusual_parent.md) | Controlled manual test | [Splunk result](tests/atomic/evidence/T1218.011-rundll32.png) |
+| T1547.001 | [Run key modification](detections/win_sysmon_t1547.001_run_key_modification.md) | Controlled manual test | [Splunk result](tests/atomic/evidence/T1547.001-run-key.png) |
 
-1. **Hypothesis** – what adversary behavior we are trying to surface
-2. **Data source** – Sysmon EID / Windows EID / CIM data model
-3. **Logic (SPL)** – the search itself, written against macros, not raw indexes
-4. **Known false positives** – enumerated, not hand-waved
-5. **Tuning** – allowlists, thresholds, references to lookups
-6. **Validation** – exact Atomic Red Team test that triggers the rule, with evidence
-7. **Response** – pointer to the runbook in [`docs/runbooks/`](docs/runbooks/)
+The complete catalog and promotion rules are in
+[coverage/coverage.md](coverage/coverage.md). The matching ATT&CK Navigator layer
+is [coverage/navigator-layer.json](coverage/navigator-layer.json).
 
-The full template lives at [`detections/_template.md`](detections/_template.md).
+## Native Splunk implementation
 
----
+The repository contains a deployable Splunk app rather than screenshots alone:
 
-## ATT&CK coverage (target)
+- Custom dashboard:
+  [splunk_engineering_command_center.xml](conf/splunk/local/data/ui/views/splunk_engineering_command_center.xml)
+- Navigation:
+  [default.xml](conf/splunk/local/data/ui/nav/default.xml)
+- Presentation layer:
+  [splunk_engineering.css](conf/splunk/appserver/static/splunk_engineering.css)
+- 18 scheduled rules:
+  [savedsearches.conf](conf/splunk/local/savedsearches.conf)
+- Index and retention policy:
+  [indexes.conf](conf/splunk/local/indexes.conf)
 
-Initial scope is the techniques most relevant to a Windows SOC L2/L3 analyst. Live coverage is rendered in `coverage/coverage.md` and the matching ATT&CK Navigator layer in `coverage/navigator-layer.json`.
+## Detection contract
 
-| Tactic | Techniques in scope |
-|---|---|
-| Initial Access | T1566.001 |
-| Execution | T1059.001, T1059.003, T1204.002 |
-| Persistence | T1547.001, T1053.005, T1136.001 |
-| Privilege Escalation | T1055, T1134 |
-| Defense Evasion | T1218 (rundll32, regsvr32, mshta), T1027, T1140, T1562.001, T1112 |
-| Credential Access | T1003.001, T1110, T1558 |
-| Discovery | T1087, T1018, T1057 |
-| Lateral Movement | T1021.001, T1021.002 |
-| Collection / Impact | T1486, T1490 |
-| Command & Control | T1071.001, T1090 |
+Every detection is reviewed as an operational unit:
 
----
+1. Adversary-behavior hypothesis
+2. Required event source and fields
+3. SPL written against reusable macros
+4. Known false positives and tuning controls
+5. Exact validation procedure
+6. Severity, risk score, and execution schedule
+7. Analyst response path
+8. Evidence required for promotion from `Testing` to `Production`
 
-## Quickstart
+The authoring contract is defined in [CONVENTIONS.md](CONVENTIONS.md), and the
+rule template lives at [detections/_template.md](detections/_template.md).
 
-The lab is reproducible from scratch:
+## Repository map
 
-1. Stand up the Splunk server – [`docs/install-splunk-debian.md`](docs/install-splunk-debian.md)
-2. Onboard the Windows endpoint – [`docs/install-windows-endpoint.md`](docs/install-windows-endpoint.md)
-3. Apply Splunk configs from [`conf/splunk/local/`](conf/splunk/local/) and restart
-4. Apply UF configs from [`conf/uf/`](conf/uf/)
-5. Deploy the Sysmon-modular merged config from [`conf/sysmon/`](conf/sysmon/)
-6. Validate ingestion – [`docs/validation.md`](docs/validation.md)
-7. Run the purple-team test suite – `scripts/run-atomic-suite.ps1`
+```text
+conf/                  Splunk app, indexes, parsing, routing, saved searches
+detections/            Detection specifications and SPL
+lookups/               Explicit tuning and enrichment controls
+coverage/              Release inventory and ATT&CK Navigator layer
+tests/atomic/           Reproduction mappings and committed proof
+docs/runbooks/          Analyst triage and response
+scripts/               Configuration and content validators
+site/                  VM-independent static GitHub Pages portfolio
+screenshots/           Native Splunk implementation proof
+```
 
----
+## Validate locally
 
-## Limitations & honest caveats
+```bash
+python scripts/validate_conf.py
+python scripts/validate_detections.py
+python -m json.tool coverage/navigator-layer.json
+```
 
-This is a single-host lab. In a production SOC the following would be different and are deliberately **out of scope** here:
+To preview the public portfolio:
 
-- No domain controller — AD-related techniques (Kerberoasting, DCSync) are not validated end-to-end
-- No EDR — detections rely solely on Sysmon + Windows event channels
-- No SOAR — runbooks are markdown, not Phantom/XSOAR playbooks
-- No deployment server — UF configs are pushed manually
-- Risk-Based Alerting is implemented in raw SPL into a `risk` index, not via Enterprise Security
+```bash
+python -m http.server 8080 --directory site
+```
 
-A production-grade follow-up plan is documented in [`docs/production-gap.md`](docs/production-gap.md).
+Then open `http://localhost:8080`.
 
----
+## Scope and honest constraints
+
+This is a standalone engineering lab, not a claim that Splunk Enterprise
+Security is installed in the public environment.
+
+- Sysmon and native Windows event channels are the primary telemetry.
+- Eight detections have committed reproduction evidence; ten remain explicitly
+  labeled `Testing`.
+- Risk and notable indexes model an ES-ready content path, but no ES-only
+  feature is presented as active.
+- There is no SOAR, clustered index tier, deployment server, or domain
+  controller in this lab.
+- Splunk Free restored local search after the Enterprise Trial expired; remote
+  management login remains disabled.
+
+The production hardening plan is documented in [docs/production-gap.md](docs/production-gap.md).
 
 ## License
 
-MIT. Use, fork, criticize.
+MIT. Use it, fork it, test it, and challenge the detections.

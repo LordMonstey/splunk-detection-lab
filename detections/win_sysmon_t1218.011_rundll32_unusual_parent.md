@@ -1,4 +1,4 @@
-﻿---
+---
 id: win_sysmon_t1218.011_rundll32_unusual_parent
 title: Rundll32.exe with non-baseline parent or no DLL argument
 status: production
@@ -71,11 +71,6 @@ Manual reproduction:
 ```cmd
 rundll32.exe javascript:"\..\mshtml,RunHTMLApplication ";document.write();new%20ActiveXObject("WScript.Shell").Run("calc.exe")
 ```
-
-
-**Validated**: 2026-04-29 by manual reproduction on lab host `win10-sysmon-client`
-**Evidence**: [`tests/atomic/evidence/T1218.011-rundll32.png`](../tests/atomic/evidence/T1218.011-rundll32.png)
-**Latency observed**: < 30 seconds
 
 
 **Validated**: 2026-04-29 by manual reproduction on lab host `win10-sysmon-client`

@@ -1,4 +1,4 @@
-﻿---
+---
 id: win_sysmon_t1547.001_run_key_modification
 title: Registry Run/RunOnce key modification by non-system process
 status: production
@@ -75,12 +75,6 @@ Cleanup:
 ```cmd
 reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v atomic-test /f
 ```
-
-
-**Validated**: 2026-04-29 by manual reproduction on lab host `win10-sysmon-client`
-**Evidence**: [`tests/atomic/evidence/T1547.001-run-key.png`](../tests/atomic/evidence/T1547.001-run-key.png)
-**Latency observed**: < 30 seconds
-**FP discovered**: OneDrive `OneDriveSetup.exe` writes RunOnce keys for self-cleanup; allowlisted in `lookups/allowlist_run_keys.csv`.
 
 
 **Validated**: 2026-04-29 by manual reproduction on lab host `win10-sysmon-client`
