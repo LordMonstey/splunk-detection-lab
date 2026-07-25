@@ -1,4 +1,4 @@
-﻿---
+---
 id: win_sysmon_t1059.001_powershell_encoded
 title: PowerShell with encoded command argument
 status: production
@@ -75,11 +75,6 @@ $cmd = "Write-Host 'atomic-validation-$(Get-Date -Format yyyyMMddHHmmss)'"
 $encoded = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($cmd))
 powershell.exe -EncodedCommand $encoded
 ```
-
-
-**Validated**: 2026-04-29 by manual reproduction on lab host `win10-sysmon-client`
-**Evidence**: [`tests/atomic/evidence/T1059.001-encoded-powershell.png`](../tests/atomic/evidence/T1059.001-encoded-powershell.png)
-**Latency observed**: < 30 seconds
 
 
 **Validated**: 2026-04-29 by manual reproduction on lab host `win10-sysmon-client`
