@@ -13,6 +13,11 @@ running lab VM and exposes no Splunk management endpoint.
 
 [Open the interactive case files](https://lordmonstey.github.io/splunk-detection-lab/)
 
+The interface defaults to French and includes a persistent English switch. Its
+layout deliberately follows a Splunk operator workflow: SPL search, job status,
+index tables, scheduled-search inventory, investigation fields, and committed
+evidence.
+
 ![Static public Splunk portfolio](screenshots/10-public-portfolio-hero.png)
 
 The public experience is backed by a real implementation inside Splunk:
