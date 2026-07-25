@@ -1,0 +1,8 @@
+<nav search_view="search" color="#101926">
+  <view name="splunk_engineering_command_center" default="true"/>
+  <view name="search"/>
+  <collection label="Content">
+    <view name="alerts"/>
+    <view name="reports"/>
+  </collection>
+</nav>
