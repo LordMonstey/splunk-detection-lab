@@ -19,7 +19,7 @@ mitre_data_component: Windows Registry
 schedule:
   cron: "*/10 * * * *"
   earliest: "-15m@m"
-  latest:   "-1m@m"
+  latest: "-1m@m"
 references:
   - https://attack.mitre.org/techniques/T1547/001/
 tags:
