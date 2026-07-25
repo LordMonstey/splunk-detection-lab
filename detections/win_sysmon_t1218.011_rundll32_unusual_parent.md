@@ -1,4 +1,4 @@
-﻿---
+---
 id: win_sysmon_t1218.011_rundll32_unusual_parent
 title: Rundll32.exe with non-baseline parent or no DLL argument
 status: production
@@ -19,7 +19,7 @@ mitre_data_component: Process Creation
 schedule:
   cron: "*/5 * * * *"
   earliest: "-10m@m"
-  latest:   "-1m@m"
+  latest: "-1m@m"
 references:
   - https://attack.mitre.org/techniques/T1218/011/
   - https://lolbas-project.github.io/lolbas/Binaries/Rundll32/
@@ -71,11 +71,6 @@ Manual reproduction:
 ```cmd
 rundll32.exe javascript:"\..\mshtml,RunHTMLApplication ";document.write();new%20ActiveXObject("WScript.Shell").Run("calc.exe")
 ```
-
-
-**Validated**: 2026-04-29 by manual reproduction on lab host `win10-sysmon-client`
-**Evidence**: [`tests/atomic/evidence/T1218.011-rundll32.png`](../tests/atomic/evidence/T1218.011-rundll32.png)
-**Latency observed**: < 30 seconds
 
 
 **Validated**: 2026-04-29 by manual reproduction on lab host `win10-sysmon-client`
