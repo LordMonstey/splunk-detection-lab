@@ -36,35 +36,24 @@ tags:
 ## Logic
 
 ```spl
-`sysmon_process_creation`
-process_name="rundll32.exe"
-| eval parent_name = mvindex(split(ParentImage,"\\"), -1)
-| where NOT match(parent_name, "(?i)^(explorer|services|svchost|taskhost|wininit|userinit|sihost|searchindexer)\.exe$")
-   OR NOT match(CommandLine, "(?i)\.dll")
-   OR match(CommandLine, "(?i)javascript:|mshtml.*RunHTMLApplication|shell32.*ShellExec_RunDLL.*\\\\")
-| `cim_endpoint_processes_rename`
-| stats count min(_time) as firstTime max(_time) as lastTime
-        values(CommandLine) as commandlines
-        values(parent_process_name) as parents
-        by dest user process_name process_guid
-| `security_content_ctime(firstTime)`
-| `security_content_ctime(lastTime)`
+`sysmon_process_creation` Image="*\\rundll32.exe" | eval parent_name = mvindex(split(ParentImage,"\\"), -1) | where NOT match(parent_name, "(?i)^(explorer|services|svchost|taskhost|wininit|userinit|sihost|searchindexer)\\.exe$") OR NOT match(CommandLine, "(?i)\\.dll") OR match(CommandLine, "(?i)javascript:|mshtml.*RunHTMLApplication") | `cim_endpoint_processes_rename` | stats count min(_time) as firstTime max(_time) as lastTime values(CommandLine) as commandlines values(parent_process_name) as parents by dest user process_name process_guid
 ```
 
 ## Known false positives
 
-- Microsoft Office repair routines occasionally invoke `rundll32` with no `.dll` from `setup.exe` parents â†’ allowlisted via `lookups/allowlist_rundll32.csv`
-- Endpoint management agents (`ccmexec.exe`, `MsiExec.exe` during install) â†’ enumerated in the parent allowlist
-- `shell32.dll,Control_RunDLL` from explorer is benign â€” already excluded by parent baseline
+- Microsoft Office repair routines occasionally invoke `rundll32` with no `.dll` from `setup.exe` parents → candidate entries for `lookups/allowlist_rundll32.csv`
+- Endpoint management agents (`ccmexec.exe`, `MsiExec.exe` during install) → review against the parent baseline
+- `shell32.dll,Control_RunDLL` from explorer is benign — already excluded by parent baseline
 
 ## Tuning
 
-- Lookup: `lookups/allowlist_rundll32.csv` keyed on `parent_process_name`
+- `lookups/allowlist_rundll32.csv` records reviewed tuning candidates keyed on
+  `parent_process_name`; it is not invoked by the deployed saved search yet.
 - Suppression: 1 hour per `(dest, parent_process_name)`
 
 ## Validation
 
-- Atomic Red Team: T1218.011 #1 â€” `rundll32.exe javascript:`
+- Atomic Red Team: T1218.011 #1 — `rundll32.exe javascript:`
 
 Manual reproduction:
 

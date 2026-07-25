@@ -46,7 +46,7 @@ You should see recent Sysmon events such as:
 Download the Windows x64 Universal Forwarder MSI, then install with PowerShell:
 
 ```powershell
-$SplunkServer = "192.168.1.113:9997"
+$SplunkServer = "<SPLUNK_SERVER_IP>:9997"
 $UfAdminUser  = "admin"
 $UfAdminPass  = "ChangeThisPasswordNow_123!"
 $WorkDir      = "C:\Tools\Sysmon"
@@ -86,9 +86,9 @@ New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 defaultGroup = default-autolb-group
 
 [tcpout:default-autolb-group]
-server = 192.168.1.113:9997
+server = <SPLUNK_SERVER_IP>:9997
 
-[tcpout-server://192.168.1.113:9997]
+[tcpout-server://<SPLUNK_SERVER_IP>:9997]
 '@ | Set-Content -Path "$OutDir\outputs.conf" -Encoding ASCII -Force
 ```
 
@@ -160,13 +160,16 @@ Get-Service SplunkForwarder
 
 ```powershell
 $UfHome = "C:\Program Files\SplunkUniversalForwarder"
-& "$UfHome\bin\splunk.exe" list forward-server -auth admin:ChangeThisPasswordNow_123!
+& "$UfHome\bin\splunk.exe" list forward-server
 ```
 
 Expected result:
 
 - the forward server is listed as **Active**
-- the target is `192.168.1.113:9997`
+- the target is `<SPLUNK_SERVER_IP>:9997`
+
+The CLI requests credentials interactively when required. Do not place a
+password in the command line or save it in the shell history.
 
 ## Troubleshooting Checks
 
@@ -188,7 +191,7 @@ Select-Object TimeCreated, Id, ProviderName
 
 ```powershell
 $UfHome = "C:\Program Files\SplunkUniversalForwarder"
-& "$UfHome\bin\splunk.exe" btool inputs list --debug -auth admin:ChangeThisPasswordNow_123!
+& "$UfHome\bin\splunk.exe" btool inputs list --debug
 ```
 
 ### Review forwarder logs

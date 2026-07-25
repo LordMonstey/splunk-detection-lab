@@ -39,15 +39,7 @@ The Antimalware Scan Interface (AMSI) is the primary in-memory inspection point 
 ## Logic
 
 ```spl
-`wineventlog_powershell_operational` EventID=4104
-| where match(Message, "(?i)AmsiUtils|amsiInitFailed|amsi\.dll|System\.Management\.Automation\.AmsiUtils|VirtualProtect.*amsi")
-| eval host_value = coalesce(Computer, host)
-| stats count min(_time) as firstTime max(_time) as lastTime
-        values(Message) as script_blocks
-        by host_value
-| rename host_value as dest
-| `security_content_ctime(firstTime)`
-| `security_content_ctime(lastTime)`
+`wineventlog_powershell_operational` EventID=4104 | where match(Message, "(?i)AmsiUtils|amsiInitFailed|amsi\\.dll|System\\.Management\\.Automation\\.AmsiUtils") | stats count min(_time) as firstTime max(_time) as lastTime values(Message) as script_blocks by host
 ```
 
 ## Known false positives

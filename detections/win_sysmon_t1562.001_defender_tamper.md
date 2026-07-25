@@ -34,25 +34,7 @@ Adversaries disable Windows Defender real-time protection or add path/process ex
 ## Logic
 
 ```spl
-(
-   (`sysmon_process_creation` (process_name="powershell.exe" OR process_name="pwsh.exe")
-    CommandLine="*MpPreference*"
-    (CommandLine="*-DisableRealtimeMonitoring*" OR CommandLine="*-ExclusionPath*" OR CommandLine="*-ExclusionProcess*" OR CommandLine="*-ExclusionExtension*" OR CommandLine="*-DisableBehaviorMonitoring*" OR CommandLine="*-DisableScriptScanning*"))
-OR
-   (`sysmon_registry_event` EventID=13
-    (TargetObject="*\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\*"
-     OR TargetObject="*\\SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\*"
-     OR TargetObject="*\\SOFTWARE\\Microsoft\\Windows Defender\\Real-Time Protection\\DisableRealtimeMonitoring*"))
-)
-| eval action_type = if(EventID==1, "powershell_cmd", "registry_write")
-| `cim_endpoint_processes_rename`
-| stats count min(_time) as firstTime max(_time) as lastTime
-        values(CommandLine) as commandlines
-        values(TargetObject) as registry_keys
-        values(action_type) as actions
-        by dest user process_guid
-| `security_content_ctime(firstTime)`
-| `security_content_ctime(lastTime)`
+((`sysmon_process_creation` (Image="*\\powershell.exe" OR Image="*\\pwsh.exe") CommandLine="*MpPreference*" (CommandLine="*-DisableRealtimeMonitoring*" OR CommandLine="*-ExclusionPath*" OR CommandLine="*-ExclusionProcess*" OR CommandLine="*-ExclusionExtension*")) OR (`sysmon_registry_event` EventID=13 (TargetObject="*\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\*" OR TargetObject="*\\SOFTWARE\\Microsoft\\Windows Defender\\Exclusions\\*"))) | eval action_type = if(EventID==1, "powershell_cmd", "registry_write") | `cim_endpoint_processes_rename` | stats count min(_time) as firstTime max(_time) as lastTime values(CommandLine) as commandlines values(TargetObject) as registry_keys values(action_type) as actions by dest user process_guid
 ```
 
 ## Known false positives

@@ -11,9 +11,10 @@ This file maps every detection in `detections/` to one or more Atomic Red Team t
    Invoke-AtomicTest <TID>.<sub> -TestNumbers <n>
    ```
 3. In Splunk, run the detection's SPL within a tight time window
-4. Capture screenshot + raw event(s) → `tests/atomic/<technique>/evidence/`
-5. Update `coverage/coverage.md` status to ✅
-6. Update `coverage/navigator-layer.json` score to 100
+4. Capture the saved-search result and relevant raw event(s) in
+   `tests/atomic/evidence/`
+5. Promote `coverage/coverage.md` only when the expected rule result is proven
+6. Set the Navigator score to 100 only after successful promotion
 7. Always cleanup: `Invoke-AtomicTest <TID>.<sub> -TestNumbers <n> -Cleanup`
 
 ## Test list
@@ -26,17 +27,17 @@ This file maps every detection in `detections/` to one or more Atomic Red Team t
 | win_sysmon_t1059.003_cmd_obfuscation | T1059.003 #5 |
 | win_sysmon_t1547.001_run_key_modification | T1547.001 #1 |
 | win_sysmon_t1053.005_scheduled_task_creation | T1053.005 #1, T1053.005 #2 |
-| win_secevt_t1136.001_local_account_creation | T1136.001 #1 |
+| win_secevt_t1136.001_local_account_creation | T1136.001 #4 |
 | win_sysmon_t1112_registry_persistence_helper | T1546.012 #1, T1547.004 #1 |
 | win_sysmon_t1218.011_rundll32_unusual_parent | T1218.011 #1 |
-| win_sysmon_t1218.005_mshta_execution | T1218.005 #1 |
+| win_sysmon_t1218.005_mshta_execution | T1218.005 #2 |
 | win_sysmon_t1218.010_regsvr32_remote | T1218.010 #1 |
 | win_sysmon_t1027_obfuscated_powershell_entropy | T1027 #4 |
-| win_sysmon_t1140_certutil_decode | T1140 #4 |
+| win_sysmon_t1140_certutil_decode | T1140 #2 (validation finding; rerun required) |
 | win_sysmon_t1562.001_defender_tamper | T1562.001 #16, T1562.001 #28 |
 | win_sysmon_t1222.001_icacls_permissive | T1222.001 #1 |
-| win_sysmon_t1003.001_lsass_access_suspicious | T1003.001 #1, T1003.001 #2 |
-| win_secevt_t1110.001_failed_logon_burst | manual reproduction (see detection file) |
+| win_sysmon_t1003.001_lsass_access_suspicious | T1003.001 #1 |
+| win_secevt_t1110.001_failed_logon_burst | T1110.001 #1 or controlled manual reproduction |
 | win_sysmon_t1105_curl_wget_download | T1105 #2, T1105 #11 |
 
 ## Lab safety

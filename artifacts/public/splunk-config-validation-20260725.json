@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "captured_at": "2026-07-25T14:25:00+02:00",
+  "mode": "sanitized_live_validation",
+  "platform": "Splunk Enterprise 10.2.1",
+  "application": "splunk-detection-lab",
+  "results": [
+    {
+      "control": "effective_configuration",
+      "command": "splunk btool check --debug",
+      "result": "pass",
+      "detail": "No app configuration error; exit code 0."
+    },
+    {
+      "control": "macro_resolution",
+      "command": "splunk btool macros list sysmon_process_access --app=splunk-detection-lab",
+      "result": "pass",
+      "detail": "The Event ID 10 process-access macro resolves from the deployed app."
+    },
+    {
+      "control": "lookup_registration",
+      "command": "splunk btool transforms list allowlist_lsass_access --app=splunk-detection-lab",
+      "result": "pass",
+      "detail": "The LSASS tuning lookup resolves to its deployed CSV."
+    },
+    {
+      "control": "lookup_behavior",
+      "command": "makeresults plus allowlist_lsass_access functional search",
+      "result": "pass",
+      "detail": "A normalized MsMpEng.exe test value returns the reviewed Microsoft Windows signer record."
+    },
+    {
+      "control": "saved_search_inventory",
+      "command": "REST saved-search inventory scoped to the app",
+      "result": "pass",
+      "detail": "18 enabled saved-search definitions returned."
+    },
+    {
+      "control": "lsass_search_compilation",
+      "command": "savedsearch detect_win_sysmon_t1003_001_lsass_access_suspicious",
+      "result": "pass",
+      "detail": "The deployed macro, lookup, normalization, and aggregation pipeline compiles without a search error."
+    },
+    {
+      "control": "service_state",
+      "command": "systemctl is-active Splunkd.service",
+      "result": "pass",
+      "detail": "Service returned active after controlled restart."
+    },
+    {
+      "control": "management_api_acl",
+      "command": "server.conf acceptFrom plus remote/local reachability checks",
+      "result": "pass",
+      "detail": "The management API is unavailable from the LAN and remains reachable on loopback for Splunk Web and local administration."
+    },
+    {
+      "control": "ssh_access",
+      "command": "sshd configuration validation plus independent key-authenticated session",
+      "result": "pass",
+      "detail": "Key-only SSH is active, remote root login is disabled, and a fresh key session was verified before password authentication was removed."
+    },
+    {
+      "control": "host_firewall",
+      "command": "UFW policy and service-state validation",
+      "result": "pass",
+      "detail": "Default-deny inbound policy is active; SSH, Splunk Web, and receiver traffic are limited to the local lab network."
+    }
+  ],
+  "security": {
+    "exposed_credential_rotated": true,
+    "system_passwords_rotated": true,
+    "ssh_password_authentication": false,
+    "ssh_root_login": false,
+    "host_firewall": "active",
+    "new_secret_committed": false,
+    "plaintext_seed_removed": true,
+    "remote_cli_login": false
+  },
+  "declared_gaps": [
+    "The Certutil OriginalFileName candidate still requires a fresh Atomic validation before promotion.",
+    "The lab forwarding template does not yet prove server-certificate verification end to end.",
+    "The loopback-only Splunk CLI still reports that management-certificate hostname verification is disabled."
+  ],
+  "redaction": {
+    "credentials": "removed",
+    "private_addresses": "removed",
+    "host_identifiers": "removed",
+    "raw_command_output": "not published"
+  }
+}

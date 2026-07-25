@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "snapshot_id": "splunk-lab-public-20260725",
+  "captured_at": "2026-07-25T12:00:00+02:00",
+  "mode": "sanitized_static_checkpoint",
+  "scope": "Point-in-time platform evidence; this file is not an incident or risk trend.",
+  "platform": {
+    "product": "Splunk Enterprise",
+    "version": "10.2.1",
+    "license_mode": "Free",
+    "remote_cli_login": false,
+    "deployment": "single-instance lab"
+  },
+  "metrics": {
+    "lifetime_event_count": 19946,
+    "searchable_event_count": 473,
+    "configured_detection_searches": 18,
+    "configured_indexes": 4
+  },
+  "searchable_sources": [
+    {
+      "index": "sysmon",
+      "sourcetype": "XmlWinEventLog:Microsoft-Windows-Sysmon/Operational",
+      "count": 390
+    },
+    {
+      "index": "windows",
+      "sourcetype": "XmlWinEventLog:Security",
+      "count": 76
+    },
+    {
+      "index": "windows",
+      "sourcetype": "XmlWinEventLog:Application",
+      "count": 6
+    },
+    {
+      "index": "windows",
+      "sourcetype": "XmlWinEventLog:System",
+      "count": 1
+    }
+  ],
+  "sysmon_event_codes": [
+    {
+      "event_id": 23,
+      "count": 171,
+      "label": "File Delete"
+    },
+    {
+      "event_id": 11,
+      "count": 131,
+      "label": "File Create"
+    },
+    {
+      "event_id": 13,
+      "count": 68,
+      "label": "Registry Value Set"
+    },
+    {
+      "event_id": 10,
+      "count": 13,
+      "label": "Process Access"
+    },
+    {
+      "event_id": 7,
+      "count": 5,
+      "label": "Image Load"
+    },
+    {
+      "event_id": 17,
+      "count": 2,
+      "label": "Pipe Created"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "sysmon",
+      "lifetime_events": 15227,
+      "searchable_events": 390,
+      "max_size_mb": 12000,
+      "retention_days": 90,
+      "purpose": "Windows Sysmon telemetry"
+    },
+    {
+      "name": "windows",
+      "lifetime_events": 4719,
+      "searchable_events": 83,
+      "max_size_mb": 8000,
+      "retention_days": 90,
+      "purpose": "Native Windows event channels"
+    },
+    {
+      "name": "risk",
+      "lifetime_events": 0,
+      "searchable_events": 0,
+      "max_size_mb": 1000,
+      "retention_days": 365,
+      "purpose": "ES-ready architecture; inactive in this snapshot"
+    },
+    {
+      "name": "notable",
+      "lifetime_events": 0,
+      "searchable_events": 0,
+      "max_size_mb": 1000,
+      "retention_days": 365,
+      "purpose": "ES-ready architecture; inactive in this snapshot"
+    }
+  ],
+  "queries": {
+    "sources": "index=* | stats count by index sourcetype | sort - count",
+    "sysmon_event_codes": "index=sysmon | stats count by EventCode | sort - count",
+    "saved_search_count": "| rest /services/saved/searches | search disabled=0 | stats count"
+  },
+  "evidence": [
+    {
+      "path": "screenshots/09-splunk-engineering-command-center.png",
+      "sha256": "3f0fef31ec78130843c42333a5ecfedceffb6d8bfdafaf64e8ae022c714f6b40",
+      "supports": [
+        "platform version",
+        "lifetime count",
+        "searchable source distribution",
+        "Sysmon EventCode distribution",
+        "configured saved-search count"
+      ]
+    },
+    {
+      "path": "screenshots/05-splunk-ingestion-overview.png",
+      "sha256": "3e20a0bfabe6f46227db3779d01e5a870fc280660c63eb68db3c82736846721b",
+      "supports": [
+        "independent historical ingestion checkpoint"
+      ]
+    }
+  ],
+  "redaction": {
+    "credentials": "removed",
+    "private_addresses": "removed",
+    "personal_identifiers": "removed",
+    "raw_events": "not included"
+  }
+}

@@ -2,7 +2,7 @@
 
 [![Portfolio](https://img.shields.io/badge/OPEN_INTERACTIVE_PORTFOLIO-55e6a5?style=for-the-badge&labelColor=07111c)](https://lordmonstey.github.io/splunk-detection-lab/)
 [![Content validation](https://img.shields.io/badge/DETECTIONS-18-57b7ff?style=flat-square&labelColor=07111c)](detections/)
-[![Production](https://img.shields.io/badge/VALIDATED-8-55e6a5?style=flat-square&labelColor=07111c)](coverage/coverage.md)
+[![Production](https://img.shields.io/badge/PRODUCTION-7-55e6a5?style=flat-square&labelColor=07111c)](coverage/coverage.md)
 [![Splunk](https://img.shields.io/badge/SPLUNK-10.2.1-ffcc66?style=flat-square&labelColor=07111c)](conf/splunk/)
 
 An evidence-backed portfolio project spanning both sides of reliable security
@@ -24,14 +24,19 @@ The public experience is backed by a real implementation inside Splunk:
 
 ![Custom Splunk Engineering Command Center](screenshots/09-splunk-engineering-command-center.png)
 
+That native capture and the public interface describe the same sanitized
+July 25 checkpoint. Promotion status remains derived from
+[`coverage/coverage.md`](coverage/coverage.md), the versioned source of truth.
+
 ## What this proves
 
 | Capability | Implemented evidence |
 |---|---|
 | Platform administration | Dedicated indexes, retention, inputs, parsing, routing, license recovery, effective-config validation |
+| Platform hardening | Rotated credentials, key-only SSH, loopback-only management API, default-deny host firewall |
 | Windows onboarding | Sysmon plus Security, System, and Application channels through a Universal Forwarder |
 | Detection-as-code | 18 versioned saved searches with hypotheses, SPL, tuning, severity, risk, response, and promotion status |
-| Validation | 8 rules reproduced with Atomic Red Team or controlled manual tests and committed screenshots |
+| Validation | 7 Production rules backed by reproduction evidence; one Certutil test retained as a documented validation finding |
 | Content operations | 5–15 minute schedules, macro abstraction, lookups, release gates, ATT&CK coverage |
 | Analyst usability | Custom native Splunk command center, public investigation workbench, and response runbooks |
 
@@ -43,13 +48,18 @@ The public experience is backed by a real implementation inside Splunk:
 | Lifetime events indexed | 19,946 |
 | Current searchable window | 473 |
 | Saved searches deployed | 18 |
-| Production / validated rules | 8 |
-| Testing candidates | 10 |
+| Production / validated rules | 7 |
+| Testing candidates | 11 |
 | Endpoint retention | 90 days |
-| Risk / notable retention | 365 days |
+| Configured risk / notable retention | 365 days |
 
 These values were captured from the running control plane and exported as a
 fixed portfolio snapshot. The site never calls the VM or the Splunk REST API.
+The sanitized values, exact aggregate queries, evidence hashes, and redaction
+scope are versioned in
+[`artifacts/public/splunk-snapshot-20260725.json`](artifacts/public/splunk-snapshot-20260725.json).
+The corresponding live deployment checks are recorded separately in
+[`artifacts/public/splunk-config-validation-20260725.json`](artifacts/public/splunk-config-validation-20260725.json).
 
 ## Architecture
 
@@ -59,8 +69,8 @@ Windows endpoint               Debian Splunk server               Detection laye
 Sysmon                 ─┐
 Security               ─┼─ Universal Forwarder ─TCP/9997─> indexes: sysmon/windows
 System                 ─┤                                   │
-Application            ─┘                                   ├─ macros / field aliases
-                                                            ├─ lookups / event types
+Application            ─┘                                   ├─ macros / field normalization
+                                                            ├─ props / transforms / lookups
                                                             └─ 18 scheduled detections
 ```
 
@@ -74,11 +84,16 @@ and [production gaps](docs/production-gap.md).
 | T1003.001 | [Suspicious LSASS process access](detections/win_sysmon_t1003.001_lsass_access_suspicious.md) | Atomic Red Team | [Splunk result](tests/atomic/evidence/T1003.001-detection-fired.png) |
 | T1059.001 | [PowerShell encoded command](detections/win_sysmon_t1059.001_powershell_encoded.md) | Controlled manual test | [Splunk result](tests/atomic/evidence/T1059.001-encoded-powershell.png) |
 | T1136.001 | [Local account creation](detections/win_secevt_t1136.001_local_account_creation.md) | Atomic Red Team | [Splunk result](tests/atomic/evidence/T1136.001-local-account.png) |
-| T1140 | [Certutil download or decode](detections/win_sysmon_t1140_certutil_decode.md) | Atomic Red Team | [Splunk result](tests/atomic/evidence/T1140-certutil-decode.png) |
 | T1218.005 | [Mshta execution](detections/win_sysmon_t1218.005_mshta_execution.md) | Atomic Red Team | [Splunk result](tests/atomic/evidence/T1218.005-mshta-vbscript.png) |
 | T1218.010 | [Regsvr32 scriptlet execution](detections/win_sysmon_t1218.010_regsvr32_remote.md) | Atomic Red Team | [Splunk result](tests/atomic/evidence/T1218.010-regsvr32-squiblydoo.png) |
 | T1218.011 | [Rundll32 with unusual parent](detections/win_sysmon_t1218.011_rundll32_unusual_parent.md) | Controlled manual test | [Splunk result](tests/atomic/evidence/T1218.011-rundll32.png) |
 | T1547.001 | [Run key modification](detections/win_sysmon_t1547.001_run_key_modification.md) | Controlled manual test | [Splunk result](tests/atomic/evidence/T1547.001-run-key.png) |
+
+Certutil remains `Testing`: its committed
+[T1140 finding](tests/atomic/evidence/T1140-certutil-decode.png) demonstrated
+that a renamed binary bypassed the original image-path filter. The candidate
+now checks `OriginalFileName`, but it will not return to Production until that
+path is revalidated end to end.
 
 The complete catalog and promotion rules are in
 [coverage/coverage.md](coverage/coverage.md). The matching ATT&CK Navigator layer
@@ -151,8 +166,9 @@ This is a standalone engineering lab, not a claim that Splunk Enterprise
 Security is installed in the public environment.
 
 - Sysmon and native Windows event channels are the primary telemetry.
-- Eight detections have committed reproduction evidence; ten remain explicitly
-  labeled `Testing`.
+- Seven detections are Production with committed reproduction evidence.
+  Eleven remain explicitly labeled `Testing`; the Certutil evidence records a
+  failed promotion gate rather than a successful validation.
 - Risk and notable indexes model an ES-ready content path, but no ES-only
   feature is presented as active.
 - There is no SOAR, clustered index tier, deployment server, or domain

@@ -39,44 +39,29 @@ stable baseline, while access masks such as `0x1010`, `0x1410`, `0x1438`,
 ## Logic
 
 ```spl
-`sysmon_process_access` EventID=10
-TargetImage="*\\lsass.exe"
-| eval source_name = mvindex(split(SourceImage,"\\"), -1)
-| where NOT match(
-    source_name,
-    "(?i)^(MsMpEng|MsSense|csrss|wininit|svchost|lsass|services|TaskMgr|VsTskMgr|SgrmBroker)\.exe$"
-  )
-  AND (
-    GrantedAccess="0x1010"
-    OR GrantedAccess="0x1410"
-    OR GrantedAccess="0x1438"
-    OR GrantedAccess="0x143a"
-    OR GrantedAccess="0x1fffff"
-  )
-| `cim_endpoint_processes_rename`
-| stats count min(_time) as firstTime max(_time) as lastTime
-        values(SourceImage) as source_images
-        values(SourceCommandLine) as source_cmds
-        values(GrantedAccess) as access_masks
-        values(CallTrace) as call_traces
-        by dest user SourceProcessGUID
-| `security_content_ctime(firstTime)`
-| `security_content_ctime(lastTime)`
+`sysmon_process_access` TargetImage="*\\lsass.exe" | eval source_name = mvindex(split(SourceImage,"\\"), -1) | where NOT match(source_name, "(?i)^(wininit|svchost|lsass|services|TaskMgr|SgrmBroker)\\.exe$") AND (GrantedAccess="0x1010" OR GrantedAccess="0x1410" OR GrantedAccess="0x1438" OR GrantedAccess="0x143a" OR GrantedAccess="0x1fffff") | lookup allowlist_lsass_access source_process_name AS source_name OUTPUTNEW signer AS allowlisted_signer reason AS allowlist_reason | where isnull(allowlisted_signer) | `cim_endpoint_processes_rename` | eval user=coalesce(user, SourceUser, "unknown") | stats count min(_time) as firstTime max(_time) as lastTime values(SourceImage) as source_images values(SourceCommandLine) as source_cmds values(GrantedAccess) as access_masks values(CallTrace) as call_traces by dest user SourceProcessGUID | `security_content_ctime(firstTime)` | `security_content_ctime(lastTime)`
 ```
 
 ## Known false positives
 
-- Endpoint security agents not present in the baseline.
+- Endpoint security agents not yet present in the reviewed baseline.
 - System Informer or Process Hacker during approved administration sessions.
 - Performance-monitoring agents that request limited process access.
 
-New accessors must be verified by publisher signature before they are added to
+The lookup is an approval register, not a runtime signature-verification
+engine. An operator must verify the publisher signature out of band before a
+new source-image pattern and expected signer are committed to
 `lookups/allowlist_lsass_access.csv`.
 
 ## Tuning
 
 - Keep the access-mask filter explicit; it is the main precision control.
-- Allowlist by process name and verified signer, never by process name alone.
+- Keep the small built-in Windows process baseline explicit and reviewable.
+- Register additional approved accessors through `allowlist_lsass_access`,
+  defined in `conf/splunk/local/transforms.conf`, after reducing `SourceImage`
+  to its executable name in `source_name`.
+- Never add a lookup row from the executable name alone; record the signer only
+  after it has been independently verified.
 - Do not suppress distinct process GUIDs because each handle open is actionable.
 
 The first implementation used a regular expression for `GrantedAccess`.

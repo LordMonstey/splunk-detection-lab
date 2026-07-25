@@ -35,16 +35,7 @@ tags:
 ## Logic
 
 ```spl
-`sysmon_process_creation`
-process_name="mshta.exe"
-| where match(CommandLine, "(?i)https?://|javascript:|vbscript:|about:|\.hta\b")
-| `cim_endpoint_processes_rename`
-| stats count min(_time) as firstTime max(_time) as lastTime
-        values(CommandLine) as commandlines
-        values(parent_process_name) as parents
-        by dest user process_name process_guid
-| `security_content_ctime(firstTime)`
-| `security_content_ctime(lastTime)`
+`sysmon_process_creation` Image="*\\mshta.exe" | where match(CommandLine, "(?i)https?://|javascript:|vbscript:|about:|\\.hta\\b") | `cim_endpoint_processes_rename` | stats count min(_time) as firstTime max(_time) as lastTime values(CommandLine) as commandlines values(parent_process_name) as parents by dest user process_name process_guid
 ```
 
 ## Known false positives
@@ -59,7 +50,7 @@ process_name="mshta.exe"
 
 ## Validation
 
-- Atomic Red Team: T1218.005 #1 — `mshta.exe` executes JavaScript scheme
+- Atomic Red Team: T1218.005 #2 — Mshta executes VBScript to launch a command
 
 Manual reproduction:
 

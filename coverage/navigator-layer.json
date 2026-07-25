@@ -78,8 +78,8 @@
     },
     {
       "techniqueID": "T1140",
-      "score": 100,
-      "comment": "Certutil decode validated."
+      "score": 50,
+      "comment": "Certutil candidate checks Image and OriginalFileName; renamed-binary matching requires revalidation."
     },
     {
       "techniqueID": "T1562.001",
@@ -113,8 +113,8 @@
     },
     {
       "techniqueID": "T1105",
-      "score": 100,
-      "comment": "Certutil ingress transfer validated; curl and download-cradle candidates remain in testing."
+      "score": 50,
+      "comment": "Certutil, curl, and PowerShell download candidates remain in testing."
     }
   ],
   "gradient": {

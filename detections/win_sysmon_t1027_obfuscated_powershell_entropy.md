@@ -36,24 +36,7 @@ Obfuscated PowerShell exhibits unusual character distributions: very long lines,
 ## Logic
 
 ```spl
-`sysmon_process_creation`
-(process_name="powershell.exe" OR process_name="pwsh.exe")
-| eval cmd_len = len(CommandLine)
-| eval weird_chars = mvcount(split(CommandLine, "`")) - 1
-                   + mvcount(split(CommandLine, "+")) - 1
-                   + mvcount(split(CommandLine, "$")) - 1
-                   + mvcount(split(CommandLine, "{")) - 1
-                   + mvcount(split(CommandLine, "}")) - 1
-| eval weird_ratio = round((weird_chars / cmd_len) * 100, 2)
-| where cmd_len > 200 AND weird_ratio > 8
-| `cim_endpoint_processes_rename`
-| stats count min(_time) as firstTime max(_time) as lastTime
-        values(CommandLine) as commandlines
-        max(cmd_len) as cmd_length
-        max(weird_ratio) as weirdness_pct
-        by dest user process_name process_guid
-| `security_content_ctime(firstTime)`
-| `security_content_ctime(lastTime)`
+`sysmon_process_creation` (Image="*\\powershell.exe" OR Image="*\\pwsh.exe") | eval cmd_len = len(CommandLine) | eval weird_chars = mvcount(split(CommandLine, "`"))-1 + mvcount(split(CommandLine, "+"))-1 + mvcount(split(CommandLine, "$"))-1 + mvcount(split(CommandLine, "{"))-1 + mvcount(split(CommandLine, "}"))-1 | eval weird_ratio = round((weird_chars / cmd_len) * 100, 2) | where cmd_len > 200 AND weird_ratio > 8 | `cim_endpoint_processes_rename` | stats count min(_time) as firstTime max(_time) as lastTime values(CommandLine) as commandlines max(cmd_len) as cmd_length max(weird_ratio) as weirdness_pct by dest user process_name process_guid
 ```
 
 ## Known false positives

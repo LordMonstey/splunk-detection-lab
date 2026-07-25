@@ -34,35 +34,22 @@ Run/RunOnce registry keys execute their contained binary on user logon. Adversar
 ## Logic
 
 ```spl
-`sysmon_registry_event` EventID=13
-TargetObject="*\\Software\\Microsoft\\Windows\\CurrentVersion\\Run*"
-   OR TargetObject="*\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce*"
-   OR TargetObject="*\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\Run*"
-| eval writer = mvindex(split(Image,"\\"), -1)
-| where NOT match(writer, "(?i)^(msiexec|setup|installer|trustedinstaller|wuauclt|svchost)\.exe$")
-| `cim_endpoint_processes_rename`
-| stats count min(_time) as firstTime max(_time) as lastTime
-        values(TargetObject) as run_keys
-        values(Details) as run_values
-        values(writer) as writers
-        by dest user process_guid
-| `security_content_ctime(firstTime)`
-| `security_content_ctime(lastTime)`
+`sysmon_registry_event` EventID=13 (TargetObject="*\\Software\\Microsoft\\Windows\\CurrentVersion\\Run*" OR TargetObject="*\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce*") | eval writer = mvindex(split(Image,"\\"), -1) | where NOT match(writer, "(?i)^(msiexec|setup|installer|trustedinstaller|wuauclt|svchost)\\.exe$") | `cim_endpoint_processes_rename` | stats count min(_time) as firstTime max(_time) as lastTime values(TargetObject) as run_keys values(Details) as run_values values(writer) as writers by dest user process_guid
 ```
 
 ## Known false positives
 
-- Some user-installed third-party apps write their auto-start entry from a non-system parent (e.g., Spotify, Discord installer, Steam) â†’ allowlist via writer + Details pattern in `lookups/allowlist_run_keys.csv`
+- Some user-installed third-party apps write their auto-start entry from a non-system parent (e.g., Spotify, Discord installer, Steam) → candidate writer + Details entries are tracked in `lookups/allowlist_run_keys.csv`
 - IT-deployed software via custom packagers
 
 ## Tuning
 
-- The Details field contains the value being written; allowlist on a `(writer, Details prefix)` pair, not just `writer` alone â€” that protects against attackers piggybacking on a legitimate writer
+- The Details field contains the value being written; allowlist on a `(writer, Details prefix)` pair, not just `writer` alone — that protects against attackers piggybacking on a legitimate writer
 - Suppression: 6 hours per `(dest, process_guid, TargetObject)`
 
 ## Validation
 
-- Atomic Red Team: T1547.001 #1 â€” Reg Key Run
+- Atomic Red Team: T1547.001 #1 — Reg Key Run
 
 Manual reproduction:
 
@@ -80,13 +67,16 @@ reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v atomic-test /
 **Validated**: 2026-04-29 by manual reproduction on lab host `win10-sysmon-client`
 **Evidence**: [`tests/atomic/evidence/T1547.001-run-key.png`](../tests/atomic/evidence/T1547.001-run-key.png)
 **Latency observed**: < 30 seconds
-**FP discovered**: OneDrive `OneDriveSetup.exe` writes RunOnce keys for self-cleanup; allowlisted in `lookups/allowlist_run_keys.csv`.
+**FP discovered**: OneDrive `OneDriveSetup.exe` writes RunOnce keys for
+self-cleanup. The observation is recorded in
+`lookups/allowlist_run_keys.csv`, but that candidate lookup is not invoked by
+the deployed saved search yet.
 
 ## Response
 
 See [`docs/runbooks/persistence-investigation.md`](../docs/runbooks/persistence-investigation.md).
 
-1. Resolve the binary referenced in the Run value â€” file path, hash, signer
+1. Resolve the binary referenced in the Run value — file path, hash, signer
 2. Pivot on `process_guid` to find the parent that wrote the key
 3. If the value points to a non-program-files binary written in the last 7 days, treat as confirmed persistence attempt
 4. Check companion mechanisms: scheduled tasks (T1053), services (T1543), WMI subscriptions (T1546.003)

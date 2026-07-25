@@ -34,17 +34,7 @@ Adversaries weaken permissions on directories where they stage tooling (often `%
 ## Logic
 
 ```spl
-`sysmon_process_creation`
-process_name="icacls.exe"
-| where match(CommandLine, "(?i)/grant.*\b(everyone|users|authenticated\s*users|domain\s*users):\s*\(?[FM]\)?")
-   OR match(CommandLine, "(?i)/grant.*\bs-1-1-0:") 
-| `cim_endpoint_processes_rename`
-| stats count min(_time) as firstTime max(_time) as lastTime
-        values(CommandLine) as commandlines
-        values(parent_process_name) as parents
-        by dest user process_name process_guid
-| `security_content_ctime(firstTime)`
-| `security_content_ctime(lastTime)`
+`sysmon_process_creation` Image="*\\icacls.exe" | where match(CommandLine, "(?i)/grant.*\\b(everyone|users|authenticated\\s*users|domain\\s*users):\\s*\\(?[FM]\\)?") OR match(CommandLine, "(?i)/grant.*\\bs-1-1-0:") | `cim_endpoint_processes_rename` | stats count min(_time) as firstTime max(_time) as lastTime values(CommandLine) as commandlines values(parent_process_name) as parents by dest user process_name process_guid
 ```
 
 ## Known false positives

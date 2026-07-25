@@ -34,15 +34,7 @@ Local account creation on a domain-joined workstation is rare and almost always 
 ## Logic
 
 ```spl
-`wineventlog_security` EventID=4720
-| `cim_endpoint_processes_rename`
-| stats count min(_time) as firstTime max(_time) as lastTime
-        values(TargetUserName) as new_account
-        values(TargetDomainName) as new_account_domain
-        values(SubjectUserName) as creator
-        by dest
-| `security_content_ctime(firstTime)`
-| `security_content_ctime(lastTime)`
+`wineventlog_security` EventID=4720 | `cim_endpoint_processes_rename` | stats count min(_time) as firstTime max(_time) as lastTime values(TargetUserName) as new_account values(SubjectUserName) as creator by dest
 ```
 
 ## Known false positives
@@ -57,7 +49,7 @@ Local account creation on a domain-joined workstation is rare and almost always 
 
 ## Validation
 
-- Atomic Red Team: T1136.001 #1 — `net user atomic-test /add`
+- Atomic Red Team: T1136.001 #4 — Create a new user in a command prompt
 
 Manual reproduction (administrator required):
 

@@ -40,16 +40,7 @@ PowerShell "download cradles" pipe content fetched from the network straight int
 ## Logic
 
 ```spl
-`sysmon_process_creation`
-(process_name="powershell.exe" OR process_name="pwsh.exe")
-| where match(CommandLine, "(?i)(iex|invoke-expression)") AND match(CommandLine, "(?i)(downloadstring|downloadfile|invoke-webrequest|iwr\s|net\.webclient|start-bitstransfer|webclient\)\.downloadstring)")
-| `cim_endpoint_processes_rename`
-| stats count min(_time) as firstTime max(_time) as lastTime
-        values(CommandLine) as commandlines
-        values(parent_process_name) as parents
-        by dest user process_name process_guid
-| `security_content_ctime(firstTime)`
-| `security_content_ctime(lastTime)`
+`sysmon_process_creation` (Image="*\\powershell.exe" OR Image="*\\pwsh.exe") | where match(CommandLine, "(?i)(iex|invoke-expression)") AND match(CommandLine, "(?i)(downloadstring|downloadfile|invoke-webrequest|iwr\\s|net\\.webclient|start-bitstransfer)") | `cim_endpoint_processes_rename` | stats count min(_time) as firstTime max(_time) as lastTime values(CommandLine) as commandlines values(parent_process_name) as parents by dest user process_name process_guid
 ```
 
 ## Known false positives

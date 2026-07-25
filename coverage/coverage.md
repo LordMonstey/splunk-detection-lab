@@ -27,7 +27,7 @@ Status definitions:
 | Defense Evasion | Mshta remote or inline execution | T1218.005 | Production | `win_sysmon_t1218.005_mshta_execution` |
 | Defense Evasion | Regsvr32 Squiblydoo | T1218.010 | Production | `win_sysmon_t1218.010_regsvr32_remote` |
 | Defense Evasion | PowerShell obfuscation entropy | T1027 | Testing | `win_sysmon_t1027_obfuscated_powershell_entropy` |
-| Defense Evasion | Certutil decode or download | T1140/T1105 | Production | `win_sysmon_t1140_certutil_decode` |
+| Defense Evasion | Certutil decode or download | T1140/T1105 | Testing | `win_sysmon_t1140_certutil_decode` |
 | Defense Evasion | Defender tampering | T1562.001 | Testing | `win_sysmon_t1562.001_defender_tamper` |
 | Defense Evasion | Permissive icacls grant | T1222.001 | Testing | `win_sysmon_t1222.001_icacls_permissive` |
 | Credential Access | LSASS Memory Access | T1003.001 | Production | `win_sysmon_t1003.001_lsass_access_suspicious` |
@@ -36,10 +36,11 @@ Status definitions:
 
 ## Current totals
 
-- Production: **8**
-- Testing: **10**
+- Production: **7**
+- Testing: **11**
 - Total deployed saved searches: **18**
-- Production detections with committed evidence: **8**
+- Production detections with committed evidence: **7**
+- Testing detections with a committed validation finding: **1** (Certutil)
 
 ## Coverage gaps
 
@@ -60,7 +61,8 @@ native Windows event channels.
 
 A detection moves from **Testing** to **Production** only when:
 
-1. Atomic Red Team or manual validation evidence is committed.
+1. Atomic Red Team or manual validation evidence proves the expected saved
+   search result end to end; test-execution evidence alone is not sufficient.
 2. A false-positive scenario is documented and the tuning control is defined.
 3. The saved search exists in `conf/splunk/local/savedsearches.conf`.
 4. A response runbook is linked from the detection document.
