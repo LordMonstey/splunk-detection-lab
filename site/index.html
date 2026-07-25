@@ -1,13 +1,13 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Splunk platform administration and detection engineering portfolio: Windows telemetry onboarding, detection-as-code, Atomic Red Team validation, tuning, and runbooks.">
-  <meta name="theme-color" content="#08111c">
+  <meta name="description" content="Portfolio Splunk orienté administration de plateforme et detection engineering : onboarding Windows, SPL, détection-as-code, validation Atomic Red Team et preuves opérationnelles.">
+  <meta name="theme-color" content="#171d21">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Splunk Platform & Detection Engineering Lab">
-  <meta property="og:description" content="A tangible Splunk portfolio: platform administration, Windows telemetry, 18 detections, validation evidence, and interactive case files.">
+  <meta property="og:description" content="Une implémentation Splunk tangible : plateforme, télémétrie Windows, 18 détections, preuves de validation et investigations interactives.">
   <meta property="og:url" content="https://lordmonstey.github.io/splunk-detection-lab/">
   <meta property="og:image" content="https://lordmonstey.github.io/splunk-detection-lab/assets/portfolio-preview.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -16,417 +16,476 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
+  <a class="skip-link" href="#main" data-i18n="skip">Aller au contenu</a>
 
-  <header class="topbar">
-    <a class="brand" href="#top" aria-label="Splunk Engineering Lab home">
-      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span>
-        <strong>Splunk Engineering Lab</strong>
-        <small>LordMonstey · Portfolio</small>
-      </span>
+  <header class="splunk-globalbar">
+    <a class="splunk-wordmark" href="#overview" aria-label="Splunk Engineering Lab">
+      <span>splunk<span class="splunk-chevron">&gt;</span></span><b>enterprise</b>
     </a>
-
-    <button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-nav">
-      <span></span><span></span>
-      <span class="sr-only">Toggle navigation</span>
-    </button>
-
-    <nav id="primary-nav" class="primary-nav" aria-label="Primary navigation">
-      <a href="#platform">Platform</a>
-      <a href="#pipeline">Data pipeline</a>
-      <a href="#detections">Detections</a>
-      <a href="#case-file">Case file</a>
-      <a class="nav-cta" href="https://github.com/LordMonstey/splunk-detection-lab" target="_blank" rel="noreferrer">
-        View source
-      </a>
-    </nav>
+    <button class="apps-button" type="button" data-i18n="apps">Applications</button>
+    <span class="global-spacer"></span>
+    <div class="global-links" aria-label="Navigation Splunk simulée">
+      <span><i class="message-count">4</i> <span data-i18n="messages">Messages</span></span>
+      <span data-i18n="settings">Paramètres</span>
+      <span data-i18n="activity">Activité</span>
+      <span data-i18n="help">Aide</span>
+    </div>
+    <label class="global-find">
+      <span class="sr-only" data-i18n="globalSearch">Recherche globale</span>
+      <input type="search" placeholder="Rechercher" data-i18n-placeholder="find">
+      <i aria-hidden="true"></i>
+    </label>
   </header>
 
+  <nav class="splunk-appbar" aria-label="Navigation principale">
+    <div class="app-identity">
+      <span class="app-icon">App</span>
+      <strong>Splunk Engineering Lab</strong>
+      <span class="author-signature" aria-label="Signature A.S">A.S</span>
+    </div>
+    <button class="mobile-menu" type="button" aria-expanded="false" aria-controls="app-navigation">
+      <span></span><span></span><span></span>
+      <span class="sr-only" data-i18n="menu">Menu</span>
+    </button>
+    <div id="app-navigation" class="app-navigation">
+      <a class="active" href="#overview" data-i18n="navOverview">Vue d’ensemble</a>
+      <a href="#admin" data-i18n="navAdmin">Administration</a>
+      <a href="#content" data-i18n="navContent">Contenu de détection</a>
+      <a href="#investigate" data-i18n="navInvestigate">Investigation</a>
+      <a href="#evidence" data-i18n="navEvidence">Preuves</a>
+    </div>
+    <div class="language-switch" role="group" aria-label="Language">
+      <button class="active" type="button" data-language="fr" aria-pressed="true">FR</button>
+      <button type="button" data-language="en" aria-pressed="false">EN</button>
+    </div>
+  </nav>
+
+  <aside class="snapshot-strip">
+    <div>
+      <span class="snapshot-state"><i></i><b data-i18n="snapshotMode">MODE SNAPSHOT PUBLIC</b></span>
+      <span data-i18n="snapshotDetail">Données figées et assainies · VM non requise · Capture du 25 juillet 2026</span>
+    </div>
+    <a href="https://github.com/LordMonstey/splunk-detection-lab" target="_blank" rel="noreferrer">
+      <span data-i18n="sourceRepository">Dépôt source</span> ↗
+    </a>
+  </aside>
+
   <main id="main">
-    <section id="top" class="hero section-shell">
-      <div class="hero-copy reveal">
-        <p class="eyebrow"><span></span> Verified lab snapshot · July 2026</p>
-        <h1>Own the platform.<br><em>Engineer the signal.</em></h1>
-        <p class="hero-lead">
-          A working Splunk environment taken from raw Windows telemetry to
-          production-grade detection content — including index design, CIM-oriented
-          normalization, scheduler operations, Atomic validation, tuning, and response.
-        </p>
-
-        <div class="hero-actions">
-          <a class="button button-primary" href="#case-file">
-            Open an investigation
-            <span aria-hidden="true">↗</span>
-          </a>
-          <a class="button button-secondary" href="#platform">Inspect the platform</a>
-        </div>
-
-        <dl class="hero-facts" aria-label="Lab highlights">
-          <div><dt>Splunk</dt><dd>10.2.1</dd></div>
-          <div><dt>Content</dt><dd>18 rules</dd></div>
-          <div><dt>Evidence</dt><dd>8 validated</dd></div>
-          <div><dt>Telemetry</dt><dd>19,946 events</dd></div>
-        </dl>
-      </div>
-
-      <div class="hero-console reveal" data-delay="120" aria-label="Platform activity">
-        <div class="console-chrome">
-          <span></span><span></span><span></span>
-          <p>splunk-lab-debian / operator-console</p>
-          <b>LIVE SNAPSHOT</b>
-        </div>
-        <div class="console-stage">
-          <div class="radar" aria-hidden="true">
-            <span class="radar-ring radar-ring-one"></span>
-            <span class="radar-ring radar-ring-two"></span>
-            <span class="radar-ring radar-ring-three"></span>
-            <span class="radar-sweep"></span>
-            <i class="radar-point point-one"></i>
-            <i class="radar-point point-two"></i>
-            <i class="radar-point point-three"></i>
-          </div>
-          <div class="console-status">
-            <span class="status-live"><i></i> PLATFORM ONLINE</span>
-            <h2>Telemetry → Detection</h2>
-            <p>Indexer · Search · License manager · KV Store</p>
-          </div>
-        </div>
-        <div class="console-log" aria-live="polite">
-          <p><span>01</span><time>10:43:18</time><strong>SNAPSHOT</strong> configuration baseline captured</p>
-          <p><span>02</span><time>10:45:08</time><strong>DIAGNOSE</strong> expired Trial license isolated</p>
-          <p><span>03</span><time>10:46:33</time><strong>RECOVER</strong> search service restored</p>
-          <p><span>04</span><time>10:51:12</time><strong>VALIDATE</strong> btool check returned 0</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="proof-bar" aria-label="Portfolio proof points">
-      <p>REAL SPLUNK INSTANCE</p>
-      <span></span>
-      <p>REPRODUCIBLE CONFIG</p>
-      <span></span>
-      <p>ATOMIC RED TEAM</p>
-      <span></span>
-      <p>NO LIVE ADMIN EXPOSURE</p>
-    </section>
-
-    <section id="platform" class="section section-shell">
-      <div class="section-heading reveal">
+    <section id="overview" class="workspace section-anchor">
+      <header class="page-heading">
         <div>
-          <p class="eyebrow"><span></span> 01 · Platform administration</p>
-          <h2>The control plane is part of the detection.</h2>
+          <p class="breadcrumb"><span data-i18n="appName">Splunk Engineering Lab</span> / <b data-i18n="overview">Vue d’ensemble</b></p>
+          <h1>Splunk Engineering Command Center</h1>
+          <p data-i18n="overviewSubtitle">Administration de plateforme, qualité de télémétrie et cycle de vie des détections dans une vue opérateur.</p>
         </div>
-        <p>
-          A rule cannot be trusted when ingestion, retention, parsing, or scheduling
-          is unknown. This view exposes the platform decisions underneath the content.
-        </p>
+        <div class="page-actions">
+          <button class="icon-button" type="button" aria-label="Favorite">☆</button>
+          <button class="splunk-button" type="button" data-open-image="assets/evidence/engineering-command-center.png" data-i18n="nativeDashboard">Dashboard natif</button>
+          <a class="splunk-button primary" href="https://github.com/LordMonstey/splunk-detection-lab" target="_blank" rel="noreferrer" data-i18n="viewSource">Voir le code</a>
+        </div>
+      </header>
+
+      <div class="search-workbench" aria-label="Démonstration de recherche Splunk">
+        <div class="search-label-row">
+          <label for="spl-search"><span data-i18n="newSearch">Nouvelle recherche</span></label>
+          <span><i></i> <span data-i18n="snapshotDataset">Jeu de données : snapshot vérifié</span></span>
+        </div>
+        <div class="search-row">
+          <div class="spl-input">
+            <span aria-hidden="true">&gt;</span>
+            <input id="spl-search" type="text" value="index=* | stats count AS events by index | sort - events" spellcheck="false" autocomplete="off">
+          </div>
+          <button id="time-range" class="time-button" type="button"><span data-i18n="allTime">Tout le temps</span> ▾</button>
+          <button id="run-search" class="search-button" type="button" data-i18n="search">Rechercher</button>
+        </div>
+        <div class="quick-searches" aria-label="Recherches rapides">
+          <span data-i18n="quickSearches">Recherches rapides :</span>
+          <button type="button" data-query="index=sysmon | stats count by EventCode">index=sysmon</button>
+          <button type="button" data-query="| rest /services/saved/searches | search disabled=0">savedsearches.conf</button>
+          <button type="button" data-query="| rest /services/data/indexes | table title totalEventCount">indexes REST</button>
+        </div>
       </div>
 
-      <div class="metric-grid reveal">
-        <article class="metric-card metric-card-featured">
-          <div class="metric-card-top">
-            <span>Lifetime events indexed</span>
-            <i class="health-dot"></i>
-          </div>
-          <strong data-counter="19946">0</strong>
-          <p>Sysmon + native Windows channels</p>
-          <div class="metric-sparkline" aria-hidden="true">
-            <i style="height: 22%"></i><i style="height: 35%"></i><i style="height: 31%"></i>
-            <i style="height: 52%"></i><i style="height: 48%"></i><i style="height: 68%"></i>
-            <i style="height: 83%"></i><i style="height: 76%"></i><i style="height: 100%"></i>
-          </div>
-        </article>
-        <article class="metric-card">
-          <span>Saved searches</span>
-          <strong data-counter="18">0</strong>
-          <p>5–15 minute schedules</p>
-          <small>18 / 18 deployed</small>
-        </article>
-        <article class="metric-card">
-          <span>Production rules</span>
-          <strong data-counter="8">0</strong>
-          <p>Evidence committed</p>
-          <small>10 candidates in testing</small>
-        </article>
-        <article class="metric-card">
-          <span>Retention policy</span>
-          <strong data-counter="90">0</strong>
-          <p>Days · endpoint telemetry</p>
-          <small>365 days · risk / notable</small>
-        </article>
+      <div id="search-status" class="search-status" role="status">
+        <div><i></i><strong data-i18n="searchComplete">Recherche terminée</strong></div>
+        <span><b>473</b> <span data-i18n="eventsInWindow">événements dans la fenêtre de rétention</span></span>
+        <span><b>0.184</b> <span data-i18n="seconds">secondes</span></span>
+        <span class="job-id">sid=portfolio_snapshot_20260725</span>
       </div>
 
-      <div class="platform-grid">
-        <article class="panel index-panel reveal">
-          <div class="panel-heading">
-            <div>
-              <p class="panel-kicker">INDEX ENGINEERING</p>
-              <h3>Storage and retention</h3>
-            </div>
-            <span class="verified-pill">REST VERIFIED</span>
-          </div>
-          <div id="index-bars" class="index-bars" aria-label="Index statistics"></div>
-          <p class="panel-note">
-            Lifetime totals come from the index control plane. Public charts use a
-            fixed, sanitized snapshot rather than a live management endpoint.
-          </p>
+      <div class="metric-grid" aria-label="Indicateurs principaux">
+        <article class="metric-panel">
+          <header><span data-i18n="lifetimeEvents">Événements indexés à vie</span><i class="status-led"></i></header>
+          <strong data-counter="19946">19 946</strong>
+          <footer><span>Sysmon + Windows</span><b>REST VERIFIED</b></footer>
         </article>
-
-        <article class="panel telemetry-panel reveal" data-delay="90">
-          <div class="panel-heading">
-            <div>
-              <p class="panel-kicker">TELEMETRY QUALITY</p>
-              <h3>Searchable Sysmon mix</h3>
-            </div>
-            <span class="snapshot-pill">CURRENT WINDOW</span>
-          </div>
-          <div id="event-bars" class="event-bars" aria-label="Sysmon event distribution"></div>
-          <div class="telemetry-footer">
-            <span><i class="cyan-dot"></i> 390 Sysmon</span>
-            <span><i class="amber-dot"></i> 83 Windows</span>
-            <span><i class="green-dot"></i> 4 sourcetypes</span>
-          </div>
+        <article class="metric-panel">
+          <header><span data-i18n="deployedSearches">Recherches planifiées</span><i class="status-led"></i></header>
+          <strong data-counter="18">18</strong>
+          <footer><span>savedsearches.conf</span><b>18 / 18</b></footer>
+        </article>
+        <article class="metric-panel">
+          <header><span data-i18n="productionRules">Règles en production</span><i class="status-led"></i></header>
+          <strong data-counter="8">8</strong>
+          <footer><span data-i18n="committedEvidence">Preuves commitées</span><b>ATOMIC / MANUAL</b></footer>
+        </article>
+        <article class="metric-panel">
+          <header><span data-i18n="searchableEvents">Télémétrie recherchable</span><i class="status-led"></i></header>
+          <strong data-counter="473">473</strong>
+          <footer><span data-i18n="retentionWindow">Fenêtre actuelle</span><b>4 SOURCETYPES</b></footer>
         </article>
       </div>
 
-      <figure class="dashboard-proof panel reveal">
-        <figcaption>
-          <div>
-            <p class="panel-kicker">NATIVE SPLUNK IMPLEMENTATION</p>
-            <h3>Engineering Command Center</h3>
-            <p>Custom Simple XML + CSS, deployed and rendered inside Splunk 10.2.1.</p>
+      <div class="dashboard-grid">
+        <article class="splunk-panel chart-panel">
+          <header class="panel-header">
+            <div><h2 data-i18n="eventsBySource">Événements par index et sourcetype</h2><p data-i18n="searchableSnapshot">Snapshot recherchable</p></div>
+            <button type="button" aria-label="Panel options">•••</button>
+          </header>
+          <div id="source-chart" class="horizontal-chart"></div>
+          <footer class="panel-source"><span>source: index=* | stats count by index, sourcetype</span><b data-i18n="verified25">Vérifié le 25/07/2026</b></footer>
+        </article>
+
+        <article class="splunk-panel chart-panel">
+          <header class="panel-header">
+            <div><h2 data-i18n="sysmonMix">Répartition de la télémétrie Sysmon</h2><p data-i18n="eventCodeDistribution">Distribution EventCode</p></div>
+            <button type="button" aria-label="Panel options">•••</button>
+          </header>
+          <div id="event-chart" class="column-chart"></div>
+          <footer class="chart-legend">
+            <span><i class="legend-blue"></i><span data-i18n="searchableEventsLabel">Événements recherchables</span></span>
+            <b>390 total</b>
+          </footer>
+        </article>
+
+        <article class="splunk-panel pipeline-panel">
+          <header class="panel-header">
+            <div><h2 data-i18n="deliveryPipeline">Pipeline de livraison de la télémétrie</h2><p data-i18n="endToEnd">Contrôle de bout en bout</p></div>
+            <span class="configured-badge"><i></i> CONFIGURED</span>
+          </header>
+          <div class="pipeline">
+            <div><small>01 · SOURCE</small><strong data-i18n="windowsEndpoint">Endpoint Windows</strong><span>Sysmon · Security · PowerShell</span></div>
+            <i><span>UF</span><b>9997</b></i>
+            <div><small>02 · INGEST</small><strong>Splunk Indexer</strong><span>index=sysmon / windows</span></div>
+            <i><span>PROPS</span><b>→</b></i>
+            <div><small>03 · NORMALIZE</small><strong data-i18n="knowledgeLayer">Couche de connaissances</strong><span>macros · aliases · lookups</span></div>
+            <i><span>CRON</span><b>5m</b></i>
+            <div class="active"><small>04 · DETECT</small><strong data-i18n="detectionContent">Contenu de détection</strong><span>risk · suppression · response</span></div>
           </div>
-          <button class="text-button" type="button" data-open-image="assets/evidence/engineering-command-center.png">
-            View full proof <span>↗</span>
-          </button>
-        </figcaption>
-        <button class="image-button" type="button" data-open-image="assets/evidence/engineering-command-center.png" aria-label="Open full dashboard proof">
-          <img src="assets/evidence/engineering-command-center.png" alt="Custom Splunk Engineering Command Center dashboard">
-          <span>Open full-resolution evidence</span>
-        </button>
-      </figure>
+        </article>
+      </div>
     </section>
 
-    <section id="pipeline" class="section section-alt">
-      <div class="section-shell">
-        <div class="section-heading reveal">
-          <div>
-            <p class="eyebrow"><span></span> 02 · Data onboarding</p>
-            <h2>One chain. Every operational dependency.</h2>
-          </div>
-          <p>
-            Forwarding, indexing, knowledge objects, and scheduled content are treated
-            as one service — not four unrelated configuration files.
-          </p>
+    <section id="admin" class="workspace section-anchor section-divider">
+      <header class="section-heading">
+        <div>
+          <p class="section-index">01 / <span data-i18n="platformAdmin">ADMINISTRATION SPLUNK</span></p>
+          <h2 data-i18n="platformHeading">La plateforme est une dépendance de sécurité.</h2>
+          <p data-i18n="platformIntro">Ingestion, rétention, licence et configuration effective sont exposées ici comme des contrôles d’ingénierie — pas comme des détails d’installation.</p>
         </div>
+        <dl class="section-facts">
+          <div><dt data-i18n="instance">Instance</dt><dd>splunk-lab-debian</dd></div>
+          <div><dt data-i18n="version">Version</dt><dd>Splunk 10.2.1</dd></div>
+          <div><dt data-i18n="os">Système</dt><dd>Linux / Debian</dd></div>
+          <div><dt data-i18n="roles">Rôles</dt><dd>indexer · license_manager · kv_store</dd></div>
+        </dl>
+      </header>
 
-        <div class="pipeline reveal" aria-label="Splunk data pipeline">
-          <article>
-            <small>01 / COLLECT</small>
-            <span class="node-icon">W</span>
-            <h3>Windows endpoint</h3>
-            <p>Sysmon, Security, System, Application</p>
-            <b>Universal Forwarder</b>
-          </article>
-          <i class="pipeline-arrow"><span>TCP</span><b>9997</b></i>
-          <article>
-            <small>02 / INDEX</small>
-            <span class="node-icon">IX</span>
-            <h3>Standalone Splunk</h3>
-            <p>Dedicated hot / cold paths and retention</p>
-            <b>sysmon + windows</b>
-          </article>
-          <i class="pipeline-arrow"><span>CONF</span><b>→</b></i>
-          <article>
-            <small>03 / NORMALIZE</small>
-            <span class="node-icon">CIM</span>
-            <h3>Knowledge layer</h3>
-            <p>Macros, field aliases, event types, lookups</p>
-            <b>reviewable abstractions</b>
-          </article>
-          <i class="pipeline-arrow"><span>CRON</span><b>5m</b></i>
-          <article class="pipeline-active">
-            <small>04 / DETECT</small>
-            <span class="node-icon">Δ</span>
-            <h3>Detection content</h3>
-            <p>Risk, suppression, evidence, response</p>
-            <b>18 deployed searches</b>
-          </article>
-        </div>
-
-        <article class="recovery-case reveal">
-          <div class="recovery-copy">
-            <p class="panel-kicker">ADMIN CASE STUDY · SERVICE RECOVERY</p>
-            <h3>Search blocked. Root cause found. Platform restored.</h3>
-            <p>
-              Index metadata showed 19,946 events, yet every search returned a fatal
-              error. The failure was traced to an expired Enterprise Trial, not to
-              ingestion or index corruption.
-            </p>
-            <div class="recovery-result">
-              <span>BEFORE</span><strong>Search unavailable</strong>
-              <i>→</i>
-              <span>AFTER</span><strong>473 events searchable</strong>
-            </div>
+      <div class="admin-layout">
+        <article class="splunk-panel table-panel">
+          <header class="panel-header">
+            <div><h3 data-i18n="indexEngineering">Index engineering</h3><p>indexes.conf + REST /services/data/indexes</p></div>
+            <span class="panel-chip">4 indexes</span>
+          </header>
+          <div class="table-scroll">
+            <table class="splunk-table">
+              <thead>
+                <tr>
+                  <th>INDEX</th>
+                  <th data-i18n="lifetime">LIFETIME EVENTS</th>
+                  <th>DISK MB</th>
+                  <th>MAX MB</th>
+                  <th data-i18n="retention">RÉTENTION</th>
+                  <th data-i18n="state">ÉTAT</th>
+                </tr>
+              </thead>
+              <tbody id="index-table"></tbody>
+            </table>
           </div>
-          <ol class="recovery-timeline">
-            <li><span>01</span><div><strong>Observe</strong><p>REST index totals present; search jobs empty.</p></div></li>
-            <li><span>02</span><div><strong>Isolate</strong><p>Fatal license message returned by the search job.</p></div></li>
-            <li><span>03</span><div><strong>Protect</strong><p>Application and effective configuration archived.</p></div></li>
-            <li><span>04</span><div><strong>Recover</strong><p>Free license activated for the standalone lab.</p></div></li>
-            <li><span>05</span><div><strong>Validate</strong><p>Splunk restarted, btool clean, dashboard searches green.</p></div></li>
+        </article>
+
+        <article class="splunk-panel config-panel">
+          <header class="panel-header">
+            <div><h3 data-i18n="effectiveConfig">Configuration effective</h3><p>$SPLUNK_HOME/bin/splunk btool check</p></div>
+            <span class="success-badge">EXIT 0</span>
+          </header>
+          <div class="terminal">
+            <div class="terminal-bar"><span></span><span></span><span></span><b>debian@splunk-lab</b></div>
+            <pre><code>$ splunk btool check
+Checking: /opt/splunk/etc/apps/splunk-detection-lab
+        indexes.conf          OK
+        props.conf            OK
+        transforms.conf       OK
+        savedsearches.conf    OK
+        macros.conf           OK
+
+No configuration errors found.
+Process completed with exit code 0.</code></pre>
+          </div>
+          <ul class="config-paths">
+            <li><span>local/indexes.conf</span><b data-i18n="storageRetention">stockage + rétention</b></li>
+            <li><span>local/props.conf</span><b data-i18n="parsingFields">parsing + champs</b></li>
+            <li><span>local/savedsearches.conf</span><b>18 scheduled searches</b></li>
+            <li><span>data/ui/views/*.xml</span><b data-i18n="nativePresentation">présentation native</b></li>
+          </ul>
+        </article>
+
+        <article class="splunk-panel incident-panel">
+          <header class="panel-header">
+            <div><h3 data-i18n="recoveryTitle">Incident réel : restauration du service de recherche</h3><p data-i18n="recoverySubtitle">La télémétrie existait, mais les recherches échouaient.</p></div>
+            <span class="panel-chip amber">ADMIN CASE</span>
+          </header>
+          <div class="incident-summary">
+            <div><span data-i18n="symptom">SYMPTÔME</span><strong data-i18n="searchUnavailable">Search indisponible</strong></div>
+            <i>→</i>
+            <div><span data-i18n="rootCause">CAUSE RACINE</span><strong data-i18n="expiredTrial">Licence Trial expirée</strong></div>
+            <i>→</i>
+            <div><span data-i18n="result">RÉSULTAT</span><strong class="success-text" data-i18n="eventsRestored">473 événements restaurés</strong></div>
+          </div>
+          <ol class="incident-steps">
+            <li><span>01</span><div><strong data-i18n="observe">Observer</strong><p data-i18n="observeDetail">Les métadonnées REST indiquent 19 946 événements, les jobs de recherche retournent une erreur fatale.</p></div></li>
+            <li><span>02</span><div><strong data-i18n="isolate">Isoler</strong><p data-i18n="isolateDetail">Le message de licence distingue le défaut de contrôle plane d’une corruption des indexes.</p></div></li>
+            <li><span>03</span><div><strong data-i18n="protect">Protéger</strong><p data-i18n="protectDetail">Archive de l’application et de la configuration effective avant modification.</p></div></li>
+            <li><span>04</span><div><strong data-i18n="recover">Restaurer</strong><p data-i18n="recoverDetail">Activation de Splunk Free pour ce lab standalone et redémarrage contrôlé.</p></div></li>
+            <li><span>05</span><div><strong data-i18n="validate">Valider</strong><p data-i18n="validateDetail">Search vert, btool propre, dashboard chargé. Le login distant reste désactivé.</p></div></li>
           </ol>
         </article>
       </div>
     </section>
 
-    <section id="detections" class="section section-shell">
-      <div class="section-heading reveal">
+    <section id="content" class="workspace section-anchor section-divider">
+      <header class="section-heading compact">
         <div>
-          <p class="eyebrow"><span></span> 03 · Detection-as-code</p>
-          <h2>Content with a promotion contract.</h2>
+          <p class="section-index">02 / DETECTION ENGINEERING</p>
+          <h2 data-i18n="contentHeading">Des recherches planifiées avec un contrat de promotion.</h2>
+          <p data-i18n="contentIntro">Chaque ligne correspond à un objet déployé : hypothèse, dépendance de données, SPL, tuning, validation, risque et réponse.</p>
         </div>
-        <p>
-          Every rule carries its hypothesis, data dependency, SPL, tuning strategy,
-          validation evidence, schedule, and response path.
-        </p>
-      </div>
-
-      <div class="detection-toolbar reveal">
-        <label class="search-field">
-          <span class="sr-only">Search detection catalog</span>
-          <i aria-hidden="true"></i>
-          <input id="detection-search" type="search" placeholder="Search technique, title, or tactic…">
-        </label>
-        <div class="filter-buttons" aria-label="Detection status filters">
-          <button class="active" type="button" data-filter="all">All <span>18</span></button>
-          <button type="button" data-filter="production">Production <span>8</span></button>
-          <button type="button" data-filter="testing">Testing <span>10</span></button>
+        <div class="release-stats">
+          <span><b>18</b><small data-i18n="deployed">DÉPLOYÉES</small></span>
+          <span class="production"><b>8</b><small>PRODUCTION</small></span>
+          <span><b>10</b><small>TESTING</small></span>
         </div>
-      </div>
+      </header>
 
-      <div id="detection-grid" class="detection-grid" aria-live="polite"></div>
-      <p id="empty-state" class="empty-state" hidden>No detection matches this filter.</p>
+      <article class="splunk-panel detection-console">
+        <header class="content-toolbar">
+          <label class="content-search">
+            <span aria-hidden="true"></span>
+            <input id="detection-search" type="search" placeholder="Filtrer par titre, tactique ou technique…" data-i18n-placeholder="filterPlaceholder">
+          </label>
+          <div class="status-filters" role="group" aria-label="Filtres de statut">
+            <button class="active" type="button" data-filter="all"><span data-i18n="all">Toutes</span> <b>18</b></button>
+            <button type="button" data-filter="production">Production <b>8</b></button>
+            <button type="button" data-filter="testing">Testing <b>10</b></button>
+          </div>
+          <button class="splunk-button" type="button" data-i18n="export">Exporter ▾</button>
+        </header>
+        <div class="detection-summary">
+          <span><b id="visible-count">18</b> <span data-i18n="results">résultats</span></span>
+          <span data-i18n="tableTip">Sélectionner une règle validée pour ouvrir son investigation.</span>
+        </div>
+        <div class="table-scroll">
+          <table class="splunk-table detection-table">
+            <thead>
+              <tr>
+                <th data-i18n="status">STATUT</th>
+                <th data-i18n="detection">DÉTECTION</th>
+                <th>MITRE ATT&amp;CK</th>
+                <th data-i18n="tactic">TACTIQUE</th>
+                <th>RISK</th>
+                <th data-i18n="schedule">PLANIFICATION</th>
+                <th data-i18n="validation">VALIDATION</th>
+              </tr>
+            </thead>
+            <tbody id="detection-table"></tbody>
+          </table>
+        </div>
+        <p id="empty-state" class="empty-state" hidden data-i18n="empty">Aucune détection ne correspond à ce filtre.</p>
+      </article>
+
+      <div class="release-gate">
+        <div>
+          <p class="section-index" data-i18n="releaseGate">CONTENT RELEASE GATE</p>
+          <h3>Testing → Production</h3>
+          <span data-i18n="releaseIntro">Une règle ne change de statut que lorsque chaque contrôle possède une preuve.</span>
+        </div>
+        <ol>
+          <li><b>01</b><span data-i18n="gate1">Hypothèse + data source</span></li>
+          <li><b>02</b><span data-i18n="gate2">SPL + abstraction macro</span></li>
+          <li><b>03</b><span data-i18n="gate3">Exécution Atomic / manuelle</span></li>
+          <li><b>04</b><span data-i18n="gate4">Tuning des faux positifs</span></li>
+          <li><b>05</b><span data-i18n="gate5">Preuve + runbook</span></li>
+          <li><b>06</b><span data-i18n="gate6">Promotion de couverture</span></li>
+        </ol>
+      </div>
     </section>
 
-    <section id="case-file" class="section case-section">
-      <div class="section-shell">
-        <div class="section-heading reveal">
+    <section id="investigate" class="workspace section-anchor section-divider">
+      <header class="section-heading compact">
+        <div>
+          <p class="section-index">03 / <span data-i18n="investigation">INVESTIGATION</span></p>
+          <h2 data-i18n="investigationHeading">Du comportement à la preuve analyste.</h2>
+          <p data-i18n="investigationIntro">Trois scénarios validés relient l’émulation, le champ source, la logique SPL, le contrôle de précision et l’action de réponse.</p>
+        </div>
+      </header>
+
+      <div class="case-tabs" role="tablist" aria-label="Investigations validées">
+        <button class="active" type="button" role="tab" aria-selected="true" data-case="lsass"><b>T1003.001</b><span data-i18n="caseLsass">Accès LSASS</span></button>
+        <button type="button" role="tab" aria-selected="false" data-case="regsvr32"><b>T1218.010</b><span>Regsvr32</span></button>
+        <button type="button" role="tab" aria-selected="false" data-case="powershell"><b>T1059.001</b><span>PowerShell encodé</span></button>
+      </div>
+
+      <article class="investigation-workbench">
+        <div class="investigation-header">
           <div>
-            <p class="eyebrow"><span></span> 04 · Investigation workbench</p>
-            <h2>Replay the signal, not just the screenshot.</h2>
+            <p id="case-tactic" class="section-index"></p>
+            <h3 id="case-title"></h3>
+            <p id="case-hypothesis"></p>
           </div>
-          <p>
-            Select a validated scenario and follow the transition from adversary
-            behavior to analyst-ready evidence.
-          </p>
+          <span id="case-severity" class="severity-badge"></span>
         </div>
 
-        <div class="case-tabs reveal" role="tablist" aria-label="Validated investigations">
-          <button class="active" type="button" role="tab" aria-selected="true" data-case="lsass">
-            <span>T1003.001</span> LSASS Access
-          </button>
-          <button type="button" role="tab" aria-selected="false" data-case="regsvr32">
-            <span>T1218.010</span> Regsvr32
-          </button>
-          <button type="button" role="tab" aria-selected="false" data-case="powershell">
-            <span>T1059.001</span> Encoded PowerShell
-          </button>
-        </div>
-
-        <article class="case-workbench reveal">
-          <div class="case-summary">
-            <div class="case-title-row">
-              <div>
-                <p id="case-tactic" class="panel-kicker"></p>
-                <h3 id="case-title"></h3>
-              </div>
-              <span id="case-severity" class="severity-pill"></span>
-            </div>
-            <p id="case-hypothesis" class="case-hypothesis"></p>
-
-            <dl class="case-metadata">
-              <div><dt>Technique</dt><dd id="case-technique"></dd></div>
-              <div><dt>Data source</dt><dd id="case-source"></dd></div>
+        <div class="investigation-grid">
+          <aside class="case-context">
+            <dl>
+              <div><dt data-i18n="technique">Technique</dt><dd id="case-technique"></dd></div>
+              <div><dt data-i18n="dataSource">Source de données</dt><dd id="case-source"></dd></div>
               <div><dt>Risk score</dt><dd id="case-risk"></dd></div>
-              <div><dt>Schedule</dt><dd id="case-schedule"></dd></div>
+              <div><dt data-i18n="scheduleLabel">Planification</dt><dd id="case-schedule"></dd></div>
             </dl>
-
-            <div class="case-control">
-              <div>
-                <span>Precision control</span>
-                <strong id="case-tuning"></strong>
-              </div>
-              <span class="verified-pill">VALIDATED</span>
+            <div class="precision-control">
+              <span data-i18n="precisionControl">CONTRÔLE DE PRÉCISION</span>
+              <strong id="case-tuning"></strong>
+              <b><i></i> VALIDATED</b>
             </div>
+            <div class="field-sample">
+              <header><span data-i18n="eventFields">Champs analyste conservés</span><b>EVENT SAMPLE</b></header>
+              <div id="case-fields"></div>
+            </div>
+          </aside>
 
-            <button id="case-evidence-button" class="evidence-thumb" type="button">
-              <img id="case-evidence" src="" alt="">
-              <span><i></i> Open committed evidence</span>
-            </button>
-          </div>
-
-          <div class="case-logic">
-            <div class="code-window">
-              <div class="code-header">
+          <div class="case-spl">
+            <div class="spl-editor">
+              <header>
                 <span><i></i><i></i><i></i></span>
-                <p id="case-code-label">detection.spl</p>
-                <button id="copy-spl" type="button">Copy SPL</button>
-              </div>
+                <p id="case-code-label"></p>
+                <button id="copy-spl" type="button" data-i18n="copySpl">Copier le SPL</button>
+              </header>
               <pre><code id="case-code"></code></pre>
             </div>
-
-            <div>
-              <p class="panel-kicker">DETECTION LIFECYCLE</p>
-              <ol id="case-timeline" class="case-timeline"></ol>
-            </div>
+            <ol id="case-timeline" class="case-timeline"></ol>
           </div>
-        </article>
-      </div>
+        </div>
+
+        <button id="case-evidence-button" class="case-evidence" type="button">
+          <img id="case-evidence" src="" alt="">
+          <span><i></i><b data-i18n="committedProof">PREUVE COMMITÉE</b><small data-i18n="openFullEvidence">Ouvrir la capture Splunk en pleine résolution</small></span>
+        </button>
+      </article>
     </section>
 
-    <section class="section section-shell closing-section">
-      <div class="closing-card reveal">
+    <section id="evidence" class="workspace section-anchor section-divider">
+      <header class="section-heading compact">
         <div>
-          <p class="eyebrow"><span></span> Engineering evidence</p>
-          <h2>Built to survive an interview drill-down.</h2>
-          <p>
-            The public interface is the entry point. Every metric maps back to
-            versioned configuration, a saved search, a validation artifact, or a
-            documented platform decision.
-          </p>
+          <p class="section-index">04 / <span data-i18n="traceability">PREUVES & TRAÇABILITÉ</span></p>
+          <h2 data-i18n="evidenceHeading">Chaque métrique remonte à un artefact.</h2>
+          <p data-i18n="evidenceIntro">Le site est la couche de présentation. La source de vérité reste la configuration versionnée, les détections et les captures issues du lab.</p>
         </div>
-        <div class="closing-actions">
-          <a class="button button-primary" href="https://github.com/LordMonstey/splunk-detection-lab" target="_blank" rel="noreferrer">
-            Inspect the repository <span>↗</span>
-          </a>
-          <a class="button button-secondary" href="#top">Back to top</a>
-        </div>
+      </header>
+
+      <figure class="native-proof splunk-panel">
+        <figcaption>
+          <div>
+            <span class="section-index">NATIVE SPLUNK IMPLEMENTATION</span>
+            <h3>Engineering Command Center</h3>
+            <p data-i18n="nativeCaption">Simple XML et CSS déployés dans Splunk 10.2.1 · data/ui/views/splunk_engineering_command_center.xml</p>
+          </div>
+          <button class="splunk-button primary" type="button" data-open-image="assets/evidence/engineering-command-center.png" data-i18n="openScreenshot">Ouvrir la capture</button>
+        </figcaption>
+        <button class="proof-image" type="button" data-open-image="assets/evidence/engineering-command-center.png">
+          <img src="assets/evidence/engineering-command-center.png" alt="Dashboard Splunk Engineering Command Center déployé dans Splunk">
+          <span data-i18n="fullResolution">Pleine résolution ↗</span>
+        </button>
+      </figure>
+
+      <div class="traceability-grid">
+        <article class="splunk-panel repository-panel">
+          <header class="panel-header">
+            <div><h3 data-i18n="repositoryAnatomy">Anatomie du dépôt</h3><p>LordMonstey/splunk-detection-lab</p></div>
+            <span class="panel-chip">MAIN</span>
+          </header>
+          <ul class="file-tree">
+            <li class="folder"><span>conf/splunk/</span><b data-i18n="treeConfig">application déployable</b></li>
+            <li><span>local/savedsearches.conf</span><b>18 rules</b></li>
+            <li><span>local/indexes.conf</span><b>4 indexes</b></li>
+            <li><span>data/ui/views/command_center.xml</span><b>dashboard</b></li>
+            <li class="folder"><span>detections/</span><b data-i18n="treeSpecs">spécifications de contenu</b></li>
+            <li class="folder"><span>tests/atomic/evidence/</span><b>8 validations</b></li>
+            <li class="folder"><span>coverage/navigator-layer.json</span><b>ATT&amp;CK layer</b></li>
+            <li class="folder"><span>docs/runbooks/</span><b data-i18n="treeResponse">réponse analyste</b></li>
+          </ul>
+        </article>
+
+        <article class="splunk-panel validation-panel">
+          <header class="panel-header">
+            <div><h3 data-i18n="validationReport">Rapport de validation</h3><p>GitHub Actions + local QA</p></div>
+            <span class="success-badge">PASS</span>
+          </header>
+          <ul>
+            <li><i></i><div><strong>validate_conf.py</strong><span>9 .conf files · OK</span></div></li>
+            <li><i></i><div><strong>validate_detections.py</strong><span>18 detections · OK</span></div></li>
+            <li><i></i><div><strong>yamllint</strong><span>18 front-matters · PASS</span></div></li>
+            <li><i></i><div><strong>navigator-layer.json</strong><span>JSON parse · PASS</span></div></li>
+            <li><i></i><div><strong>browser QA</strong><span>desktop + 390px · PASS</span></div></li>
+          </ul>
+        </article>
+
+        <article class="splunk-panel scope-panel">
+          <header class="panel-header">
+            <div><h3 data-i18n="scopeTitle">Périmètre déclaré</h3><p data-i18n="scopeSubtitle">Ce que le lab prouve — et ce qu’il ne prétend pas.</p></div>
+          </header>
+          <div>
+            <p><i class="yes">✓</i><span data-i18n="scopeYes1">Splunk Enterprise standalone, administration locale et recherche</span></p>
+            <p><i class="yes">✓</i><span data-i18n="scopeYes2">Sysmon + canaux Windows via Universal Forwarder</span></p>
+            <p><i class="yes">✓</i><span data-i18n="scopeYes3">Détection-as-code et validation contrôlée</span></p>
+            <p><i class="no">—</i><span data-i18n="scopeNo1">Pas d’instance Enterprise Security présentée comme active</span></p>
+            <p><i class="no">—</i><span data-i18n="scopeNo2">Pas de SOAR, cluster indexer ou deployment server</span></p>
+          </div>
+        </article>
       </div>
     </section>
   </main>
 
   <footer>
-    <div class="section-shell footer-inner">
-      <div>
-        <strong>Splunk Platform & Detection Engineering Lab</strong>
-        <p>Sanitized portfolio snapshot · No operational data or live admin access.</p>
-      </div>
-      <div>
-        <a href="https://github.com/LordMonstey" target="_blank" rel="noreferrer">GitHub</a>
-        <a href="mailto:axelsellami@gmail.com">Contact</a>
-      </div>
+    <div>
+      <span class="splunk-wordmark mini"><span>splunk<span class="splunk-chevron">&gt;</span></span></span>
+      <p><strong>Splunk Platform & Detection Engineering Lab</strong><small data-i18n="footerSnapshot">Snapshot assaini · aucune dépendance à la VM · aucun accès administrateur public</small></p>
+      <span class="crafted-signature"><small data-i18n="signedBy">Conçu et maintenu par</small><b>A.S</b></span>
     </div>
+    <nav>
+      <a href="https://github.com/LordMonstey" target="_blank" rel="noreferrer">GitHub</a>
+      <a href="mailto:axelsellami@gmail.com">Contact</a>
+      <a href="#overview" data-i18n="backTop">Retour en haut ↑</a>
+    </nav>
   </footer>
 
   <dialog id="image-modal" class="image-modal">
-    <button type="button" class="modal-close" aria-label="Close image">×</button>
+    <button type="button" class="modal-close" aria-label="Fermer">×</button>
     <img src="" alt="">
-    <p>Committed validation evidence · sanitized lab context</p>
+    <p data-i18n="modalCaption">Preuve de validation commitée · contexte du lab assaini</p>
   </dialog>
 
-  <div id="toast" class="toast" role="status" aria-live="polite">SPL copied</div>
+  <div id="toast" class="toast" role="status" aria-live="polite">SPL copié</div>
 
   <script src="portfolio-data.js"></script>
   <script src="app.js"></script>
