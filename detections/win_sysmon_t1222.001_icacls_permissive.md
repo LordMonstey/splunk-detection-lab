@@ -19,7 +19,7 @@ mitre_data_component: Process Creation
 schedule:
   cron: "*/15 * * * *"
   earliest: "-20m@m"
-  latest:   "-1m@m"
+  latest: "-1m@m"
 references:
   - https://attack.mitre.org/techniques/T1222/001/
 tags:

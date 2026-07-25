@@ -22,7 +22,7 @@ mitre_data_component: Process Creation
 schedule:
   cron: "*/10 * * * *"
   earliest: "-15m@m"
-  latest:   "-1m@m"
+  latest: "-1m@m"
 references:
   - https://attack.mitre.org/techniques/T1059/003/
   - https://github.com/danielbohannon/Invoke-DOSfuscation

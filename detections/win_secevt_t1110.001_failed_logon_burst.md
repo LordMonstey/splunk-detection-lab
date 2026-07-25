@@ -22,7 +22,7 @@ mitre_data_component: Logon Session
 schedule:
   cron: "*/5 * * * *"
   earliest: "-15m@m"
-  latest:   "-1m@m"
+  latest: "-1m@m"
 references:
   - https://attack.mitre.org/techniques/T1110/001/
   - https://attack.mitre.org/techniques/T1110/003/

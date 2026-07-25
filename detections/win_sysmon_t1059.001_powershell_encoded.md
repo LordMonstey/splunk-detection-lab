@@ -19,7 +19,7 @@ mitre_data_component: Process Creation
 schedule:
   cron: "*/5 * * * *"
   earliest: "-10m@m"
-  latest:   "-1m@m"
+  latest: "-1m@m"
 references:
   - https://attack.mitre.org/techniques/T1059/001/
   - https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_powershell_exe
