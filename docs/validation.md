@@ -19,18 +19,29 @@ Expected: rows for `XmlWinEventLog:Security`, `XmlWinEventLog:System`, `XmlWinEv
 ## Field extraction
 
 ```spl
-index=sysmon EventID=1 earliest=-1h | head 1 | table _time host process_name CommandLine ParentImage User
+`sysmon_process_creation`
+| `cim_endpoint_processes_rename`
+| head 1
+| table _time dest user process_name process parent_process CommandLine
 ```
 
-Expected: a row with all fields populated. If `process_name` or `CommandLine` are empty, the field extractions in `splunk-app/default/props.conf` are not active. Check `btool props list` and reload.
+Expected: a row with the raw Sysmon fields plus the CIM-oriented aliases
+emitted by the macro. If `CommandLine` is empty, verify XML field extraction
+with `btool props list`. If aliases are empty, verify the macro definition with
+`btool macros list`.
 
-## CIM mapping
+## CIM-oriented normalization
 
 ```spl
-index=sysmon eventtype=sysmon_process_create earliest=-1h | head 1
+`sysmon_process_creation`
+| `cim_endpoint_processes_rename`
+| head 1
+| table dest user process process_name parent_process process_guid
 ```
 
-Expected: at least one event tagged `process` and `endpoint` from our `tags.conf`. If empty, the `eventtypes.conf` did not load.
+Expected: the macro returns stable endpoint-oriented field names. This app does
+not ship `eventtypes.conf`, `tags.conf`, or an accelerated Endpoint data model;
+the check proves macro normalization, not full CIM compliance.
 
 ## Clock skew
 
@@ -45,7 +56,8 @@ Expected: `avg_skew_seconds` close to zero. Significantly negative means the hos
 ## Saved searches
 
 ```bash
-sudo -u splunk /opt/splunk/bin/splunk list saved-search -auth admin:PASSWORD -app splunk-detection-lab | grep "^name:" | wc -l
+sudo -u splunk /opt/splunk/bin/splunk list saved-search \
+  -app splunk-detection-lab | grep "^name:" | wc -l
 ```
 
 Expected: 18.

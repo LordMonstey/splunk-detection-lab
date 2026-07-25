@@ -6,9 +6,10 @@ from pathlib import Path
 try:
     import yaml
 except ImportError:
-    import subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "--quiet", "pyyaml"])
-    import yaml
+    sys.exit(
+        "PyYAML is required. Install the pinned development dependency with "
+        "`python -m pip install PyYAML==6.0.3`."
+    )
 
 REQUIRED_TOP_LEVEL = {
     "id", "title", "status", "author", "created", "modified",

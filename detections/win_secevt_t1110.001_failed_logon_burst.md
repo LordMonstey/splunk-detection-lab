@@ -38,19 +38,7 @@ Brute-force and password-spray attacks emit clusters of `4625` (failed logon) ev
 ## Logic
 
 ```spl
-`wineventlog_security` EventID=4625
-| bucket _time span=15m
-| stats count
-        dc(TargetUserName) as users_targeted
-        values(TargetUserName) as users
-        values(IpAddress) as src_ips
-        values(LogonType) as logon_types
-        by _time host
-| where (count >= 10 AND users_targeted == 1)
-     OR (users_targeted >= 5)
-| eval pattern = case(users_targeted == 1, "brute_force_single_user",
-                      users_targeted >= 5, "password_spray",
-                      1==1, "other")
+`wineventlog_security` EventID=4625 | bucket _time span=15m | stats count dc(TargetUserName) as users_targeted values(TargetUserName) as users values(IpAddress) as src_ips values(LogonType) as logon_types by _time host | where (count >= 10 AND users_targeted == 1) OR (users_targeted >= 5) | eval pattern = case(users_targeted == 1, "brute_force_single_user", users_targeted >= 5, "password_spray", 1==1, "other")
 ```
 
 ## Known false positives

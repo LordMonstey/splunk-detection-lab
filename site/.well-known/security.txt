@@ -1,0 +1,5 @@
+Contact: https://github.com/LordMonstey/splunk-detection-lab/security/advisories/new
+Expires: 2027-07-25T00:00:00Z
+Preferred-Languages: fr, en
+Canonical: https://lordmonstey.github.io/splunk-detection-lab/.well-known/security.txt
+Policy: https://github.com/LordMonstey/splunk-detection-lab/security/policy

@@ -1,10 +1,10 @@
 ---
 id: win_sysmon_t1140_certutil_decode
 title: Certutil.exe used to decode Base64 payloads
-status: production
+status: testing
 author: LordMonstey
 created: 2026-04-28
-modified: 2026-04-28
+modified: 2026-07-25
 severity: medium
 risk_score: 60
 attack:
@@ -38,17 +38,7 @@ tags:
 ## Logic
 
 ```spl
-`sysmon_process_creation`
-process_name="certutil.exe"
-| where match(CommandLine, "(?i)\s-(decode|decodehex|encode|encodehex|urlcache)\b")
-   OR match(CommandLine, "(?i)\s-split\s+-f\s+https?://")
-| `cim_endpoint_processes_rename`
-| stats count min(_time) as firstTime max(_time) as lastTime
-        values(CommandLine) as commandlines
-        values(parent_process_name) as parents
-        by dest user process_name process_guid
-| `security_content_ctime(firstTime)`
-| `security_content_ctime(lastTime)`
+`sysmon_process_creation` (Image="*\\certutil.exe" OR OriginalFileName="CertUtil.exe") | where match(CommandLine, "(?i)\\s-(decode|decodehex|encode|encodehex|urlcache)\\b") OR match(CommandLine, "(?i)\\s-split\\s+-f\\s+https?://") | `cim_endpoint_processes_rename` | stats count min(_time) as firstTime max(_time) as lastTime values(CommandLine) as commandlines values(parent_process_name) as parents by dest user process_name process_guid
 ```
 
 ## Known false positives
@@ -63,7 +53,7 @@ process_name="certutil.exe"
 
 ## Validation
 
-- Atomic Red Team: T1140 #4 — Certutil decode
+- Atomic Red Team: T1140 #2 — Certutil Rename and Decode
 
 Manual reproduction:
 
@@ -80,11 +70,16 @@ del b64.txt out.txt
 ```
 
 
-**Validated**: 2026-04-30 via Atomic Red Team T1140-2 (Certutil Rename and Decode) on lab host `win10-sysmon-client`.
+**Validation finding**: on 2026-04-30, Atomic Red Team T1140 #2 renamed
+`certutil.exe` before use. That bypassed the original `Image=*\\certutil.exe`
+filter and demonstrated that the previous Production claim was not justified.
 
-T1140-2 renames certutil before use, which defeats simple `Image=*\\certutil.exe` filters. The detection should pivot on Sysmon `OriginalFileName=CertUtil.exe` (extracted from the PE header) instead. This is a real defense-evasion lesson worth noting in the rule.
+The candidate now also checks Sysmon `OriginalFileName=CertUtil.exe`, but the
+existing capture does not prove that the raw field was extracted and matched
+end to end. The rule therefore remains **Testing** until the test is rerun and a
+new Splunk result is committed.
 
-**Evidence**: ![evidence](../tests/atomic/evidence/T1140-certutil-decode.png)
+**Finding evidence**: ![evidence](../tests/atomic/evidence/T1140-certutil-decode.png)
 
 **Test command**: `Invoke-AtomicTest T1140 -TestNumbers 2`
 
@@ -94,6 +89,8 @@ T1140-2 renames certutil before use, which defeats simple `Image=*\\certutil.exe
 
 See [`docs/runbooks/lolbin-proxy-execution.md`](../docs/runbooks/lolbin-proxy-execution.md).
 
-1. The decoded output filename is in CommandLine — pull `\`sysmon_file_create\` host=<dest> file_path=<output>` to see what was produced
+1. The decoded output filename is in CommandLine — pivot with
+   `` `sysmon_file_create` host=<dest> file_path=<output> `` to see what was
+   produced.
 2. Hash the output file, check VirusTotal
 3. Escalate if the decoded file is then executed (FileCreate → ProcessCreate chain)

@@ -31,15 +31,20 @@ What this lab does well, and what would have to change before any of it ran in a
 
 ### Detection lifecycle
 
-- Saved searches not edited in `local/` directly — they live in a Splunk app, version-controlled, deployed via CI/CD
-- Promotion from `testing` to `production` gated by a peer review and an FP rate threshold measured over 7 days against `index=risk`
+- Saved searches would remain version-controlled in a Splunk app and be promoted
+  through reviewed deployment stages rather than edited through Splunk Web.
+- Promotion from `testing` to `production` would add peer review plus a measured
+  false-positive threshold over a representative observation window.
 - Quarterly purple-team campaigns rather than ad-hoc Atomic runs
 - Detection deprecation process — rules with zero TPs in 6 months are reviewed for removal
 
 ### Alerting & response
 
-- `index=notable` becomes the Enterprise Security notable index (or an Elasticsearch / Sentinel equivalent)
-- Risk-Based Alerting wired to ES Risk Analysis framework, not the manual `risk` index used here
+- The configured `notable` summary target would be replaced by Enterprise
+  Security correlation-search actions and Incident Review.
+- Risk-Based Alerting would be implemented through the ES risk framework. The
+  lab's `risk` index is currently reserved and has no active producer; it is not
+  a manual RBA implementation.
 - SOAR (Phantom / XSOAR / Tines) playbooks corresponding to every runbook in `docs/runbooks/`
 - Pager / on-call rotation tied to severity, not single-person triage
 

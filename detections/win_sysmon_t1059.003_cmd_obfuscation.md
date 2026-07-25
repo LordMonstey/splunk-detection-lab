@@ -39,18 +39,7 @@ Adversaries leverage the cmd.exe parser's tolerance for caret (`^`), surrounding
 ## Logic
 
 ```spl
-`sysmon_process_creation`
-process_name="cmd.exe"
-| eval caret_count = mvcount(split(CommandLine, "^")) - 1
-| where caret_count >= 3
-| `cim_endpoint_processes_rename`
-| stats count min(_time) as firstTime max(_time) as lastTime
-        values(CommandLine) as commandlines
-        values(parent_process_name) as parents
-        max(caret_count) as max_carets
-        by dest user process_name process_guid
-| `security_content_ctime(firstTime)`
-| `security_content_ctime(lastTime)`
+`sysmon_process_creation` Image="*\\cmd.exe" | eval caret_count = mvcount(split(CommandLine, "^")) - 1 | where caret_count >= 3 | `cim_endpoint_processes_rename` | stats count min(_time) as firstTime max(_time) as lastTime values(CommandLine) as commandlines values(parent_process_name) as parents max(caret_count) as max_carets by dest user process_name process_guid
 ```
 
 ## Known false positives

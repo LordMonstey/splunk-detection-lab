@@ -6,7 +6,7 @@ author: <github-handle>
 created: YYYY-MM-DD
 modified: YYYY-MM-DD
 severity: low                   # low | medium | high | critical
-risk_score: 25                  # 0-100, used by RBA aggregation
+risk_score: 25                  # 0-100 content score; future RBA-compatible field
 attack:
   - tactic: defense-evasion
     technique: T1218.011
@@ -66,7 +66,7 @@ process_name="rundll32.exe"
 
 ## Validation
 
-- Atomic Red Team test: [T1218.011 #1 — `rundll32.exe javascript:`](../tests/atomic/T1218.011.md)
+- Atomic Red Team test: T1218.011 #1 — `rundll32.exe javascript:`
 - Expected detection latency: < 5 minutes
 - Evidence (screenshot + raw event): `tests/atomic/evidence/T1218.011-1.png`
 

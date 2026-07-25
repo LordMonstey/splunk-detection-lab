@@ -1,207 +1,189 @@
 <dashboard version="1.1" theme="dark" stylesheet="splunk_engineering.css">
   <label>Splunk Engineering Command Center</label>
-  <description>Platform operations, telemetry quality, and detection lifecycle in one operator view.</description>
+  <description>Standalone platform controls, sanitized telemetry snapshot, and configured detection content.</description>
 
-  <row id="hero_row">
+  <row id="cockpit_header">
     <panel>
       <html>
-        <div class="command-hero">
-          <div class="command-hero__copy">
-            <span class="command-kicker">SPLUNK PLATFORM + DETECTION ENGINEERING</span>
-            <h1>From forwarded telemetry to validated detection.</h1>
-            <p>
-              Standalone Windows detection lab running Splunk Enterprise 10.2.1,
-              Sysmon, native Windows channels, detection-as-code, and Atomic Red Team.
-            </p>
-            <div class="command-tags">
-              <span>UF / TCP 9997</span>
-              <span>CIM-oriented</span>
-              <span>18 scheduled searches</span>
-              <span>8 validated rules</span>
-            </div>
+        <div class="ops-header">
+          <div class="ops-header__title">
+            <span>PLATFORM / CONTENT CONTROL SURFACE</span>
+            <h1>Splunk Engineering Command Center</h1>
+            <p>Standalone administration and detection-content posture. Read-only operator view.</p>
           </div>
-          <div class="command-hero__status">
-            <span class="status-orbit"></span>
-            <strong>LAB ONLINE</strong>
-            <small>standalone · indexer · search · KV Store</small>
+          <div class="ops-header__facts">
+            <div>
+              <small>INSTANCE</small>
+              <strong>standalone</strong>
+              <span>local administration</span>
+            </div>
+            <div>
+              <small>PLATFORM</small>
+              <strong>Splunk 10.2.1</strong>
+              <span>Debian / Splunk Free</span>
+            </div>
+            <div>
+              <small>ENDPOINT SCOPE</small>
+              <strong>1 Windows host</strong>
+              <span>Sysmon + native channels</span>
+            </div>
+            <div>
+              <small>PUBLIC SNAPSHOT</small>
+              <strong>473 events</strong>
+              <span>390 Sysmon / 83 Windows</span>
+            </div>
+            <div>
+              <small>OUTPUT INDEXES</small>
+              <strong>risk / notable</strong>
+              <span>configured / empty</span>
+            </div>
           </div>
         </div>
       </html>
     </panel>
   </row>
 
-  <row id="kpi_row">
+  <row id="state_row">
     <panel>
       <single>
-        <title>Lifetime events indexed</title>
+        <title>splunkd control plane</title>
         <search>
-          <query>| rest /services/data/indexes count=0
-| search title=sysmon OR title=windows
-| stats sum(totalEventCount) as total</query>
+          <query>| rest /services/server/info
+| head 1
+| eval state="RESPONDING"
+| fields state</query>
           <earliest>0</earliest>
           <latest>now</latest>
         </search>
-        <option name="colorBy">value</option>
-        <option name="colorMode">block</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="showSparkline">0</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="underLabel">LOCAL REST / SERVER INFO</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Sanitized telemetry</title>
+        <search>
+          <query>| makeresults
+| eval snapshot_events=473
+| fields snapshot_events</query>
+          <earliest>0</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
         <option name="numberPrecision">0</option>
-        <option name="rangeColors">["0x55e6a5"]</option>
-        <option name="underLabel">SYSMon + Windows</option>
+        <option name="showSparkline">0</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="underLabel">PUBLIC SNAPSHOT / 2026-07-25</option>
         <option name="useThousandSeparators">1</option>
       </single>
     </panel>
     <panel>
       <single>
-        <title>Detection content</title>
+        <title>Detection definitions</title>
         <search>
           <query>| rest /servicesNS/-/splunk-detection-lab/saved/searches count=0
 | search title="detect_*"
-| stats count as total</query>
+| stats count as definitions</query>
           <earliest>0</earliest>
           <latest>now</latest>
         </search>
-        <option name="colorBy">value</option>
-        <option name="colorMode">block</option>
-        <option name="rangeColors">["0x57b7ff"]</option>
-        <option name="underLabel">DEPLOYED SAVED SEARCHES</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="showSparkline">0</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="underLabel">SAVEDSEARCHES.CONF</option>
       </single>
     </panel>
     <panel>
       <single>
-        <title>Production rules</title>
+        <title>Production content</title>
         <search>
           <query>| makeresults
-| eval validated=8</query>
+| eval production=7
+| fields production</query>
           <earliest>0</earliest>
           <latest>now</latest>
         </search>
-        <option name="colorBy">value</option>
-        <option name="colorMode">block</option>
-        <option name="rangeColors">["0xffcc66"]</option>
-        <option name="underLabel">ATOMIC / MANUAL EVIDENCE</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="showSparkline">0</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="underLabel">VALIDATED / EVIDENCE COMMITTED</option>
       </single>
     </panel>
     <panel>
       <single>
-        <title>Searchable telemetry</title>
+        <title>Testing content</title>
         <search>
-          <query>search index=sysmon OR index=windows
-| stats count as events</query>
+          <query>| makeresults
+| eval testing=11
+| fields testing</query>
           <earliest>0</earliest>
           <latest>now</latest>
         </search>
-        <option name="colorBy">value</option>
-        <option name="colorMode">block</option>
-        <option name="rangeColors">["0xff6b6b"]</option>
-        <option name="underLabel">CURRENT RETENTION WINDOW</option>
-        <option name="useThousandSeparators">1</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="showSparkline">0</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="underLabel">CONFIGURED / PROMOTION PENDING</option>
       </single>
     </panel>
   </row>
 
-  <row id="pipeline_row">
-    <panel>
-      <html>
-        <div class="pipeline-card">
-          <div class="section-heading">
-            <div>
-              <span class="command-kicker">DATA ONBOARDING</span>
-              <h2>Telemetry delivery pipeline</h2>
-            </div>
-            <span class="live-pill"><i></i> CONFIGURED</span>
-          </div>
-          <div class="pipeline-flow">
-            <div class="pipeline-node">
-              <small>01 · SOURCE</small>
-              <strong>Windows Endpoint</strong>
-              <span>Sysmon + Security + PowerShell</span>
-            </div>
-            <div class="pipeline-link"><span>UF</span><b>9997</b></div>
-            <div class="pipeline-node">
-              <small>02 · INGEST</small>
-              <strong>Splunk Indexer</strong>
-              <span>indexes: sysmon / windows</span>
-            </div>
-            <div class="pipeline-link"><span>props</span><b>→</b></div>
-            <div class="pipeline-node">
-              <small>03 · NORMALIZE</small>
-              <strong>Knowledge Layer</strong>
-              <span>macros + aliases + lookups</span>
-            </div>
-            <div class="pipeline-link"><span>cron</span><b>5m</b></div>
-            <div class="pipeline-node pipeline-node--accent">
-              <small>04 · DETECT</small>
-              <strong>Detection Content</strong>
-              <span>risk score + suppression + response</span>
-            </div>
-          </div>
-        </div>
-      </html>
-    </panel>
-  </row>
-
-  <row>
+  <row id="scheduler_storage_row">
     <panel>
       <chart>
-        <title>Events by index and sourcetype</title>
+        <title>Scheduler cadence / configured definitions</title>
         <search>
-          <query>search index=sysmon OR index=windows
-| stats count as events by index sourcetype
-| eval data_source=index." · ".sourcetype
-| sort - events
-| fields data_source events</query>
+          <query>| rest /servicesNS/-/splunk-detection-lab/saved/searches count=0
+| search title="detect_*" disabled=0
+| eval cadence=case(
+    cron_schedule="*/5 * * * *","5 minutes",
+    cron_schedule="*/10 * * * *","10 minutes",
+    cron_schedule="*/15 * * * *","15 minutes",
+    true(),cron_schedule
+  )
+| stats count as definitions by cadence
+| eval order=case(cadence="5 minutes",1,cadence="10 minutes",2,cadence="15 minutes",3,true(),99)
+| sort order
+| fields cadence definitions</query>
           <earliest>0</earliest>
           <latest>now</latest>
         </search>
         <option name="charting.chart">bar</option>
         <option name="charting.chart.showDataLabels">all</option>
         <option name="charting.drilldown">none</option>
-        <option name="charting.fieldColors">{"events":"0x57b7ff"}</option>
+        <option name="charting.fieldColors">{"definitions":"0x8d72d9"}</option>
         <option name="charting.legend.placement">none</option>
-        <option name="height">360</option>
+        <option name="height">286</option>
       </chart>
     </panel>
-    <panel>
-      <chart>
-        <title>Sysmon telemetry mix</title>
-        <search>
-          <query>search index=sysmon
-| stats count as events by EventID
-| sort - events
-| eval event_type=case(
-    EventID=1,"Process Create",
-    EventID=3,"Network Connect",
-    EventID=7,"Image Load",
-    EventID=10,"Process Access",
-    EventID=11,"File Create",
-    EventID=13,"Registry Value",
-    EventID=17,"Named Pipe",
-    EventID=23,"File Delete",
-    true(),"Event ".EventID
-  )
-| fields event_type events</query>
-          <earliest>0</earliest>
-          <latest>now</latest>
-        </search>
-        <option name="charting.chart">donut</option>
-        <option name="charting.chart.showPercent">1</option>
-        <option name="charting.drilldown">none</option>
-        <option name="charting.legend.placement">right</option>
-        <option name="height">360</option>
-      </chart>
-    </panel>
-  </row>
-
-  <row>
     <panel>
       <table>
-        <title>Detection operations</title>
+        <title>Index capacity and retention / effective REST state</title>
         <search>
-          <query>| rest /servicesNS/-/splunk-detection-lab/saved/searches count=0
-| search title="detect_*"
-| eval state=if(disabled=0,"ACTIVE","DISABLED")
-| rename title as detection cron_schedule as schedule dispatch.earliest_time as window
-| table detection schedule window state
-| sort detection</query>
+          <query>| rest /services/data/indexes count=0
+| search title=sysmon OR title=windows OR title=risk OR title=notable
+| eval retention_days=round(frozenTimePeriodInSecs/86400,0)
+| eval purpose=case(
+    title="sysmon","Sysmon telemetry",
+    title="windows","Native Windows channels",
+    title="risk","RBA target / inactive",
+    title="notable","Summary target / inactive",
+    true(),"Other"
+  )
+| eval state=case(
+    (title="risk" OR title="notable") AND totalEventCount=0,"CONFIGURED / EMPTY",
+    totalEventCount&gt;=0,"SEARCHABLE",
+    true(),"UNKNOWN"
+  )
+| rename title as index totalEventCount as lifetime_events maxTotalDataSizeMB as max_mb
+| table index purpose lifetime_events max_mb retention_days state
+| sort index</query>
           <earliest>0</earliest>
           <latest>now</latest>
         </search>
@@ -213,61 +195,167 @@
     </panel>
   </row>
 
-  <row>
+  <row id="telemetry_row">
     <panel>
-      <table>
-        <title>Index engineering</title>
+      <chart>
+        <title>Public snapshot / source composition</title>
         <search>
-          <query>| rest /services/data/indexes count=0
-| search title=sysmon OR title=windows OR title=risk OR title=notable
-| eval retention_days=round(frozenTimePeriodInSecs/86400,0)
-| rename title as index totalEventCount as lifetime_events currentDBSizeMB as disk_mb maxTotalDataSizeMB as max_mb
-| table index lifetime_events disk_mb max_mb retention_days
-| sort index</query>
+          <query>| makeresults count=4
+| streamstats count as row
+| eval index=case(row=1,"sysmon",row&gt;1,"windows")
+| eval sourcetype=case(
+    row=1,"Sysmon Operational",
+    row=2,"Windows Security",
+    row=3,"Windows Application",
+    row=4,"Windows System"
+  )
+| eval events=case(row=1,390,row=2,76,row=3,6,row=4,1)
+| eval source=index." / ".sourcetype
+| fields source events</query>
           <earliest>0</earliest>
           <latest>now</latest>
         </search>
-        <option name="count">10</option>
-        <option name="dataOverlayMode">heatmap</option>
+        <option name="charting.chart">bar</option>
+        <option name="charting.chart.showDataLabels">all</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"events":"0x55a9db"}</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="height">320</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>Public snapshot / Sysmon EventID distribution</title>
+        <search>
+          <query>| makeresults count=6
+| streamstats count as row
+| eval EventID=case(row=1,23,row=2,11,row=3,13,row=4,10,row=5,7,row=6,17)
+| eval event_name=case(
+    row=1,"File Delete",
+    row=2,"File Create",
+    row=3,"Registry Value",
+    row=4,"Process Access",
+    row=5,"Image Load",
+    row=6,"Named Pipe"
+  )
+| eval events=case(row=1,171,row=2,131,row=3,68,row=4,13,row=5,5,row=6,2)
+| eval event_type="EID ".EventID." / ".event_name
+| fields event_type events</query>
+          <earliest>0</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.showDataLabels">all</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"events":"0x52b9ba"}</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="height">320</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row id="control_row">
+    <panel>
+      <table>
+        <title>splunkd service identity / local REST response</title>
+        <search>
+          <query>| rest /services/server/info
+| head 1
+| eval service="splunkd"
+| eval response="RESPONDING"
+| eval role=mvjoin(server_roles,", ")
+| rename version as splunk_version build as splunk_build os_name as operating_system
+| table service response splunk_version splunk_build operating_system role</query>
+          <earliest>0</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">5</option>
+        <option name="dataOverlayMode">none</option>
         <option name="drilldown">none</option>
+        <option name="rowNumbers">0</option>
       </table>
     </panel>
     <panel>
       <table>
-        <title>Platform control plane</title>
+        <title>Administrative controls / configuration evidence</title>
         <search>
-          <query>| rest /services/server/info
-| eval role=mvjoin(server_roles,", ")
-| rename serverName as instance version as splunk_version os_name as operating_system
-| table instance splunk_version operating_system role</query>
+          <query>| makeresults
+| eval control="Configuration syntax", mechanism="btool check", state="PRE-DEPLOY VERIFIED", evidence="scripts/validate_conf.py + Splunk btool"
+| fields control mechanism state evidence
+| append [
+    | inputlookup allowlist_lsass_access
+    | stats count as entries dc(source_process_name) as normalized_names
+    | eval control="LSASS exact-name allowlist"
+    | eval mechanism="transforms.conf lookup"
+    | eval state=if(entries&gt;0,"RESOLVED / ".entries." ROWS","EMPTY")
+    | eval evidence="allowlist_lsass_access.csv / source_process_name"
+    | fields control mechanism state evidence
+  ]
+| append [
+    | makeresults
+    | eval control="Management API"
+    | eval mechanism="splunkd 8089"
+    | eval state="CONFIGURED / LOOPBACK ONLY"
+    | eval evidence="server.conf [httpServer] acceptFrom"
+    | fields control mechanism state evidence
+  ]
+| table control mechanism state evidence</query>
           <earliest>0</earliest>
           <latest>now</latest>
         </search>
         <option name="count">10</option>
+        <option name="dataOverlayMode">none</option>
         <option name="drilldown">none</option>
+        <option name="rowNumbers">0</option>
       </table>
     </panel>
   </row>
 
-  <row id="release_row">
+  <row id="inventory_row">
     <panel>
-      <html>
-        <div class="release-card">
-          <div>
-            <span class="command-kicker">CONTENT RELEASE GATE</span>
-            <h2>Testing → Production</h2>
-            <p>A rule is promoted only when every engineering control is satisfied.</p>
-          </div>
-          <ol class="release-steps">
-            <li><span>01</span>Hypothesis + data source</li>
-            <li><span>02</span>SPL + macro abstraction</li>
-            <li><span>03</span>Atomic execution</li>
-            <li><span>04</span>False-positive tuning</li>
-            <li><span>05</span>Evidence + runbook</li>
-            <li><span>06</span>Coverage promotion</li>
-          </ol>
-        </div>
-      </html>
+      <table>
+        <title>Scheduled detection inventory / configured state</title>
+        <search>
+          <query>| rest /servicesNS/-/splunk-detection-lab/saved/searches count=0
+| search title="detect_*"
+| eval state=if(disabled=0,"CONFIGURED","DISABLED")
+| eval window='dispatch.earliest_time'." to ".'dispatch.latest_time'
+| eval summary_target=if('action.summary_index'=1,'action.summary_index._name'." / configured","none")
+| rename title as detection cron_schedule as schedule
+| table detection schedule window summary_target state
+| sort 0 detection</query>
+          <earliest>0</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="rowNumbers">0</option>
+      </table>
+    </panel>
+  </row>
+
+  <row id="promotion_row">
+    <panel>
+      <table>
+        <title>Promotion queue / open validation blocker</title>
+        <search>
+          <query>| makeresults
+| eval analytic="win_sysmon_t1140_certutil_decode"
+| eval technique="T1140 / T1105"
+| eval state="TESTING"
+| eval blocker="OriginalFileName extraction and renamed-binary match are not yet proven end to end"
+| eval required_evidence="Rerun Atomic T1140 test 2; commit the matching Splunk result"
+| eval candidate_logic="Image=certutil.exe OR OriginalFileName=CertUtil.exe"
+| table analytic technique state blocker candidate_logic required_evidence</query>
+          <earliest>0</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">5</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="rowNumbers">0</option>
+      </table>
     </panel>
   </row>
 </dashboard>

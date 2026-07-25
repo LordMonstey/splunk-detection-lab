@@ -36,17 +36,7 @@ Windows ships `curl.exe` (since 1809) and `bitsadmin.exe` for legitimate use, bu
 ## Logic
 
 ```spl
-`sysmon_process_creation`
-(process_name="curl.exe" OR process_name="bitsadmin.exe")
-| where match(CommandLine, "(?i)https?://")
-   AND NOT match(CommandLine, "(?i)https?://(127\.|localhost|10\.|172\.(1[6-9]|2[0-9]|3[01])\.|192\.168\.)")
-| `cim_endpoint_processes_rename`
-| stats count min(_time) as firstTime max(_time) as lastTime
-        values(CommandLine) as commandlines
-        values(parent_process_name) as parents
-        by dest user process_name process_guid
-| `security_content_ctime(firstTime)`
-| `security_content_ctime(lastTime)`
+`sysmon_process_creation` (Image="*\\curl.exe" OR Image="*\\bitsadmin.exe") | where match(CommandLine, "(?i)https?://") AND NOT match(CommandLine, "(?i)https?://(127\\.|localhost|10\\.|172\\.(1[6-9]|2[0-9]|3[01])\\.|192\\.168\\.)") | `cim_endpoint_processes_rename` | stats count min(_time) as firstTime max(_time) as lastTime values(CommandLine) as commandlines values(parent_process_name) as parents by dest user process_name process_guid
 ```
 
 ## Known false positives

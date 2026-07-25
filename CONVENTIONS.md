@@ -44,7 +44,7 @@ No detection is merged without a populated `validation` section pointing to a re
 
 ### 3.1 Never hardcode `index=`
 
-All searches reference macros from [`macros/macros.conf`](../macros/macros.conf):
+All searches reference macros from [`macros/macros.conf`](macros/macros.conf):
 
 ```spl
 `sysmon_process_creation`
@@ -58,7 +58,11 @@ index=sysmon EventCode=1
 | where match(CommandLine, "(?i)-enc(odedcommand)?")
 ```
 
-### 3.2 Prefer `tstats` against accelerated data models for high-volume rules
+### 3.2 Use `tstats` only when an accelerated data model is deployed
+
+The current lab does not ship an accelerated CIM data model, so its detections
+use raw-event macros. In a deployment that provides and validates acceleration,
+high-volume rules should prefer `tstats`:
 
 ```spl
 | tstats summariesonly=t count from datamodel=Endpoint.Processes
@@ -118,7 +122,7 @@ If you cannot name the FP, the detection is not ready.
 - Filename: lowercase, snake_case, `.csv`
 - Header row mandatory
 - One concept per lookup (do not stuff asset + identity + allowlist into one CSV)
-- Bound to a `lookups.conf` entry with a stable lookup name
+- Bound to a `transforms.conf` entry with a stable lookup name
 
 ---
 

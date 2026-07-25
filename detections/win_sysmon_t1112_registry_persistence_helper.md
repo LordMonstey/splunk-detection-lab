@@ -42,23 +42,7 @@ A short list of registry keys are reliable persistence/hijack mechanisms: Image 
 ## Logic
 
 ```spl
-`sysmon_registry_event` EventID=13
-( TargetObject="*\\Image File Execution Options\\*\\Debugger*"
-   OR TargetObject="*\\Image File Execution Options\\*\\GlobalFlag*"
-   OR TargetObject="*\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\Userinit*"
-   OR TargetObject="*\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\Shell*"
-   OR TargetObject="*\\Microsoft\\Windows NT\\CurrentVersion\\Windows\\AppInit_DLLs*"
-   OR TargetObject="*\\Active Setup\\Installed Components\\*\\StubPath*" )
-| eval writer = mvindex(split(Image,"\\"), -1)
-| where NOT match(writer, "(?i)^(TrustedInstaller|msiexec|setup|wuauclt|svchost)\.exe$")
-| `cim_endpoint_processes_rename`
-| stats count min(_time) as firstTime max(_time) as lastTime
-        values(TargetObject) as registry_keys
-        values(Details) as registry_values
-        values(writer) as writers
-        by dest user process_guid
-| `security_content_ctime(firstTime)`
-| `security_content_ctime(lastTime)`
+`sysmon_registry_event` EventID=13 (TargetObject="*\\Image File Execution Options\\*\\Debugger*" OR TargetObject="*\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\Userinit*" OR TargetObject="*\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\Shell*" OR TargetObject="*\\Microsoft\\Windows NT\\CurrentVersion\\Windows\\AppInit_DLLs*" OR TargetObject="*\\Active Setup\\Installed Components\\*\\StubPath*") | eval writer = mvindex(split(Image,"\\"), -1) | where NOT match(writer, "(?i)^(TrustedInstaller|msiexec|setup|wuauclt|svchost)\\.exe$") | `cim_endpoint_processes_rename` | stats count min(_time) as firstTime max(_time) as lastTime values(TargetObject) as registry_keys values(Details) as registry_values values(writer) as writers by dest user process_guid
 ```
 
 ## Known false positives
