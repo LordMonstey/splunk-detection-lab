@@ -337,15 +337,24 @@ def validate_security_txt() -> list[str]:
 
 
 def main() -> int:
-    errors = (
-        validate_html()
-        + validate_text_files()
-        + validate_png_files()
-        + validate_security_txt()
-    )
-    if errors:
-        for error in errors:
-            print(f"ERROR: {error}", file=sys.stderr)
+    validation_groups = {
+        "HTML and policy": validate_html(),
+        "public text": validate_text_files(),
+        "PNG integrity and metadata": validate_png_files(),
+        "security.txt": validate_security_txt(),
+    }
+    failed_groups = {
+        label: len(findings)
+        for label, findings in validation_groups.items()
+        if findings
+    }
+    if failed_groups:
+        for label, finding_count in failed_groups.items():
+            print(
+                f"ERROR: {label} validation failed ({finding_count} finding(s); "
+                "details withheld from shared logs)",
+                file=sys.stderr,
+            )
         return 1
     file_count = sum(1 for path in SITE.rglob("*") if path.is_file())
     print(f"OK: static portfolio security and integrity validated ({file_count} files)")
