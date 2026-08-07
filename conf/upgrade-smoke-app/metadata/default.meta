@@ -1,0 +1,7 @@
+[]
+access = read : [ admin ], write : [ admin ]
+export = system
+
+[views/upgrade_qualification]
+access = read : [ admin ], write : [ admin ]
+export = app

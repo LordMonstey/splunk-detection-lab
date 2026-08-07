@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-06T19:47:46.663341+00:00",
+  "scope": "private Splunk Enterprise cluster underpinning an ES administration lab",
+  "platform_version": "10.2.1",
+  "topology": {
+    "cluster_manager": 1,
+    "indexer_peers": 2,
+    "search_heads": 1,
+    "replication_factor": 2,
+    "search_factor": 2
+  },
+  "test": {
+    "action": "controlled restart of one indexer peer",
+    "baseline_health": {
+      "all_peers_are_up": true,
+      "replication_factor_met": true,
+      "search_factor_met": true,
+      "all_data_is_searchable": true,
+      "no_fixup_tasks_in_progress": true,
+      "pre_flight_check": true
+    },
+    "baseline_peers": [
+      {
+        "label": "splunk-idx-02",
+        "status": "Up"
+      },
+      {
+        "label": "splunk-idx-01",
+        "status": "Up"
+      }
+    ],
+    "during_restart_health": {
+      "all_peers_are_up": false,
+      "replication_factor_met": false,
+      "search_factor_met": false,
+      "all_data_is_searchable": true,
+      "no_fixup_tasks_in_progress": true,
+      "pre_flight_check": false
+    },
+    "search_continuity": {
+      "success": true,
+      "events_returned": 18812,
+      "serving_peer_role": "indexer-2"
+    },
+    "recovered_health": {
+      "all_peers_are_up": true,
+      "replication_factor_met": true,
+      "search_factor_met": true,
+      "all_data_is_searchable": true,
+      "no_fixup_tasks_in_progress": true,
+      "pre_flight_check": true
+    },
+    "recovered_peers": [
+      {
+        "label": "splunk-idx-01",
+        "status": "Up"
+      },
+      {
+        "label": "splunk-idx-02",
+        "status": "Up"
+      }
+    ],
+    "recovery_duration_seconds": 222.0
+  },
+  "security": {
+    "credentials_included": false,
+    "private_addresses_included": false,
+    "raw_events_included": false
+  }
+}

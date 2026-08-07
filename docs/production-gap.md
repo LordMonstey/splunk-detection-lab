@@ -1,60 +1,76 @@
-# Production Gap
+# Modèle d’exploitation et passage à l’échelle
 
-What this lab does well, and what would have to change before any of it ran in a real SOC. The intent here is not to pad the README — it is to be honest about scope, because pretending a single-host lab is production-ready is the fastest way to lose credibility in an interview.
+Ce document transforme les limites de capacité d’une instance standalone en
+décisions d’architecture explicites. Il ne modifie pas les compétences
+démontrées dans le dépôt : normalisation, contenu, validation, RBA,
+administration et investigation restent les mêmes responsabilités.
 
-## What translates directly
+## Invariants qui survivent au scale-out
 
-- Detection-as-code workflow, file format, and review process
-- Macro-based abstraction (`sysmon_process_creation` etc.) — same approach used in production Splunk apps
-- ATT&CK-mapped detections with documented FPs and tuning strategy
-- Atomic Red Team validation as a gate for `testing → production` promotion
+- contenu versionné dans une application Splunk ;
+- séparation des indexes par domaine et politique de rétention ;
+- parsing et normalisation testés avant promotion ;
+- tuning porté par lookups et macros, pas par copies de SPL ;
+- validation avec dataset reproductible et métriques de runtime ;
+- risk modifiers immuables, finding dédupliqué, historique auditable ;
+- build déterministe, revue, manifeste et capacité de rollback.
 
-## What would change
+## Topologie cible selon la charge
 
-### Telemetry coverage
+| Déclencheur mesuré | Évolution | Contrôle attendu |
+|---|---|---|
+| Concurrence de recherche et scheduler | Search Head Cluster | captain, bundle replication, search quotas, workload management |
+| Débit/indexation et rétention | Indexer Cluster | RF/SF, bucket fix-up, capacité disque, IOPS, SmartStore si pertinent |
+| Parc important de forwarders | Deployment Server | server classes, apps immuables, canary ring, phone-home monitoring |
+| Parsing/routage complexe | Heavy Forwarder ou pipeline dédié | files d’attente, backpressure, masquage, routage déterministe |
+| Multiples équipes | RBAC et espaces applicatifs | rôles analyst/admin/auteur, capabilities, permissions par index |
 
-| Lab | Production |
-|---|---|
-| Sysmon + native event log only | Sysmon + EDR (CrowdStrike / Defender for Endpoint / SentinelOne) + DNS + proxy + firewall + cloud audit |
-| One Windows host | Tens of thousands; tiered onboarding via deployment server / Cribl |
-| No network telemetry | Zeek or NDR feeding `index=netflow` / `index=zeek` |
-| No identity context beyond a hand-edited `identity.csv` | Live AD / IdP feed populating `identity_lookup`, refreshed hourly |
-| No CTI | TI feeds via threat intel framework, IOC hits enriching alerts |
+Le choix n’est jamais « cluster parce que cela sonne senior ». Il dépend de la
+concurrence, du débit, des SLO et des domaines de panne observés.
 
-### Architecture
+## Data onboarding à l’échelle
 
-- **Indexer cluster** instead of a single indexer — replication factor and search factor planned around RF=2 / SF=2 minimum
-- **Search head cluster** with captain election when more than two analysts are on the platform
-- **Heavy forwarders** (or Cribl Stream) in front of the indexers for routing, masking, and protocol translation
-- **SmartStore** with S3 / Azure Blob backing for cold buckets — retention extended to 13 months at far lower cost
-- **Deployment server** pushing UF configs (the `conf/uf/` directory becomes a deployment app, not a manual copy)
+1. définir propriétaire, finalité, volume/jour, rétention et criticité ;
+2. choisir index, sourcetype et méthode de collecte ;
+3. valider timestamp, line breaking, encoding et déduplication ;
+4. mesurer les champs CIM requis et documenter les champs absents ;
+5. créer les assets/identities et les contrôles de qualité ;
+6. rejouer un échantillon connu avant ouverture du flux complet ;
+7. surveiller fraîcheur, EPS, parsing failures et dérive de volume.
 
-### Detection lifecycle
+## Exploitation de la Detection Factory
 
-- Saved searches would remain version-controlled in a Splunk app and be promoted
-  through reviewed deployment stages rather than edited through Splunk Web.
-- Promotion from `testing` to `production` would add peer review plus a measured
-  false-positive threshold over a representative observation window.
-- Quarterly purple-team campaigns rather than ad-hoc Atomic runs
-- Detection deprecation process — rules with zero TPs in 6 months are reviewed for removal
+- CI : syntaxe, cohérence IDs, macros/lookups référencés, ATT&CK, tests SPL ;
+- canary : dispatch sur fenêtre contrôlée et comparaison au résultat attendu ;
+- observation : bruit, coût de recherche, retard scheduler, faux positifs ;
+- promotion : revue pair, preuve, seuils documentés et plan de rollback ;
+- maintenance : ownership, date de dernière validation, dette de tuning et
+  dépréciation des règles sans valeur.
 
-### Alerting & response
+## Passage au RBA natif Enterprise Security
 
-- The configured `notable` summary target would be replaced by Enterprise
-  Security correlation-search actions and Incident Review.
-- Risk-Based Alerting would be implemented through the ES risk framework. The
-  lab's `risk` index is currently reserved and has no active producer; it is not
-  a manual RBA implementation.
-- SOAR (Phantom / XSOAR / Tines) playbooks corresponding to every runbook in `docs/runbooks/`
-- Pager / on-call rotation tied to severity, not single-person triage
+Le pipeline actuel rend l’intention portable : objet risque, type d’objet,
+score, message, technique, détection et contexte. Avec Splunk ES, ces champs
+sont branchés aux actions de risque natives, aux règles de finding, à Mission
+Control et aux workflows analystes. Les contrôles à conserver sont :
 
-### Compliance & access
+- stabilité de l’identité de l’entité ;
+- bornes et normalisation du score ;
+- déduplication déterministe ;
+- seuil de diversité technique ;
+- fenêtre de corrélation et late-arriving data ;
+- permission sur les indexes et audit des modifications.
 
-- RBAC: separate roles for analysts, detection authors, and admins; per-index access controls
-- Audit trail on saved-search modifications
-- Data masking at indexing time for PII-bearing sourcetypes
-- Backups and disaster recovery procedures
+## SLO et reprise
 
-## Why this matters
+| SLO | Mesure | Réponse |
+|---|---|---|
+| Fraîcheur des données | `_indextime - _time` par source | diagnostic UF/queue/indexing |
+| Respect du scheduler | `dispatch_time`, skipped searches | tuning SPL, quotas ou capacité |
+| Qualité CIM | complétude des champs requis | corriger parsing/alias avant contenu |
+| Coût des recherches | scan count, runtime, cardinalité | filtrage initial, datamodel/summary si justifié |
+| Disponibilité du contenu | build installé et objets activés | rollback applicatif versionné |
+| Reprise plateforme | RTO/RPO testés | backup KV/config, restauration et validation |
 
-A production SOC platform is not a lab plus more hosts; it is a different system with different failure modes (pipeline backpressure, schedule contention, search head load, license accounting, ingestion lag). The work in this lab is the *content* that runs on top of that platform. Knowing the difference is part of the L2/L3 → senior transition.
+La maturité ne consiste pas à masquer les contraintes : elle consiste à les
+convertir en seuils, contrôles et décisions reproductibles.

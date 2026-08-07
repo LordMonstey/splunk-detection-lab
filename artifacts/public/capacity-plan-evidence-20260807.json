@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-07T12:37:47.540754+00:00",
+  "scope": "isolated-lab-capacity-model",
+  "environment": {
+    "version": "10.2.1",
+    "build": "c892b66d163d",
+    "product_type": "splunk",
+    "licenseState": "OK"
+  },
+  "observations": {
+    "license_usage_days": 2,
+    "daily_ingest_gib": {
+      "p50": 0.6882,
+      "p95": 1.3073,
+      "peak": 1.3761
+    },
+    "public_index_db_size_mb": 80.0,
+    "public_index_event_count": 501705,
+    "indexes": [
+      {
+        "index": "notable",
+        "current_db_size_mb": 1.0,
+        "event_count": 2,
+        "configured_max_size_mb": 1000,
+        "configured_retention_days": 365.0,
+        "observed_ingest_span_days": 1.0,
+        "observed_storage_mb_per_day": 1.0
+      },
+      {
+        "index": "risk",
+        "current_db_size_mb": 1.0,
+        "event_count": 19,
+        "configured_max_size_mb": 1000,
+        "configured_retention_days": 365.0,
+        "observed_ingest_span_days": 1.0,
+        "observed_storage_mb_per_day": 1.0
+      },
+      {
+        "index": "sysmon",
+        "current_db_size_mb": 1.0,
+        "event_count": 148,
+        "configured_max_size_mb": 12000,
+        "configured_retention_days": 90.0,
+        "observed_ingest_span_days": 1.0,
+        "observed_storage_mb_per_day": 1.0
+      },
+      {
+        "index": "windows",
+        "current_db_size_mb": 1.0,
+        "event_count": 4,
+        "configured_max_size_mb": 8000,
+        "configured_retention_days": 90.0,
+        "observed_ingest_span_days": 1.0,
+        "observed_storage_mb_per_day": 1.0
+      },
+      {
+        "index": "winlab",
+        "current_db_size_mb": 76.0,
+        "event_count": 501532,
+        "configured_max_size_mb": 5000,
+        "configured_retention_days": 90.0,
+        "observed_ingest_span_days": 1.0,
+        "observed_storage_mb_per_day": 76.0
+      }
+    ]
+  },
+  "design_assumptions": {
+    "retention_days": 90,
+    "replication_factor": 2,
+    "search_factor": 2,
+    "storage_to_ingest_ratio": 0.5,
+    "storage_headroom_percent": 30.0,
+    "license_headroom_percent": 20,
+    "baseline_daily_ingest": "observed 30-day p95; public-index footprint fallback if unavailable"
+  },
+  "scenarios": [
+    {
+      "name": "baseline",
+      "growth_percent": 0,
+      "planned_daily_ingest_gib": 1.3073,
+      "planned_licensed_ingest_gib_per_day_at_20pct_headroom": 1.6341,
+      "estimated_cluster_storage_gib": 152.955
+    },
+    {
+      "name": "growth_25",
+      "growth_percent": 25,
+      "planned_daily_ingest_gib": 1.6341,
+      "planned_licensed_ingest_gib_per_day_at_20pct_headroom": 2.0427,
+      "estimated_cluster_storage_gib": 191.193
+    },
+    {
+      "name": "growth_50",
+      "growth_percent": 50,
+      "planned_daily_ingest_gib": 1.961,
+      "planned_licensed_ingest_gib_per_day_at_20pct_headroom": 2.4512,
+      "estimated_cluster_storage_gib": 229.432
+    }
+  ],
+  "operational_thresholds": {
+    "review_license_at_percent": 80,
+    "review_storage_at_percent": 70,
+    "escalate_storage_at_percent": 85,
+    "minimum_free_hot_warm_percent": 15
+  },
+  "limitations": [
+    "Lab observations are not a substitute for production ingest telemetry.",
+    "Storage-to-ingest ratio must be recalibrated with measured compression and tsidx footprint.",
+    "Search concurrency, IOPS and CPU sizing require workload-specific load tests.",
+    "Replication factor is a design multiplier; the standalone source VM is not claimed as clustered."
+  ],
+  "acceptance": {
+    "live_server_queried": true,
+    "index_inventory_collected": true,
+    "license_telemetry_queried": true,
+    "three_growth_scenarios": true,
+    "assumptions_explicit": true,
+    "sensitive_values_excluded": true
+  },
+  "overall_pass": true
+}

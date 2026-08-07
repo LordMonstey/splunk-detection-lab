@@ -64,8 +64,8 @@ reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v atomic-test /
 ```
 
 
-**Validated**: 2026-04-29 by manual reproduction on lab host `win10-sysmon-client`
-**Evidence**: [`tests/atomic/evidence/T1547.001-run-key.png`](../tests/atomic/evidence/T1547.001-run-key.png)
+**Validated**: 2026-04-29 by manual reproduction on an isolated Windows lab endpoint.
+**Public evidence**: [aggregate live validation: 2 results, dispatch complete](../artifacts/public/live-detection-validation-20260806.json). Registry values and raw events remain private.
 **Latency observed**: < 30 seconds
 **FP discovered**: OneDrive `OneDriveSetup.exe` writes RunOnce keys for
 self-cleanup. The observation is recorded in

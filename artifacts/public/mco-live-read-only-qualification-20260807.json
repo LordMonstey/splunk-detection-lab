@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "artifact_type": "splunk_mco_live_read_only_qualification",
+  "generated_at_utc": "2026-08-07T14:08:26.980659+00:00",
+  "status": "PASS",
+  "evidence_class": "live_read_only_observation",
+  "target": {
+    "fqdn": "splunk-probe.lab.test",
+    "platform": "Splunk Enterprise",
+    "version": "9.4.13",
+    "build": "1d070b2427bf",
+    "product_type": "enterprise"
+  },
+  "transport": {
+    "https": true,
+    "ca_verified": true,
+    "hostname_verified": true,
+    "ca_certificate_sha256": "9019ea25cc055f07e61ad3ed44e01924682a75d75163f5f4e0bb71575e356c3c",
+    "splunk_api_methods_after_authentication": [
+      "GET",
+      "POST_EXPORT"
+    ],
+    "read_only_endpoint_allowlist_enforced": true
+  },
+  "collection": {
+    "endpoint_count": 7,
+    "all_allowlisted_endpoints_observed": true,
+    "aggregate_search_exported": true,
+    "search_dispatched": true,
+    "search_job_created": false,
+    "configuration_changed": false,
+    "incident_injected": false,
+    "raw_events_read": false,
+    "mutating_spl_commands_allowed": false
+  },
+  "controls": {
+    "health_and_kv": {
+      "status": "PASS",
+      "splunkd_health": "green",
+      "kv_store_status": "ready",
+      "kv_status_source": "server_info",
+      "kv_replication_observed": false,
+      "limitation": "The standalone Web proxy exposes KV readiness but not replication introspection."
+    },
+    "license": {
+      "status": "PASS",
+      "license_state": "OK",
+      "usage_percent": 0.001,
+      "maximum_allowed_percent": 90.0,
+      "message_severity_counts": {},
+      "critical_message_count": 0
+    },
+    "scheduler": {
+      "status": "PASS",
+      "disposition": "OBSERVED",
+      "scope": "configuration_inventory_only",
+      "scheduled_count": 1,
+      "enabled_scheduled_count": 1,
+      "enabled_with_next_time_count": 1,
+      "skip_history_observed": false,
+      "limitation": "Historical skips require search dispatch and are outside this control."
+    },
+    "capacity_and_freshness": {
+      "status": "PASS",
+      "public_index_count": 9,
+      "populated_index_count": 1,
+      "freshness_observed_index_count": 1,
+      "freshest_event_age_seconds": 13,
+      "maximum_freshness_age_seconds": 86400,
+      "maximum_index_fill_percent": 0.1,
+      "maximum_allowed_index_fill_percent": 80.0,
+      "future_clock_anomaly_count": 0,
+      "index_names_included": false,
+      "raw_events_read": false,
+      "freshness_method": "aggregate_tstats_export_no_sid"
+    },
+    "certificate": {
+      "protocol": "TLSv1.2",
+      "cipher": "ECDHE-RSA-AES256-GCM-SHA384",
+      "days_remaining": 396,
+      "dns_sans": [
+        "splunk-probe.lab.test"
+      ],
+      "sha256_fingerprint": "e2c36f60386775820a1706fee4de4f315b9764d70de2672417c477d3fc7c1191",
+      "chain_verified": true,
+      "hostname_verified": true,
+      "status": "PASS",
+      "minimum_days_required": 30
+    }
+  },
+  "proof_boundary": {
+    "live_observation": true,
+    "simulation_fixture": false,
+    "proves_incident_remediation": false,
+    "proves_scheduler_skip_history": false,
+    "native_enterprise_security_claimed": false,
+    "standalone_laboratory_scope": true
+  },
+  "security": {
+    "excluded": [
+      "credentials",
+      "cookies",
+      "private addresses",
+      "real host names",
+      "index names",
+      "saved search names",
+      "raw events",
+      "search text"
+    ],
+    "only_lab_test_dns_names_allowed": true
+  }
+}

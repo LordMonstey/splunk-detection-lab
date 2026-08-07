@@ -59,11 +59,11 @@ mshta.exe vbscript:Close(Execute("CreateObject(""Wscript.Shell"").Run ""calc.exe
 ```
 
 
-**Validated**: 2026-04-30 via Atomic Red Team T1218.005-2 (Mshta executes VBScript to execute malicious command) on lab host `win10-sysmon-client`.
+**Validated**: 2026-04-30 via Atomic Red Team T1218.005-2 (Mshta executes VBScript to execute a controlled command) on an isolated Windows lab endpoint.
 
 The CommandLine `mshta vbscript:Execute("CreateObject(...).Run(...)")` is the smoking gun. Atomic launches it via cmd.exe spawning powershell, but in real attacks mshta is usually launched by Office macros or HTA download cradles.
 
-**Evidence**: ![evidence](../tests/atomic/evidence/T1218.005-mshta-vbscript.png)
+**Public evidence**: [aggregate validation report](../artifacts/public/live-detection-validation-20260806.json). Dispatch completed without error; no positive scenario is claimed for that published campaign.
 
 **Test command**: `Invoke-AtomicTest T1218.005 -TestNumbers 2`
 

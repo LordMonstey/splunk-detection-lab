@@ -1,0 +1,16 @@
+domain,control,source,green_condition,frequency,evidence,runbook
+Platform,splunkd health,/services/server/health/splunkd/details,All required features green,Continuous,Admin Operations Center,docs/platform-assurance.md
+Platform,Service inventory,/services/server/info,Expected version and roles,Daily,REST inventory,docs/platform-assurance.md
+Licensing,License consumption,/services/licenser/pools,Consumption below licensed quota,Daily,License panel,docs/platform-assurance.md
+Storage,Index capacity,/services/data/indexes,Retention and capacity within policy,Daily,Capacity panel,docs/platform-assurance.md
+Storage,KV Store health,/services/kvstore/status,State ready and backup current,Daily,Health report,docs/enterprise-security-recovery.md
+Scheduler,Scheduled search reliability,_internal scheduler.log,No unexplained skipped critical search,Hourly,Scheduler panel,docs/platform-assurance.md
+Ingestion,Source freshness,tstats latest event time,Critical source within freshness SLO,Hourly,Freshness panel,docs/runbooks/troubleshooting-ingestion.md
+Configuration,Effective configuration,splunk btool check,No syntax error or unexpected override,Every change,btool evidence,docs/platform-assurance.md
+Change,Application package,Manifest SHA-256,Package reproducible and validated,Every release,Build manifest,docs/architecture.md
+TLS,Certificate lifecycle,Certificate register,Valid chain SAN and expiry above 60 days,Weekly,TLS register,docs/runbooks/tls-certificate-lifecycle.md
+Upgrade,Upgrade readiness,Compatibility and preflight gates,All mandatory gates passed,Every upgrade,Change report,docs/runbooks/splunk-es-upgrade-rollback.md
+Cluster,Indexer RF and SF,Cluster Manager status,RF and SF met with no fix-up,Continuous,Cluster health report,docs/runbooks/cluster-mco-resilience.md
+Cluster,SHC quorum and captain,SHC status,Stable captain and member quorum,Continuous,SHC health report,docs/runbooks/cluster-mco-resilience.md
+Continuity,Backup and restore,Restore test report,RTO and RPO met,Monthly,Recovery evidence,docs/enterprise-security-recovery.md
+Reporting,MCO service review,Control register,Every red control owned and dated,Weekly,MCO report,docs/splunk-es-admin-program.md

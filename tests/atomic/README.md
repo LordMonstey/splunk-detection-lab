@@ -1,4 +1,4 @@
-# Atomic Red Team — Test Mapping
+# Atomic Red Team - Test Mapping
 
 This file maps every detection in `detections/` to one or more Atomic Red Team test IDs. Use it as the work list for Phase 3 validation.
 
@@ -11,11 +11,16 @@ This file maps every detection in `detections/` to one or more Atomic Red Team t
    Invoke-AtomicTest <TID>.<sub> -TestNumbers <n>
    ```
 3. In Splunk, run the detection's SPL within a tight time window
-4. Capture the saved-search result and relevant raw event(s) in
-   `tests/atomic/evidence/`
+4. Store raw events only in the ignored private evidence area. Publish an
+   aggregate JSON result with host, user, SID, GUID, command line, URI and
+   private address removed.
 5. Promote `coverage/coverage.md` only when the expected rule result is proven
 6. Set the Navigator score to 100 only after successful promotion
 7. Always cleanup: `Invoke-AtomicTest <TID>.<sub> -TestNumbers <n> -Cleanup`
+
+The public reference campaign is
+[`artifacts/public/live-detection-validation-20260806.json`](../../artifacts/public/live-detection-validation-20260806.json).
+It exposes counts, dispatch state and runtime only.
 
 ## Test list
 

@@ -1,0 +1,224 @@
+{
+  "schema_version": 2,
+  "generated_at": "2026-08-07T14:05:16.157037+00:00",
+  "scope": "sanitized-live-splunk-enterprise-mco-evidence",
+  "status_model": {
+    "PASS": "contrôle observé et conforme",
+    "WATCH": "dégradation, fenêtre insuffisante ou signal incomplet",
+    "FAIL": "défaillance, état critique ou contrôle essentiel indisponible"
+  },
+  "environment": {
+    "version": "9.4.13",
+    "build": "1d070b2427bf",
+    "product_type": "enterprise",
+    "licenseState": "OK",
+    "deployment_scope": "standalone",
+    "native_enterprise_security_installed": false,
+    "native_enterprise_security_active": false,
+    "native_cim_addon_installed": false,
+    "native_cim_addon_active": false
+  },
+  "transport": {
+    "mode": "web",
+    "tls_enabled": true,
+    "ca_validation": true,
+    "hostname_verification": true,
+    "csrf_protected_web_session": true
+  },
+  "verdict": {
+    "status": "WATCH",
+    "summary": "Points à surveiller : Historique licence.",
+    "failed_checks": 0,
+    "watch_checks": 1
+  },
+  "checks": [
+    {
+      "id": "splunkd_health",
+      "label": "Santé Splunk",
+      "status": "PASS",
+      "summary": "Synthèse serveur=green; service splunkd=green."
+    },
+    {
+      "id": "kv_store",
+      "label": "KV Store",
+      "status": "PASS",
+      "summary": "État déclaré=ready."
+    },
+    {
+      "id": "license_state",
+      "label": "Licence",
+      "status": "PASS",
+      "summary": "État=OK; avertissements=0; critiques=0; lecture des messages=success."
+    },
+    {
+      "id": "license_telemetry_window",
+      "label": "Historique licence",
+      "status": "WATCH",
+      "summary": "Jours avec télémétrie licence=1; fenêtre trop courte pour une tendance robuste."
+    },
+    {
+      "id": "scheduler",
+      "label": "Scheduler 24 h",
+      "status": "PASS",
+      "summary": "Exécutions statusées=12; succès=12; sautées=0; échecs=0; autres statuts=0; comptabilisées=12; lignes de log sans statut=140 (hors exécutions)."
+    },
+    {
+      "id": "queues",
+      "label": "Queues 15 min",
+      "status": "PASS",
+      "summary": "Files observées=6; remplissage maximal=0.78%."
+    },
+    {
+      "id": "index_capacity",
+      "label": "Capacité indexes",
+      "status": "PASS",
+      "summary": "Indexes observés=9; occupation maximale=0.10%; limites inconnues=0."
+    }
+  ],
+  "scheduler": {
+    "query_status": "success",
+    "log_events": 152,
+    "executions": 12,
+    "success": 12,
+    "skipped": 0,
+    "failed": 0,
+    "other_status": 0,
+    "events_without_status": 140,
+    "interpretation": "Seules les lignes portant un champ status non vide sont comptées comme exécutions; les autres restent une catégorie de journal distincte et ne sont pas assimilées à des recherches sautées."
+  },
+  "queues": {
+    "query_status": "success",
+    "maximum_fill_percent": 0.78,
+    "top_queues": [
+      {
+        "name": "aggqueue",
+        "latest_fill_pct": 0.0,
+        "max_fill_pct": 0.78
+      },
+      {
+        "name": "typingqueue",
+        "latest_fill_pct": 0.0,
+        "max_fill_pct": 0.4
+      },
+      {
+        "name": "parsingqueue",
+        "latest_fill_pct": 0.0,
+        "max_fill_pct": 0.11
+      },
+      {
+        "name": "auditqueue",
+        "latest_fill_pct": 0.0,
+        "max_fill_pct": 0.0
+      },
+      {
+        "name": "indexqueue",
+        "latest_fill_pct": 0.0,
+        "max_fill_pct": 0.0
+      },
+      {
+        "name": "nullqueue",
+        "latest_fill_pct": 0.0,
+        "max_fill_pct": 0.0
+      }
+    ]
+  },
+  "license": {
+    "message_severity_counts": {},
+    "message_query_status": "success",
+    "usage_query_status": "success",
+    "observed_usage_days": 1,
+    "requested_window_days": 30
+  },
+  "index_capacity": [
+    {
+      "index": "notable",
+      "current_db_size_mb": 1.0,
+      "configured_max_size_mb": 1000.0,
+      "fill_percent": 0.1,
+      "retention_days": 365.0
+    },
+    {
+      "index": "risk",
+      "current_db_size_mb": 1.0,
+      "configured_max_size_mb": 1000.0,
+      "fill_percent": 0.1,
+      "retention_days": 365.0
+    },
+    {
+      "index": "history",
+      "current_db_size_mb": 1.0,
+      "configured_max_size_mb": 5000.0,
+      "fill_percent": 0.02,
+      "retention_days": 7.0
+    },
+    {
+      "index": "main",
+      "current_db_size_mb": 1.0,
+      "configured_max_size_mb": 5000.0,
+      "fill_percent": 0.02,
+      "retention_days": 90.0
+    },
+    {
+      "index": "os_linux",
+      "current_db_size_mb": 1.0,
+      "configured_max_size_mb": 5000.0,
+      "fill_percent": 0.02,
+      "retention_days": 90.0
+    },
+    {
+      "index": "summary",
+      "current_db_size_mb": 1.0,
+      "configured_max_size_mb": 5000.0,
+      "fill_percent": 0.02,
+      "retention_days": 90.0
+    },
+    {
+      "index": "windows",
+      "current_db_size_mb": 1.0,
+      "configured_max_size_mb": 8000.0,
+      "fill_percent": 0.013,
+      "retention_days": 90.0
+    },
+    {
+      "index": "sysmon",
+      "current_db_size_mb": 1.0,
+      "configured_max_size_mb": 12000.0,
+      "fill_percent": 0.008,
+      "retention_days": 90.0
+    },
+    {
+      "index": "splunklogger",
+      "current_db_size_mb": 0.0,
+      "configured_max_size_mb": 5000.0,
+      "fill_percent": 0.0,
+      "retention_days": 90.0
+    }
+  ],
+  "capacity_context": {
+    "license_usage_days": 2,
+    "fitness": "illustrative_only",
+    "relationship_to_live_collection": "separate_lab_evidence"
+  },
+  "limitations": [
+    "Instance standalone : aucun RF/SF, search head cluster, rolling restart ou test de continuité distribué n'est couvert par cette collecte.",
+    "Splunk Enterprise Security natif et Splunk_SA_CIM ne sont pas actifs : ce rapport couvre Splunk Enterprise, pas les workflows ES.",
+    "La tendance licence live repose sur 1 jour(s) observé(s) dans la fenêtre de 30 jours.",
+    "Les métriques sont ponctuelles et ne constituent ni un SLO de production ni une preuve de dimensionnement.",
+    "Un modèle de capacité public séparé repose sur 2 jour(s) de télémétrie licence et reste illustratif."
+  ],
+  "overall_status": "WATCH",
+  "security": {
+    "excluded": [
+      "credentials",
+      "tokens",
+      "URI",
+      "host name",
+      "private address",
+      "raw events",
+      "search identifiers"
+    ],
+    "standalone_html": true,
+    "external_assets": false,
+    "index_names_allowlisted_or_anonymized": true
+  }
+}

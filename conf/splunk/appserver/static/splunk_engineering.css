@@ -332,6 +332,145 @@
   color: #9bcf88 !important;
 }
 
+#risk_analysis_row .dashboard-cell:first-child,
+#factory_row .dashboard-cell:first-child {
+  width: 40% !important;
+}
+
+#risk_analysis_row .dashboard-cell:nth-child(2),
+#factory_row .dashboard-cell:nth-child(2) {
+  width: 34% !important;
+}
+
+#risk_analysis_row .dashboard-cell:last-child,
+#factory_row .dashboard-cell:last-child {
+  width: 26% !important;
+}
+
+#coverage_row .dashboard-cell:first-child,
+#quality_row .dashboard-cell:first-child,
+#finding_row .dashboard-cell:first-child,
+#assurance_row .dashboard-cell:first-child {
+  width: 64% !important;
+}
+
+#coverage_row .dashboard-cell:last-child,
+#quality_row .dashboard-cell:last-child,
+#finding_row .dashboard-cell:last-child,
+#assurance_row .dashboard-cell:last-child {
+  width: 36% !important;
+}
+
+#risk_analysis_row .dashboard-panel,
+#factory_row .dashboard-panel,
+#quality_row .dashboard-panel {
+  border-top: 2px solid var(--ops-purple) !important;
+}
+
+#entity_row .dashboard-panel,
+#validation_row .dashboard-panel,
+#freshness_row .dashboard-panel {
+  border-left: 3px solid var(--ops-blue) !important;
+}
+
+#finding_row .dashboard-panel:first-child,
+#timeline_row .dashboard-panel {
+  border-left: 3px solid var(--ops-red) !important;
+}
+
+.fieldset,
+.dashboard-form .fieldset {
+  margin: 0 12px 8px !important;
+  padding: 8px 12px !important;
+  border: 1px solid var(--ops-line) !important;
+  border-top: 2px solid var(--ops-green) !important;
+  border-radius: 0 !important;
+  background: #20262b !important;
+}
+
+.fieldset .input label,
+.fieldset .input-label {
+  color: var(--ops-quiet) !important;
+  font-family: var(--ops-mono) !important;
+  font-size: 8px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.fieldset select,
+.fieldset input,
+.fieldset .select2-choice {
+  border-color: var(--ops-line) !important;
+  border-radius: 0 !important;
+  background: #171c21 !important;
+  color: var(--ops-text) !important;
+  box-shadow: none !important;
+}
+
+#runbook_row .dashboard-panel {
+  border-top: 2px solid var(--ops-green) !important;
+}
+
+#runbook_row .panel-body.html {
+  padding: 0 !important;
+}
+
+.ops-runbook {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(150px, 1fr)) minmax(145px, 0.72fr);
+  background: #20262b;
+}
+
+.ops-runbook > div {
+  min-height: 92px;
+  padding: 14px;
+  border-right: 1px solid var(--ops-line);
+}
+
+.ops-runbook > div:last-child {
+  border-right: 0;
+}
+
+.ops-runbook small,
+.ops-runbook strong,
+.ops-runbook p {
+  display: block;
+}
+
+.ops-runbook small {
+  margin-bottom: 8px;
+  color: var(--ops-green);
+  font-family: var(--ops-mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+}
+
+.ops-runbook strong {
+  color: #edf0f2;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.ops-runbook p {
+  margin: 5px 0 0;
+  color: var(--ops-quiet);
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.ops-runbook__signature {
+  background: #1b2126;
+  text-align: right;
+}
+
+.ops-runbook__signature strong {
+  color: var(--ops-green);
+  font-family: var(--ops-mono);
+  font-size: 22px;
+}
+
 .shared-resultstable-resultstableheader {
   background: #1b2126 !important;
 }
@@ -369,7 +508,13 @@
   #scheduler_storage_row .dashboard-cell:first-child,
   #scheduler_storage_row .dashboard-cell:last-child,
   #control_row .dashboard-cell:first-child,
-  #control_row .dashboard-cell:last-child {
+  #control_row .dashboard-cell:last-child,
+  #risk_analysis_row .dashboard-cell,
+  #factory_row .dashboard-cell,
+  #coverage_row .dashboard-cell,
+  #quality_row .dashboard-cell,
+  #finding_row .dashboard-cell,
+  #assurance_row .dashboard-cell {
     width: 50% !important;
   }
 }
@@ -385,7 +530,13 @@
   #scheduler_storage_row .dashboard-cell:first-child,
   #scheduler_storage_row .dashboard-cell:last-child,
   #control_row .dashboard-cell:first-child,
-  #control_row .dashboard-cell:last-child {
+  #control_row .dashboard-cell:last-child,
+  #risk_analysis_row .dashboard-cell,
+  #factory_row .dashboard-cell,
+  #coverage_row .dashboard-cell,
+  #quality_row .dashboard-cell,
+  #finding_row .dashboard-cell,
+  #assurance_row .dashboard-cell {
     width: 100% !important;
     margin-bottom: 8px !important;
   }
@@ -405,5 +556,15 @@
   .ops-header__facts > div:last-child {
     grid-column: 1 / -1;
     border-bottom: 0;
+  }
+
+  .ops-runbook {
+    grid-template-columns: 1fr;
+  }
+
+  .ops-runbook > div {
+    min-height: 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--ops-line);
   }
 }

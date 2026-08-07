@@ -1,0 +1,235 @@
+<dashboard version="1.1" theme="dark" stylesheet="splunk_engineering.css">
+  <label>Splunk ES Admin Operations Center</label>
+  <description>Administration, MCO, capacity, ingestion, change and continuity controls for Splunk Enterprise Security.</description>
+
+  <row id="admin_header">
+    <panel>
+      <html>
+        <div class="ops-header">
+          <div class="ops-header__title">
+            <span>SPLUNK ES / ADMINISTRATION AND MCO</span>
+            <h1>Admin Operations Center</h1>
+            <p>Service health, capacity, data freshness, scheduler reliability, change readiness and continuity evidence.</p>
+          </div>
+          <div class="ops-header__facts">
+            <div><small>OPERATING MODEL</small><strong>ADMIN FIRST</strong><span>platform before content</span></div>
+            <div><small>CONTROL DOMAINS</small><strong>12</strong><span>health to continuity</span></div>
+            <div><small>CHANGE POLICY</small><strong>GATED</strong><span>preflight / smoke / rollback</span></div>
+            <div><small>DATA CONTRACT</small><strong>CIM</strong><span>freshness and completeness</span></div>
+            <div><small>EVIDENCE</small><strong>VERSIONED</strong><span>reports and runbooks</span></div>
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <row id="admin_kpis">
+    <panel>
+      <single>
+        <title>splunkd control plane</title>
+        <search>
+          <query>| rest /services/server/info
+| head 1
+| eval state="RESPONDING"
+| fields state</query>
+          <earliest>0</earliest><latest>now</latest>
+        </search>
+        <option name="colorMode">none</option><option name="drilldown">none</option>
+        <option name="showSparkline">0</option><option name="showTrendIndicator">0</option>
+        <option name="underLabel">MANAGEMENT REST</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Active indexes</title>
+        <search>
+          <query>| rest /services/data/indexes count=0
+| search disabled=0
+| stats count as active_indexes</query>
+          <earliest>0</earliest><latest>now</latest>
+        </search>
+        <option name="colorMode">none</option><option name="drilldown">none</option>
+        <option name="showSparkline">0</option><option name="showTrendIndicator">0</option>
+        <option name="underLabel">CAPACITY MANAGED</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Skipped searches / 24h</title>
+        <search>
+          <query>index=_internal source="*scheduler.log" status=skipped
+| stats count as skipped_searches</query>
+          <earliest>-24h</earliest><latest>now</latest>
+        </search>
+        <option name="colorMode">none</option><option name="drilldown">none</option>
+        <option name="showSparkline">0</option><option name="showTrendIndicator">0</option>
+        <option name="underLabel">SCHEDULER RELIABILITY</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Stale critical sources</title>
+        <search>
+          <query>| tstats latest(_time) as last_event where index=sysmon OR index=windows by index sourcetype
+| eval age_seconds=now()-last_event
+| where age_seconds&gt;900
+| stats count as stale_sources</query>
+          <earliest>0</earliest><latest>now</latest>
+        </search>
+        <option name="colorMode">none</option><option name="drilldown">none</option>
+        <option name="showSparkline">0</option><option name="showTrendIndicator">0</option>
+        <option name="underLabel">15 MINUTE SLO</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>MCO controls</title>
+        <search>
+          <query>| inputlookup admin_mco_control_register.csv
+| stats count as controls</query>
+          <earliest>0</earliest><latest>now</latest>
+        </search>
+        <option name="colorMode">none</option><option name="drilldown">none</option>
+        <option name="showSparkline">0</option><option name="showTrendIndicator">0</option>
+        <option name="underLabel">VERSIONED REGISTER</option>
+      </single>
+    </panel>
+  </row>
+
+  <row id="service_inventory">
+    <panel>
+      <table>
+        <title>Platform identity and server roles</title>
+        <search>
+          <query>| rest /services/server/info
+| head 1
+| eval role=mvjoin(server_roles,", ")
+| eval management_state="RESPONDING"
+| rename serverName as instance version as splunk_version build as splunk_build os_name as operating_system
+| table instance management_state splunk_version splunk_build operating_system role</query>
+          <earliest>0</earliest><latest>now</latest>
+        </search>
+        <option name="count">5</option><option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option><option name="rowNumbers">0</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>Health report / non-green features</title>
+        <search>
+          <query>| rest /services/server/health/splunkd/details count=0
+| eval state=upper(health)
+| where state!="GREEN"
+| rename feature as health_feature reason as diagnostic
+| table state health_feature diagnostic
+| appendpipe [ stats count | where count=0 | eval state="GREEN", health_feature="No active platform anomaly", diagnostic="Health endpoint returned no non-green feature" | fields state health_feature diagnostic ]</query>
+          <earliest>0</earliest><latest>now</latest>
+        </search>
+        <option name="count">8</option><option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option><option name="rowNumbers">0</option>
+      </table>
+    </panel>
+  </row>
+
+  <row id="capacity_scheduler">
+    <panel>
+      <table>
+        <title>Index capacity and retention</title>
+        <search>
+          <query>| rest /services/data/indexes count=0
+| search disabled=0
+| eval retention_days=round(frozenTimePeriodInSecs/86400,0)
+| eval used_mb=round(currentDBSizeMB,1)
+| eval capacity_pct=round((currentDBSizeMB/maxTotalDataSizeMB)*100,1)
+| eval state=case(capacity_pct&gt;=90,"ACTION",capacity_pct&gt;=75,"WATCH",1=1,"GREEN")
+| rename title as index maxTotalDataSizeMB as max_mb totalEventCount as lifetime_events
+| table state index lifetime_events used_mb max_mb capacity_pct retention_days
+| sort 0 - capacity_pct</query>
+          <earliest>0</earliest><latest>now</latest>
+        </search>
+        <option name="count">10</option><option name="dataOverlayMode">heatmap</option>
+        <option name="drilldown">none</option><option name="rowNumbers">0</option>
+      </table>
+    </panel>
+    <panel>
+      <chart>
+        <title>Scheduler outcomes / last 24 hours</title>
+        <search>
+          <query>index=_internal source="*scheduler.log"
+| eval outcome=case(status="success","SUCCESS",status="skipped","SKIPPED",isnotnull(status),upper(status),1=1,"OTHER")
+| timechart span=1h count by outcome useother=f usenull=f</query>
+          <earliest>-24h</earliest><latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option><option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">bottom</option><option name="height">310</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row id="ingestion_queues">
+    <panel>
+      <table>
+        <title>Critical source freshness</title>
+        <search>
+          <query>| tstats count latest(_time) as last_event where index=sysmon OR index=windows by index sourcetype host
+| eval age_seconds=now()-last_event
+| eval freshness=case(age_seconds&lt;=300,"GREEN",age_seconds&lt;=900,"WATCH",1=1,"ACTION")
+| eval last_seen=strftime(last_event,"%Y-%m-%d %H:%M:%S")
+| table freshness index sourcetype host count last_seen age_seconds
+| sort 0 - age_seconds</query>
+          <earliest>0</earliest><latest>now</latest>
+        </search>
+        <option name="count">10</option><option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option><option name="rowNumbers">0</option>
+      </table>
+    </panel>
+    <panel>
+      <chart>
+        <title>Queue pressure / last hour</title>
+        <search>
+          <query>index=_internal source="*metrics.log" group=queue
+| eval fill_pct=if(max_size_kb&gt;0,round((current_size_kb/max_size_kb)*100,1),0)
+| where fill_pct&gt;0
+| timechart span=5m max(fill_pct) by name limit=8 useother=f</query>
+          <earliest>-60m</earliest><latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option><option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">bottom</option><option name="height">310</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row id="mco_register">
+    <panel>
+      <table>
+        <title>MCO control register / owner-ready evidence map</title>
+        <search>
+          <query>| inputlookup admin_mco_control_register.csv
+| fields domain control source green_condition frequency evidence runbook
+| sort domain control</query>
+          <earliest>0</earliest><latest>now</latest>
+        </search>
+        <option name="count">15</option><option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option><option name="rowNumbers">0</option>
+      </table>
+    </panel>
+  </row>
+
+  <row id="change_continuity">
+    <panel>
+      <table>
+        <title>Change, TLS, upgrade and continuity gates</title>
+        <search>
+          <query>| inputlookup admin_mco_control_register.csv
+| search domain=Change OR domain=TLS OR domain=Upgrade OR domain=Cluster OR domain=Continuity
+| eval operating_gate=case(domain="TLS","CHAIN / SAN / EXPIRY / ROLLBACK",domain="Upgrade","COMPATIBILITY / BACKUP / SMOKE / ROLLBACK",domain="Cluster","RF-SF / QUORUM / ROLLING",domain="Continuity","RESTORE / RTO / RPO",1=1,"BTOOL / MANIFEST / SMOKE")
+| table domain control operating_gate frequency evidence runbook
+| sort domain control</query>
+          <earliest>0</earliest><latest>now</latest>
+        </search>
+        <option name="count">10</option><option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option><option name="rowNumbers">0</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>

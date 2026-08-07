@@ -1,0 +1,133 @@
+{
+  "acceleration": {
+    "allow_old_summaries": false,
+    "cron_schedule": "*/5 * * * *",
+    "earliest_time": "-7d",
+    "enabled": true,
+    "max_time_seconds": 600,
+    "mode_qualified": "tstats summariesonly=t",
+    "schedule_priority": "default",
+    "summary": {
+      "available": true,
+      "bucket_count": 4,
+      "complete": true,
+      "in_progress": false,
+      "last_error_present": false,
+      "latest_run_duration_seconds": 0.584,
+      "size_bytes": 8192,
+      "time_range_seconds": 604800
+    }
+  },
+  "acceptance": {
+    "acceleration_policy_active": true,
+    "application_0_7_3": true,
+    "custom_non_cim_boundary_honest": true,
+    "global_read_admin_write_acl": true,
+    "kv_store_ready": true,
+    "live_definition_contract": true,
+    "platform_health_green": true,
+    "raw_summary_count_parity": true,
+    "raw_summary_latest_parity": true,
+    "splunk_10_2_1": true,
+    "summariesonly_t_nonempty": true,
+    "summary_complete_and_error_free": true,
+    "summary_freshness_within_sla": true
+  },
+  "access_control": {
+    "application": "splunk-detection-lab",
+    "owner": "nobody",
+    "read_roles": [
+      "*"
+    ],
+    "sharing": "global",
+    "write_roles": [
+      "admin"
+    ]
+  },
+  "classification": {
+    "claim_boundary": "custom non-CIM qualification only",
+    "custom_data_model": true,
+    "enterprise_security_app_installed": false,
+    "native_cim_data_model": false,
+    "splunk_sa_cim_installed": false
+  },
+  "data_quality": {
+    "aggregate_result_sha256": "e5c0e97c47cb3bcdce771965b5c1bc2c32d5faaf4cb04e9a560d235b18e257b2",
+    "count_delta": 0,
+    "freshness_sla_seconds": 900,
+    "latest_delta_seconds": 0.0,
+    "parity_percent": 100.0,
+    "raw_aggregate_duration_ms": 344,
+    "raw_event_count": 2,
+    "summary_aggregate_duration_ms": 344,
+    "summary_event_count": 2,
+    "summary_freshness_age_seconds": 613.046,
+    "window": "-60m"
+  },
+  "definition": {
+    "checks": {
+      "child_datasets_use_tags": true,
+      "dataset_hierarchy_exact": true,
+      "display_name_exact": true,
+      "eventtype_contract_present": true,
+      "index_scope_explicit": true,
+      "model_id_exact": true,
+      "non_cim_boundary_explicit": true,
+      "root_constraint_is_streaming_event_constraint": true,
+      "root_fields_complete": true,
+      "root_parent_is_base_event": true,
+      "tag_contract_present": true
+    },
+    "command_duration_ms": 312,
+    "dataset_count": 7,
+    "datasets": [
+      "Security_Telemetry",
+      "Authentication_Activity",
+      "Change_Activity",
+      "Process_Activity",
+      "Network_Activity",
+      "File_Registry_Activity",
+      "Service_Activity"
+    ],
+    "definition_sha256": "93a3d33d0e54d7e9e5432d39948dfce334325818feb68eec2217e9559ec9f821",
+    "display_name": "Security Telemetry Qualification",
+    "eventtype_dependency_count": 20,
+    "index_scope_count": 3,
+    "loaded_through_datamodel_command": true,
+    "model_id": "Security_Telemetry_Qualification",
+    "root_constraint_sha256": "b5f4d50c62cb06bd94327ad392e38a2da53735fa2f41401a959e9770c8f24ad4",
+    "root_dataset": "Security_Telemetry",
+    "root_field_count": 16,
+    "tag_dependency_count": 7
+  },
+  "environment": {
+    "application_version": "0.7.3",
+    "expected_application_version": "0.7.3",
+    "kv_store_status": "ready",
+    "product_type": "enterprise",
+    "splunk_version": "10.2.1",
+    "splunkd_health": "green",
+    "topology": "standalone"
+  },
+  "generated_at": "2026-08-07T15:44:55.045569Z",
+  "limitations": [
+    "The model is custom and does not represent native Splunk CIM or Enterprise Security content.",
+    "The live qualification uses synthetic lab telemetry and does not evidence production data volume.",
+    "The standalone topology proves the knowledge-object and acceleration lifecycle, not distributed DMA behavior."
+  ],
+  "overall_pass": true,
+  "package": {
+    "matches_live_version": true,
+    "sha256": "6014053ee7183d0148c8dbb334ea635c0284bbc1428c582f7e07dca82638cfa4"
+  },
+  "schema_version": 1,
+  "scope": "isolated-lab-custom-security-telemetry-data-model",
+  "security": {
+    "credentials_written": false,
+    "endpoint_persisted": false,
+    "event_sources_persisted": false,
+    "private_addresses_persisted": false,
+    "raw_events_persisted": false,
+    "search_text_persisted": false
+  }
+}

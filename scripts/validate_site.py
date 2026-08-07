@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import re
 import struct
+import subprocess
 import sys
 import zlib
 from html.parser import HTMLParser
@@ -25,6 +26,12 @@ FORBIDDEN_JS = {
     "HTML assignment": re.compile(
         r"\.(?:innerHTML|outerHTML)\s*=|\.insertAdjacentHTML\s*\(", re.I
     ),
+    "network API": re.compile(
+        r"\bfetch\s*\(|\bXMLHttpRequest\b|\bWebSocket\s*\(|"
+        r"\bEventSource\s*\(|\bnavigator\s*\.\s*sendBeacon\s*\(",
+        re.I,
+    ),
+    "scripted navigation": re.compile(r"\bwindow\s*\.\s*open\s*\(", re.I),
 }
 PRIVATE_IP = re.compile(
     r"\b(?:10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|"
@@ -47,8 +54,18 @@ REQUIRED_CSP = {
     "img-src": "'self'",
     "object-src": "'none'",
     "script-src": "'self'",
+    "script-src-attr": "'none'",
+    "style-src": "'self'",
+    "style-src-attr": "'none'",
+    "font-src": "'self'",
+    "media-src": "'none'",
+    "manifest-src": "'self'",
     "worker-src": "'none'",
 }
+ALLOWED_EXTERNAL_HOSTS = {"github.com", "lordmonstey.github.io"}
+PUBLIC_ARTIFACT_REFERENCE = re.compile(
+    r'\bartifact\s*:\s*"(artifacts/public/[a-z0-9][a-z0-9._-]*\.json)"'
+)
 FORBIDDEN_PNG_CHUNKS = {
     b"eXIf": "EXIF metadata",
     b"iTXt": "international text metadata",
@@ -64,6 +81,79 @@ PUBLIC_PNG_ROOTS = (
     ROOT / "conf" / "splunk" / "appserver" / "static",
     ROOT / "conf" / "splunk" / "static",
 )
+ALLOWED_PUBLIC_PNGS = {
+    "conf/splunk/appserver/static/appIcon.png",
+    "conf/splunk/appserver/static/appIconAlt.png",
+    "conf/splunk/appserver/static/appIconAlt_2x.png",
+    "conf/splunk/appserver/static/appIcon_2x.png",
+    "conf/splunk/appserver/static/appLogo.png",
+    "conf/splunk/appserver/static/appLogo_2x.png",
+    "conf/splunk/static/appIcon.png",
+    "conf/splunk/static/appIconAlt.png",
+    "conf/splunk/static/appIconAlt_2x.png",
+    "conf/splunk/static/appIcon_2x.png",
+    "site/assets/evidence/detection-factory-control-plane.png",
+    "site/assets/evidence/engineering-command-center.png",
+    "site/assets/evidence/risk-correlation-assurance.png",
+    "site/assets/portfolio-preview.png",
+}
+FORBIDDEN_REPOSITORY_PREFIXES = (
+    "screenshots/",
+    "tests/atomic/evidence/",
+    "site/assets/evidence/raw/",
+)
+REPOSITORY_PRIVACY_PATTERNS = {
+    "local Windows profile path": re.compile(
+        r"\b[A-Z]:\\Users\\(?!<)[^\\\r\n]+(?:\\|$)", re.I
+    ),
+    "environment-specific lab host": re.compile(
+        r"\b(?:DESKTOP-[A-Z0-9]+|win\d+-sysmon-client|"
+        r"splunk-lab-(?!public-\d{8}\b)[\w-]+)\b",
+        re.I,
+    ),
+    "retired lab account": re.compile(r"\bTEST VM\b", re.I),
+    "retired endpoint SID": re.compile(
+        r"\bS-1-5-21-(?:\d{1,10}-){2}\d{1,10}-\d{1,10}\b",
+        re.I,
+    ),
+    "repeating credential-like token": re.compile(
+        r"(?<!\d)(\d{3})\1\1(?!\d)"
+    ),
+    "private IPv4 address": PRIVATE_IP,
+}
+PRIVATE_IP_TEST_FIXTURE_PATHS = {
+    "scripts/build_parsing_canary_evidence.py",
+    "scripts/build_parsing_canary_packages.py",
+    "scripts/validate_linux_onboarding.py",
+    "tests/test_apply_rbac_live.py",
+    "tests/test_build_upgrade_live_evidence.py",
+    "tests/test_collect_upgrade_phase.py",
+    "tests/test_generate_mco_health_report.py",
+    "tests/test_parsing_canary_drill.py",
+    "tests/test_qualify_custom_datamodel_live.py",
+    "tests/test_qualify_mco_live_readonly.py",
+    "tests/test_qualify_periodic_reporting_live.py",
+    "tests/test_run_mco_drills.py",
+    "tests/test_validate_periodic_reporting.py",
+}
+REPOSITORY_TEXT_SUFFIXES = {
+    ".conf",
+    ".css",
+    ".csv",
+    ".html",
+    ".ini",
+    ".js",
+    ".json",
+    ".md",
+    ".ps1",
+    ".py",
+    ".sh",
+    ".svg",
+    ".txt",
+    ".xml",
+    ".yaml",
+    ".yml",
+}
 
 
 def is_external(value: str) -> bool:
@@ -213,6 +303,11 @@ def validate_html() -> list[str]:
             errors.append(f"line {line}: insecure external URL in {attribute}")
             continue
         if is_external(value):
+            host = (urlsplit(value).hostname or "").lower()
+            if host not in ALLOWED_EXTERNAL_HOSTS:
+                errors.append(
+                    f"line {line}: external host is not allowlisted in {attribute}"
+                )
             continue
         try:
             target = local_target(value)
@@ -267,6 +362,11 @@ def validate_png_files() -> list[str]:
 
     for path in png_files:
         relative = path.relative_to(ROOT)
+        relative_posix = relative.as_posix()
+        if relative_posix not in ALLOWED_PUBLIC_PNGS:
+            errors.append(
+                f"{relative}: PNG is not in the reviewed public-image allowlist"
+            )
         payload = path.read_bytes()
         if not payload.startswith(b"\x89PNG\r\n\x1a\n"):
             errors.append(f"{relative}: invalid PNG signature")
@@ -336,12 +436,97 @@ def validate_security_txt() -> list[str]:
     return [f"security.txt: missing {item}" for item in missing]
 
 
+def validate_public_artifact_references() -> list[str]:
+    errors: list[str] = []
+    source = (SITE / "portfolio-data.js").read_text(encoding="utf-8")
+    references = PUBLIC_ARTIFACT_REFERENCE.findall(source)
+    if not references:
+        return ["portfolio-data.js: no public administration evidence registered"]
+    if len(references) != len(set(references)):
+        errors.append("portfolio-data.js: duplicate public evidence artifact")
+    public_root = (ROOT / "artifacts" / "public").resolve()
+    for value in references:
+        target = (ROOT / value).resolve()
+        try:
+            target.relative_to(public_root)
+        except ValueError:
+            errors.append("portfolio-data.js: public evidence path escapes artifacts/public")
+            continue
+        if not target.is_file():
+            errors.append(f"portfolio-data.js: missing public evidence artifact {value!r}")
+    return errors
+
+
+def repository_candidates() -> list[Path]:
+    result = subprocess.run(
+        [
+            "git",
+            "ls-files",
+            "--cached",
+            "--others",
+            "--exclude-standard",
+            "-z",
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+    )
+    paths: list[Path] = []
+    for raw in result.stdout.decode("utf-8").split("\0"):
+        if not raw:
+            continue
+        candidate = (ROOT / raw).resolve()
+        try:
+            candidate.relative_to(ROOT.resolve())
+        except ValueError:
+            continue
+        if candidate.is_file():
+            paths.append(candidate)
+    return sorted(set(paths))
+
+
+def validate_repository_privacy() -> list[str]:
+    errors: list[str] = []
+    try:
+        candidates = repository_candidates()
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        return ["repository privacy: unable to enumerate publishable Git files"]
+
+    for path in candidates:
+        relative = path.relative_to(ROOT)
+        relative_posix = relative.as_posix()
+        if relative_posix.startswith(FORBIDDEN_REPOSITORY_PREFIXES):
+            errors.append(f"{relative}: raw-evidence path is forbidden")
+            continue
+        if relative_posix == "scripts/validate_site.py":
+            continue
+        if path.suffix.lower() not in REPOSITORY_TEXT_SUFFIXES:
+            continue
+        try:
+            text = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            errors.append(f"{relative}: text-like file is not valid UTF-8")
+            continue
+        for label, pattern in REPOSITORY_PRIVACY_PATTERNS.items():
+            if (
+                label == "private IPv4 address"
+                and relative_posix in PRIVATE_IP_TEST_FIXTURE_PATHS
+            ):
+                continue
+            if pattern.search(text):
+                errors.append(f"{relative}: contains {label}")
+
+    return errors
+
+
 def main() -> int:
     validation_groups = {
         "HTML and policy": validate_html(),
         "public text": validate_text_files(),
         "PNG integrity and metadata": validate_png_files(),
+        "repository privacy": validate_repository_privacy(),
         "security.txt": validate_security_txt(),
+        "public evidence links": validate_public_artifact_references(),
     }
     failed_groups = {
         label: len(findings)

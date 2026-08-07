@@ -1,0 +1,5 @@
+type=SYSCALL msg=audit(1767254400.123:401): arch=c000003e syscall=59 success=yes exit=0 ppid=1198 pid=1204 auid=1001 uid=1001 gid=1001 euid=0 comm="sudo" exe="/usr/bin/sudo" key="privileged_exec"
+type=SYSCALL msg=audit(1767254410.456:402): arch=c000003e syscall=59 success=no exit=-13 ppid=1204 pid=1211 auid=1001 uid=1001 gid=1001 euid=1001 comm="sh" exe="/usr/bin/sh" key="restricted_exec"
+type=USER_AUTH msg=audit(1767254420.789:403): pid=1204 uid=0 auid=1001 ses=7 msg='op=PAM:authentication grantors=pam_unix acct="analyst" exe="/usr/bin/sudo" hostname=? addr=client.example.test terminal=/dev/pts/0 res=success'
+type=USER_MGMT msg=audit(1767254430.111:404): pid=1250 uid=0 auid=1001 ses=7 msg='op=add-user acct="svc_backup" id=1102 exe="/usr/sbin/useradd" hostname=lab-linux-01 addr=? terminal=/dev/pts/0 res=success'
+type=CONFIG_CHANGE msg=audit(1767254440.222:405): auid=1001 ses=7 op=add_rule key="identity_monitoring" list=4 res=1

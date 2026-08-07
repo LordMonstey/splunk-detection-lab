@@ -9,7 +9,7 @@
   var translations = {
     fr: {
       skip: "Aller au contenu",
-      ariaWordmark: "Splunk Lab, posture de détection",
+      ariaWordmark: "Splunk Engineering Lab",
       ariaLanguage: "Langue",
       ariaSigned: "Signé A.S",
       ariaMainNavigation: "Navigation principale",
@@ -19,16 +19,16 @@
       ariaSearchPresets: "Recherches disponibles",
       ariaFooterLinks: "Liens de pied de page",
       ariaClose: "Fermer",
-      publicWorkspace: "INGÉNIERIE DE DÉTECTION · OPÉRATIONS SPLUNK",
-      snapshotReady: "Snapshot disponible",
+      publicWorkspace: "ADMINISTRATION SPLUNK · INGÉNIERIE DE DÉTECTION",
+      snapshotReady: "Upgrade 10.2.1 qualifié",
       repository: "Dépôt",
-      appSubtitle: "PLATEFORME · CONTENU · PREUVES",
+      appSubtitle: "PLATEFORME · DÉTECTION · PREUVES",
       navPosture: "Posture de détection",
       navPlatform: "Plateforme & données",
       navInvestigations: "Investigations",
-      navAssurance: "Assurance",
+      navAssurance: "Administration & preuves",
       snapshotMode: "SNAPSHOT PUBLIC",
-      snapshotDescription: "Données figées et assainies · aucune connexion à la VM · 25 juillet 2026",
+      snapshotDescription: "Détection figée le 6 août · qualifications admin du 7 août · aucune connexion à la VM",
       contentAnalytics: "CONTENT ANALYTICS",
       configuredPosture: "POSTURE CONFIGURÉE",
       postureTitle: "Posture du contenu de détection",
@@ -58,12 +58,14 @@
       notObservedRisk: "Score du contenu, pas des événements observés",
       cadenceDistribution: "Cadence des recherches",
       schedulerDistribution: "Distribution du scheduler",
-      esDestinations: "Destinations ES-ready",
-      configuredNotActive: "Configurées dans le lab, inactives dans ce snapshot",
-      inactive: "INACTIF",
-      indexedEvents: "événement indexé",
-      indexedEventsPlural: "événements indexés",
-      esDisclaimer: "Aucune donnée RBA ou Enterprise Security n’est simulée sur cette page.",
+      esDestinations: "Pipeline RBA compatible Splunk ES",
+      configuredNotActive: "Sorties matérialisées, corrélées et versionnées sur la campagne",
+      inactive: "VÉRIFIÉ",
+      indexedEvents: "modificateurs indexés",
+      indexedEventsPlural: "versions du finding",
+      currentFinding: "file dédupliquée",
+      fiveTechniques: "cinq techniques corrélées",
+      esDisclaimer: "RBA ES-compatible vérifié dans les indexes risk/notable ; aucune instance ES native n’est prétendue active.",
       attackMatrix: "Matrice ATT&CK du contenu",
       matrixDetail: "Technique unique · statut le plus mûr · intensité selon le risque configuré",
       risk45: "Risque 45–55",
@@ -81,9 +83,9 @@
       platformEngineering: "PLATFORM ENGINEERING",
       dataQuality: "QUALITÉ DES DONNÉES",
       platformTitle: "Santé de la plateforme et des données",
-      platformIntro: "Une vue d’administration lisible hors VM : capacité, rétention, composition du snapshot et chemin de livraison.",
-      instance: "INSTANCE",
-      license: "LICENCE",
+      platformIntro: "Le snapshot de détection reste figé ; les qualifications d’administration du 7 août sont reliées à leurs preuves publiques.",
+      instance: "RUNTIME FINAL",
+      license: "APPLICATION",
       snapshotWorkbench: "Atelier de requêtes du snapshot",
       honestSearch: "Trois agrégats pris en charge · aucun job Splunk distant",
       readOnly: "LECTURE SEULE",
@@ -102,7 +104,8 @@
       integrity: "Intégrité",
       supportedQueries: "REQUÊTES PRISES EN CHARGE",
       unsupportedNote: "Toute autre entrée est refusée explicitement ; l’interface ne simule ni SID, ni durée, ni résultat.",
-      indexInventory: "Inventaire des indexes",
+      indexInventory: "Indexes du snapshot de détection",
+      indexInventoryDetail: "Inventaire figé du 6 août · capacité et rétention observées",
       purpose: "USAGE",
       lifetime: "LIFETIME",
       capacity: "CAPACITÉ",
@@ -119,27 +122,36 @@
       controlPlane: "Contrôles d’administration",
       effectiveConfig: "Configuration effective et reprise",
       confSyntax: "Syntaxe des .conf",
-      lookupControl: "Lookup d’allowlist",
-      sshControl: "Authentification par clé",
-      managementApiControl: "API de management hors loopback",
+      kvStoreControl: "État après rotation TLS",
+      managementApiControl: "Chaîne et nom DNS vérifiés",
+      rbacControl: "Tests positifs et négatifs",
+      ariaRbaOverview: "Synthèse de corrélation RBA",
+      ariaRiskContributions: "Contributions au risque",
+      rbaOverviewTitle: "Une attaque multi-technique, un finding exploitable",
+      rbaOverviewDetail: "Les signaux unitaires conservent leur contexte ; la corrélation agrège la diversité ATT&CK et déduplique la file analyste.",
+      normalizedSignals: "signaux normalisés",
+      entityCentered: "centré entité",
+      distinctTechniques: "techniques distinctes",
+      deduplicatedQueue: "file dédupliquée",
+      dispatchPass: "dispatchs sans erreur",
       analystWorkflow: "ANALYST WORKFLOW",
-      fieldEvidence: "PREUVE TERRAIN",
+      fieldEvidence: "SURFACES AGRÉGÉES",
       investigationTitle: "Atelier d’investigation",
-      investigationIntro: "Trois cas validés relient l’émulation, la télémétrie source, le SPL déployé, le tuning et l’action analyste.",
+      investigationIntro: "Trois cas relient l’hypothèse, les champs attendus, le SPL déployé, le tuning et l’action analyste. Les visuels associés restent strictement agrégés.",
       method: "MÉTHODE",
-      methodFlow: "Atomic / manuel → Sysmon → SPL",
-      evidence: "PREUVE",
-      committed: "Commitée",
+      methodFlow: "Scénario contrôlé → Sysmon → SPL",
+      evidence: "VISUELS",
+      committed: "Agrégés / revus",
       caseQueue: "FILE D’INVESTIGATION",
-      sampleNotice: "Échantillons assainis",
+      sampleNotice: "Schémas de triage",
       detectionHypothesis: "HYPOTHÈSE DE DÉTECTION",
       precisionControl: "CONTRÔLE DE PRÉCISION",
       deployedSpl: "SPL DÉPLOYÉ",
       copy: "Copier",
-      preservedFields: "CHAMPS CONSERVÉS",
-      sanitizedSample: "ÉCHANTILLON ASSAINI",
+      preservedFields: "CHAMPS DE TRIAGE",
+      sanitizedSample: "VALEURS ATTENDUES",
       analystAction: "ACTION ANALYSTE",
-      openEvidence: "OUVRIR LA PREUVE",
+      openEvidence: "OUVRIR LA SURFACE AGRÉGÉE",
       emulate: "Émuler",
       emulateDetail: "Atomic ou scénario manuel borné.",
       collect: "Collecter",
@@ -147,45 +159,50 @@
       match: "Détecter",
       matchDetail: "Appliquer le SPL et les exclusions explicites.",
       validate: "Valider",
-      validateDetail: "Retrouver l’événement et commiter la preuve.",
+      validateDetail: "Contrôler les résultats agrégés et consigner la décision.",
       respond: "Répondre",
       respondDetail: "Passer du signal au contexte et à la décision.",
       engineeringAssurance: "ENGINEERING ASSURANCE",
       traceability: "TRAÇABILITÉ",
       assuranceTitle: "Preuves & maîtrise de la livraison",
-      assuranceIntro: "Chaque affirmation publique renvoie à une configuration, une spécification ou une capture ; les limites restent visibles.",
+      assuranceIntro: "Chaque affirmation publique renvoie à une configuration, une spécification ou un artefact agrégé ; les limites restent visibles.",
       deliveryModel: "MODÈLE",
       publicSurface: "SURFACE PUBLIQUE",
       staticReadOnly: "Statique / lecture seule",
+      adminQualification: "Qualifications d’administration vérifiables",
+      adminQualificationDetail: "Neuf domaines, neuf artefacts publics assainis, aucune dépendance à la VM",
+      qualificationClosed: "QUALIFICATION CLOSE",
+      publicEvidence: "PREUVE PUBLIQUE",
+      openPublicEvidence: "Ouvrir la preuve publique",
       claimLedger: "Registre des affirmations",
       claimLedgerDetail: "De la métrique affichée à l’artefact versionné",
       traceable: "TRAÇABLE",
       publicClaim: "AFFIRMATION PUBLIQUE",
       sourceArtifact: "ARTEFACT SOURCE",
       verification: "VÉRIFICATION",
-      claimTelemetry: "Composition des 473 événements",
+      claimTelemetry: "Composition des 173 événements",
       frozenAggregate: "Agrégat figé",
       claimDetections: "Recherches planifiées et cadences",
       deployedContent: "Contenu déployé",
       claimCoverage: "Techniques et statuts ATT&CK",
       contentPosture: "Posture du contenu",
-      claimEvidence: "Preuves et constats de validation",
-      controlledLab: "Lab contrôlé",
+      claimEvidence: "Résultats et constats de validation",
+      controlledLab: "Snapshot historique",
       claimRetention: "Capacité et rétention",
       localInstance: "Instance locale",
       promotionQueue: "File de promotion",
-      promotionQueueDetail: "Un blocage concret, pas un score décoratif",
+      promotionQueueDetail: "Une preuve mesurée avant toute promotion de statut",
       promotionFinding: "CONSTAT",
-      promotionFindingDetail: "Le test Atomic renomme certutil.exe.",
+      promotionFindingDetail: "Deux événements Certutil ont franchi la détection lors du replay contrôlé.",
       promotionCandidate: "CANDIDAT",
-      promotionBlockerLabel: "BLOCAGE",
-      promotionBlocker: "L’extraction de OriginalFileName n’est pas encore prouvée de bout en bout.",
-      promotionNextProof: "PROCHAINE PREUVE",
-      promotionNextProofDetail: "Rejouer T1140 #2, capturer le résultat et l’événement brut, puis promouvoir.",
+      promotionBlockerLabel: "CONTRÔLE",
+      promotionBlocker: "Conserver Image, OriginalFileName, parent et ligne de commande avant revue du bruit.",
+      promotionNextProof: "PROCHAINE ÉTAPE",
+      promotionNextProofDetail: "Élargir le dataset bénin, mesurer le taux de faux positifs, puis décider la promotion Production.",
       validationGallery: "Galerie de validation",
-      galleryDetail: "Captures conservées avec le chemin de preuve",
-      declaredGaps: "Écarts déclarés",
-      gapsDetail: "La dépendance manquante est traitée comme une donnée d’ingénierie",
+      galleryDetail: "Trois captures revues, limitées aux métriques et vues agrégées",
+      declaredGaps: "Roadmap d’extension",
+      gapsDetail: "Chaque extension est reliée à la source de données qui la rend mesurable",
       boundary: "PÉRIMÈTRE",
       publicSurfaceSecurity: "Surface publique maîtrisée",
       securityDetail: "Propriétés vérifiables du portfolio statique",
@@ -194,15 +211,15 @@
       sameOrigin: "Ressources servies localement",
       sameOriginDetail: "Aucune police, bibliothèque ou télémétrie tierce.",
       cspDetail: "Scripts, styles et images limités à l’origine.",
-      noSecrets: "Aucun secret client",
-      noSecretsDetail: "Le snapshot ne contient ni adresse privée, ni identifiant d’administration.",
+      noSecrets: "Validation avant publication",
+      noSecretsDetail: "Le contrôle CI impose une allowlist PNG et bloque preuves brutes, secrets, adresses privées, identifiants retirés et métadonnées.",
       declaredScope: "Périmètre déclaré",
       scopeDetail: "Ce qui est démontré — et ce qui ne l’est pas",
-      scopeYes1: "Splunk Enterprise standalone et administration locale",
-      scopeYes2: "Sysmon + canaux Windows via Universal Forwarder",
-      scopeYes3: "Détection-as-code et validation contrôlée",
-      scopeNo1: "Aucune instance Enterprise Security présentée comme active",
-      scopeNo2: "Aucun SOAR, cluster indexer ou domaine Active Directory",
+      scopeYes1: "Runtime final standalone : Splunk Enterprise 10.2.1, app 0.7.3",
+      scopeYes2: "Onboarding Windows et Linux, parsing et contrôles CIM",
+      scopeYes3: "Detection-as-Code, RBA ES-compatible et validation contrôlée",
+      scopeYes4: "Qualification cluster séparée : RF=2/SF=2 et continuité de recherche",
+      scopeNo2: "Enterprise Security natif, SOAR et Active Directory non activés dans le runtime final",
       footerDetail: "Configuration, SPL et preuves versionnés",
       craftedBy: "Conçu et maintenu par",
       backToPosture: "Retour à la posture ↑",
@@ -230,8 +247,8 @@
       activeIndexes: "Indexes recherchables",
       configuredInactive: "CONFIGURÉ · INACTIF",
       searchable: "RECHERCHABLE",
-      atomicEvidence: "Atomic + preuve",
-      manualEvidence: "Manuel + preuve",
+      atomicEvidence: "Scénario Atomic contrôlé",
+      manualEvidence: "Validation manuelle contrôlée",
       implemented: "Implémentée · à promouvoir",
       minutes: "minutes",
       copied: "SPL copié dans le presse-papiers.",
@@ -239,7 +256,7 @@
       severityCritical: "CRITIQUE",
       severityHigh: "ÉLEVÉE",
       severityMedium: "MOYENNE",
-      evidenceModalAlt: "Capture de validation Splunk en pleine résolution",
+      evidenceModalAlt: "Surface Splunk agrégée en pleine résolution",
       matrixTechniques: "techniques",
       sourceLabel: "Source",
       countLabel: "Nombre",
@@ -248,7 +265,7 @@
     },
     en: {
       skip: "Skip to content",
-      ariaWordmark: "Splunk Lab, detection posture",
+      ariaWordmark: "Splunk Engineering Lab",
       ariaLanguage: "Language",
       ariaSigned: "Signed A.S",
       ariaMainNavigation: "Main navigation",
@@ -258,16 +275,16 @@
       ariaSearchPresets: "Available searches",
       ariaFooterLinks: "Footer links",
       ariaClose: "Close",
-      publicWorkspace: "DETECTION ENGINEERING · SPLUNK OPERATIONS",
-      snapshotReady: "Snapshot available",
+      publicWorkspace: "SPLUNK ADMINISTRATION · DETECTION ENGINEERING",
+      snapshotReady: "10.2.1 upgrade qualified",
       repository: "Repository",
-      appSubtitle: "Platform · Content · Evidence",
+      appSubtitle: "PLATFORM · DETECTION · EVIDENCE",
       navPosture: "Detection posture",
       navPlatform: "Platform & data",
       navInvestigations: "Investigations",
-      navAssurance: "Assurance",
+      navAssurance: "Administration & evidence",
       snapshotMode: "PUBLIC SNAPSHOT",
-      snapshotDescription: "Frozen, sanitized data · no VM connection · July 25, 2026",
+      snapshotDescription: "Detection frozen August 6 · admin qualifications August 7 · no VM connection",
       contentAnalytics: "CONTENT ANALYTICS",
       configuredPosture: "CONFIGURED POSTURE",
       postureTitle: "Detection Content Posture",
@@ -297,12 +314,14 @@
       notObservedRisk: "Content score, not observed event risk",
       cadenceDistribution: "Search cadence",
       schedulerDistribution: "Scheduler distribution",
-      esDestinations: "ES-ready destinations",
-      configuredNotActive: "Configured in the lab, inactive in this snapshot",
-      inactive: "INACTIVE",
-      indexedEvents: "indexed event",
-      indexedEventsPlural: "indexed events",
-      esDisclaimer: "No RBA or Enterprise Security data is simulated on this page.",
+      esDestinations: "Splunk ES-compatible RBA pipeline",
+      configuredNotActive: "Materialized, correlated, and versioned campaign outputs",
+      inactive: "VERIFIED",
+      indexedEvents: "indexed modifiers",
+      indexedEventsPlural: "finding versions",
+      currentFinding: "deduplicated queue",
+      fiveTechniques: "five correlated techniques",
+      esDisclaimer: "ES-compatible RBA is verified in the risk/notable indexes; no native ES instance is claimed as active.",
       attackMatrix: "Content ATT&CK matrix",
       matrixDetail: "Unique technique · highest maturity · intensity by configured risk",
       risk45: "Risk 45–55",
@@ -320,9 +339,9 @@
       platformEngineering: "PLATFORM ENGINEERING",
       dataQuality: "DATA QUALITY",
       platformTitle: "Platform & Data Health",
-      platformIntro: "An administration view that works without the VM: capacity, retention, snapshot composition, and delivery path.",
-      instance: "INSTANCE",
-      license: "LICENSE",
+      platformIntro: "The detection snapshot remains frozen; the August 7 administration qualifications link to their public evidence.",
+      instance: "FINAL RUNTIME",
+      license: "APPLICATION",
       snapshotWorkbench: "Snapshot Search Workbench",
       honestSearch: "Three supported aggregates · no remote Splunk job",
       readOnly: "READ-ONLY",
@@ -341,7 +360,8 @@
       integrity: "Integrity",
       supportedQueries: "SUPPORTED QUERIES",
       unsupportedNote: "Any other input is explicitly refused; the interface simulates no SID, duration, or result.",
-      indexInventory: "Index inventory",
+      indexInventory: "Detection snapshot indexes",
+      indexInventoryDetail: "Frozen August 6 inventory · observed capacity and retention",
       purpose: "PURPOSE",
       lifetime: "LIFETIME",
       capacity: "CAPACITY",
@@ -358,27 +378,36 @@
       controlPlane: "Administration controls",
       effectiveConfig: "Effective configuration and recovery",
       confSyntax: ".conf syntax",
-      lookupControl: "Allowlist lookup",
-      sshControl: "Key-based authentication",
-      managementApiControl: "Management API outside loopback",
+      kvStoreControl: "State after TLS rotation",
+      managementApiControl: "Chain and DNS name verified",
+      rbacControl: "Positive and negative tests",
+      ariaRbaOverview: "RBA correlation overview",
+      ariaRiskContributions: "Risk contributions",
+      rbaOverviewTitle: "One multi-technique attack, one actionable finding",
+      rbaOverviewDetail: "Individual signals retain context; correlation aggregates ATT&CK diversity and deduplicates the analyst queue.",
+      normalizedSignals: "normalized signals",
+      entityCentered: "entity-centered",
+      distinctTechniques: "distinct techniques",
+      deduplicatedQueue: "deduplicated queue",
+      dispatchPass: "error-free dispatches",
       analystWorkflow: "ANALYST WORKFLOW",
-      fieldEvidence: "FIELD EVIDENCE",
+      fieldEvidence: "AGGREGATE SURFACES",
       investigationTitle: "Investigation Workbench",
-      investigationIntro: "Three validated cases connect emulation, source telemetry, deployed SPL, tuning, and analyst action.",
+      investigationIntro: "Three cases connect the hypothesis, expected fields, deployed SPL, tuning, and analyst action. Their associated visuals remain strictly aggregate.",
       method: "METHOD",
-      methodFlow: "Atomic / manual → Sysmon → SPL",
-      evidence: "EVIDENCE",
-      committed: "Committed",
+      methodFlow: "Controlled scenario → Sysmon → SPL",
+      evidence: "VISUALS",
+      committed: "Aggregate / reviewed",
       caseQueue: "INVESTIGATION QUEUE",
-      sampleNotice: "Sanitized samples",
+      sampleNotice: "Triage schemas",
       detectionHypothesis: "DETECTION HYPOTHESIS",
       precisionControl: "PRECISION CONTROL",
       deployedSpl: "DEPLOYED SPL",
       copy: "Copy",
-      preservedFields: "PRESERVED FIELDS",
-      sanitizedSample: "SANITIZED SAMPLE",
+      preservedFields: "TRIAGE FIELDS",
+      sanitizedSample: "EXPECTED VALUES",
       analystAction: "ANALYST ACTION",
-      openEvidence: "OPEN EVIDENCE",
+      openEvidence: "OPEN AGGREGATE SURFACE",
       emulate: "Emulate",
       emulateDetail: "Bounded Atomic or manual scenario.",
       collect: "Collect",
@@ -386,45 +415,50 @@
       match: "Match",
       matchDetail: "Apply SPL and explicit exclusions.",
       validate: "Validate",
-      validateDetail: "Retrieve the event and commit evidence.",
+      validateDetail: "Check aggregate results and record the decision.",
       respond: "Respond",
       respondDetail: "Move from signal to context and decision.",
       engineeringAssurance: "ENGINEERING ASSURANCE",
       traceability: "TRACEABILITY",
       assuranceTitle: "Evidence & Delivery Assurance",
-      assuranceIntro: "Every public claim points to configuration, specification, or a screenshot; limits remain visible.",
+      assuranceIntro: "Every public claim points to configuration, specification, or an aggregate artifact; limits remain visible.",
       deliveryModel: "MODEL",
       publicSurface: "PUBLIC SURFACE",
       staticReadOnly: "Static / read-only",
+      adminQualification: "Verifiable administration qualifications",
+      adminQualificationDetail: "Nine domains, nine sanitized public artifacts, no VM dependency",
+      qualificationClosed: "QUALIFICATION CLOSE",
+      publicEvidence: "PUBLIC EVIDENCE",
+      openPublicEvidence: "Open public evidence",
       claimLedger: "Claim ledger",
       claimLedgerDetail: "From displayed metric to versioned artifact",
       traceable: "TRACEABLE",
       publicClaim: "PUBLIC CLAIM",
       sourceArtifact: "SOURCE ARTIFACT",
       verification: "VERIFICATION",
-      claimTelemetry: "Composition of 473 events",
+      claimTelemetry: "Composition of 173 events",
       frozenAggregate: "Frozen aggregate",
       claimDetections: "Scheduled searches and cadences",
       deployedContent: "Deployed content",
       claimCoverage: "ATT&CK techniques and status",
       contentPosture: "Content posture",
-      claimEvidence: "Validation evidence and findings",
-      controlledLab: "Controlled lab",
+      claimEvidence: "Validation results and findings",
+      controlledLab: "Historical snapshot",
       claimRetention: "Capacity and retention",
       localInstance: "Local instance",
       promotionQueue: "Promotion queue",
-      promotionQueueDetail: "A concrete blocker, not a decorative score",
+      promotionQueueDetail: "Measured evidence before status promotion",
       promotionFinding: "FINDING",
-      promotionFindingDetail: "The Atomic test renames certutil.exe.",
+      promotionFindingDetail: "Two Certutil events crossed the detection during the controlled replay.",
       promotionCandidate: "CANDIDATE",
-      promotionBlockerLabel: "BLOCKER",
-      promotionBlocker: "End-to-end OriginalFileName extraction has not yet been proven.",
-      promotionNextProof: "NEXT EVIDENCE",
-      promotionNextProofDetail: "Rerun T1140 #2, capture the result and raw event, then promote.",
+      promotionBlockerLabel: "CONTROL",
+      promotionBlocker: "Preserve Image, OriginalFileName, parent, and command line before noise review.",
+      promotionNextProof: "NEXT STEP",
+      promotionNextProofDetail: "Expand the benign dataset, measure false-positive rate, then decide Production promotion.",
       validationGallery: "Validation gallery",
-      galleryDetail: "Screenshots retained with their evidence path",
-      declaredGaps: "Declared gaps",
-      gapsDetail: "The missing dependency is treated as engineering data",
+      galleryDetail: "Three reviewed screenshots limited to aggregate metrics and views",
+      declaredGaps: "Extension roadmap",
+      gapsDetail: "Each extension is tied to the data source that makes it measurable",
       boundary: "BOUNDARY",
       publicSurfaceSecurity: "Controlled public surface",
       securityDetail: "Verifiable properties of the static portfolio",
@@ -433,15 +467,15 @@
       sameOrigin: "Same-origin assets",
       sameOriginDetail: "No third-party font, library, or telemetry.",
       cspDetail: "Scripts, styles, and images are origin-restricted.",
-      noSecrets: "No client-side secret",
-      noSecretsDetail: "The snapshot contains no private address or administration credential.",
+      noSecrets: "Pre-publication validation",
+      noSecretsDetail: "CI enforces a PNG allowlist and blocks raw evidence, secrets, private addresses, retired identifiers, and metadata.",
       declaredScope: "Declared scope",
       scopeDetail: "What is demonstrated — and what is not",
-      scopeYes1: "Standalone Splunk Enterprise and local administration",
-      scopeYes2: "Sysmon + Windows channels through Universal Forwarder",
-      scopeYes3: "Detection-as-code and controlled validation",
-      scopeNo1: "No Enterprise Security instance presented as active",
-      scopeNo2: "No SOAR, indexer cluster, or Active Directory domain",
+      scopeYes1: "Final standalone runtime: Splunk Enterprise 10.2.1, app 0.7.3",
+      scopeYes2: "Windows and Linux onboarding, parsing, and CIM controls",
+      scopeYes3: "Detection-as-Code, ES-compatible RBA, and controlled validation",
+      scopeYes4: "Separate cluster qualification: RF=2/SF=2 and search continuity",
+      scopeNo2: "Native Enterprise Security, SOAR, and Active Directory are not active in the final runtime",
       footerDetail: "Versioned configuration, SPL, and evidence",
       craftedBy: "Designed and maintained by",
       backToPosture: "Back to posture ↑",
@@ -469,8 +503,8 @@
       activeIndexes: "Searchable indexes",
       configuredInactive: "CONFIGURED · INACTIVE",
       searchable: "SEARCHABLE",
-      atomicEvidence: "Atomic + evidence",
-      manualEvidence: "Manual + evidence",
+      atomicEvidence: "Controlled Atomic scenario",
+      manualEvidence: "Controlled manual validation",
       implemented: "Implemented · awaiting promotion",
       minutes: "minutes",
       copied: "SPL copied to the clipboard.",
@@ -478,7 +512,7 @@
       severityCritical: "CRITICAL",
       severityHigh: "HIGH",
       severityMedium: "MEDIUM",
-      evidenceModalAlt: "Full-resolution Splunk validation screenshot",
+      evidenceModalAlt: "Full-resolution aggregate Splunk surface",
       matrixTechniques: "techniques",
       sourceLabel: "Source",
       countLabel: "Count",
@@ -1062,7 +1096,7 @@
       {
         label: text("lifetimeEvents"),
         value: data.provenance.lifetime.totalEvents,
-        note: "sysmon + windows"
+        note: "sysmon + windows + risk + notable"
       },
       {
         label: text("snapshotEvents"),
@@ -1072,14 +1106,16 @@
       {
         label: text("sourcetypes"),
         value: data.sources.length,
-        note: "390 / 76 / 6 / 1"
+        note: data.sources.map(function (source) {
+          return source.count;
+        }).join(" / ")
       },
       {
         label: text("activeIndexes"),
         value: data.indexes.filter(function (index) {
           return index.state === "searchable";
         }).length,
-        note: "risk + notable: 0"
+        note: "risk " + data.rba.riskModifiers + " · notable " + data.rba.findingVersions
       }
     ];
     var cards = definitions.map(function (definition) {
@@ -1339,8 +1375,11 @@
   }
 
   function renderEvidenceGallery() {
-    var cards = data.evidence.map(function (evidence) {
+    var cards = data.evidence.map(function (evidence, evidenceIndex) {
       var button = create("button", "evidence-card");
+      if (evidenceIndex < 4) {
+        button.classList.add("dashboard-evidence");
+      }
       button.type = "button";
       button.dataset.image = evidence.image;
       button.dataset.title = localized(evidence.title);
@@ -1348,7 +1387,7 @@
       var image = create("img");
       image.src = evidence.image;
       image.alt = localized(evidence.title);
-      image.loading = "lazy";
+      image.loading = evidenceIndex < 4 ? "eager" : "lazy";
       image.decoding = "async";
       var content = create("span");
       content.appendChild(create("b", "", localized(evidence.title)));
@@ -1361,6 +1400,57 @@
       return button;
     });
     var container = document.getElementById("evidence-gallery");
+    container.replaceChildren.apply(container, cards);
+  }
+
+  function publicArtifactUrl(path) {
+    var isPublicJson = /^artifacts\/public\/[a-z0-9][a-z0-9._-]*\.json$/.test(path);
+    if (!isPublicJson) {
+      return data.meta.repository;
+    }
+    var encodedPath = path.split("/").map(function (segment) {
+      return encodeURIComponent(segment);
+    }).join("/");
+    return data.meta.repository + "/blob/main/" + encodedPath;
+  }
+
+  function renderAdminEvidence() {
+    var proofs = Array.isArray(data.adminEvidence) ? data.adminEvidence : [];
+    var cards = proofs.map(function (proof) {
+      var card = create("a", "admin-evidence-card");
+      card.href = publicArtifactUrl(proof.artifact);
+      card.target = "_blank";
+      card.rel = "noopener noreferrer";
+      card.dataset.proof = proof.id;
+      card.setAttribute(
+        "aria-label",
+        text("openPublicEvidence") + " : " + localized(proof.title)
+      );
+
+      var header = create("header");
+      header.appendChild(create("span", "admin-evidence-domain", localized(proof.category)));
+      var state = create("span", "admin-evidence-state");
+      state.appendChild(create("i"));
+      state.appendChild(document.createTextNode(text("publicEvidence")));
+      header.appendChild(state);
+
+      var metric = create("div", "admin-evidence-metric");
+      metric.appendChild(create("strong", "", proof.metric));
+      metric.appendChild(create("small", "", localized(proof.metricLabel)));
+
+      card.appendChild(header);
+      card.appendChild(metric);
+      card.appendChild(create("b", "admin-evidence-title", localized(proof.title)));
+      card.appendChild(create("code", "admin-evidence-reference", localized(proof.reference)));
+      card.appendChild(create("p", "admin-evidence-detail", localized(proof.detail)));
+
+      var footer = create("footer");
+      footer.appendChild(create("code", "", proof.artifact.replace("artifacts/public/", "")));
+      footer.appendChild(create("span", "", text("openPublicEvidence") + " ↗"));
+      card.appendChild(footer);
+      return card;
+    });
+    var container = document.getElementById("admin-evidence-grid");
     container.replaceChildren.apply(container, cards);
   }
 
@@ -1500,17 +1590,18 @@
       button.setAttribute("aria-pressed", isActive ? "true" : "false");
     });
     document.title = currentLanguage === "fr"
-      ? "Laboratoire Splunk · Plateforme & ingénierie de détection · A.S"
-      : "Splunk Platform & Detection Engineering Lab · A.S";
+      ? "Splunk Administration & Detection Engineering · A.S"
+      : "Splunk Administration & Detection Engineering · A.S";
     document.querySelector('meta[name="description"]').content = currentLanguage === "fr"
-      ? "Portfolio Splunk orienté administration de plateforme et ingénierie de détection : données publiques assainies, recherches planifiées, ATT&CK, SPL, validation et preuves."
-      : "Splunk platform administration and detection engineering portfolio: sanitized public data, scheduled searches, ATT&CK, SPL, validation, and evidence.";
+      ? "Portfolio Splunk Administration et Detection Engineering : upgrade avec rollback, TLS, RBAC, MCO, CIM, RBA et preuves publiques assainies."
+      : "Splunk Administration and Detection Engineering portfolio: upgrade with rollback, TLS, RBAC, operations, CIM, RBA, and sanitized public evidence.";
     populateTacticSelect();
     renderPosture();
     renderPlatformFacts();
     renderSnapshotQuery(findQueryKey(document.getElementById("snapshot-query").value) || "sources");
     renderIndexTable();
     renderCases();
+    renderAdminEvidence();
     renderEvidenceGallery();
     renderGaps();
   }

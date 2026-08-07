@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "validated_at": "2026-08-07T14:51:32.751345+00:00",
+  "scope": "splunk-upgrade-9.4.13-to-10.2.1-evidence",
+  "input": "upgrade-evidence-9-4-13-to-10-2-1-live.json",
+  "summary": {
+    "status": "passed",
+    "schema_errors": 0,
+    "semantic_checks": 11,
+    "semantic_passed": 11,
+    "semantic_failed": 0
+  },
+  "schema_errors": [],
+  "checks": [
+    {
+      "name": "phase_versions",
+      "status": "passed",
+      "detail": "{\"final\": \"10.2.1\", \"post_upgrade\": \"10.2.1\", \"pre_upgrade\": \"9.4.13\", \"rollback\": \"9.4.13\"}"
+    },
+    {
+      "name": "utc_chronology",
+      "status": "passed",
+      "detail": "change.started_at < phases.pre_upgrade.captured_at < phases.post_upgrade.captured_at < phases.rollback.captured_at < phases.final.captured_at < change.completed_at"
+    },
+    {
+      "name": "phase_health",
+      "status": "passed",
+      "detail": "healthy=['pre_upgrade', 'post_upgrade', 'rollback', 'final']"
+    },
+    {
+      "name": "kv_store_and_license",
+      "status": "passed",
+      "detail": "compliant=['pre_upgrade', 'post_upgrade', 'rollback', 'final']"
+    },
+    {
+      "name": "smoke_test_coverage",
+      "status": "passed",
+      "detail": "{\"final\": {\"duplicates\": [], \"missing_or_failed\": []}, \"post_upgrade\": {\"duplicates\": [], \"missing_or_failed\": []}, \"pre_upgrade\": {\"duplicates\": [], \"missing_or_failed\": []}, \"rollback\": {\"duplicates\": [], \"missing_or_failed\": []}}"
+    },
+    {
+      "name": "inventory_restoration",
+      "status": "passed",
+      "detail": "{\"post_upgrade_vs_final\": {}, \"pre_upgrade_vs_rollback\": {}}"
+    },
+    {
+      "name": "manifest_restoration",
+      "status": "passed",
+      "detail": "{\"post_upgrade_vs_final\": {}, \"pre_upgrade_vs_rollback\": {}}"
+    },
+    {
+      "name": "go_no_go_decisions",
+      "status": "passed",
+      "detail": "{\"final\": \"CLOSE\", \"post_upgrade\": \"GO-ROLLBACK-DRILL\", \"pre_upgrade\": \"GO\", \"rollback\": \"GO-FINAL-UPGRADE\"}"
+    },
+    {
+      "name": "enterprise_security_claim_boundary",
+      "status": "passed",
+      "detail": "status='not-installed'"
+    },
+    {
+      "name": "public_evidence_redaction",
+      "status": "passed",
+      "detail": "{\"credential_assignment\": 0, \"placeholder\": 0, \"private_ipv4\": 0}"
+    },
+    {
+      "name": "non_placeholder_hashes",
+      "status": "passed",
+      "detail": "hashes=53 rejected=0"
+    }
+  ]
+}

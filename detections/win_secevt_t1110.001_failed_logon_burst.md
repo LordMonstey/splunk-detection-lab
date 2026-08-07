@@ -62,7 +62,7 @@ Manual reproduction (run from another box, against the lab):
 ```powershell
 1..15 | ForEach-Object {
   $secpw = ConvertTo-SecureString "wrong-pass-$_" -AsPlainText -Force
-  $cred = New-Object System.Management.Automation.PSCredential ('TEST VM', $secpw)
+  $cred = New-Object System.Management.Automation.PSCredential ('LAB-USER', $secpw)
   Start-Process -Credential $cred -FilePath cmd.exe -ArgumentList '/c exit' -ErrorAction SilentlyContinue
 }
 ```

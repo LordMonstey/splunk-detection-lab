@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>Rapport MCO Splunk Enterprise</title>
+  <style>
+    :root{--bg:#101317;--panel:#1b2026;--line:#343c45;--text:#f4f6f8;--muted:#9ba8b4;--green:#65a637;--amber:#f0b429;--red:#df5b5b}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 Segoe UI,Arial,sans-serif}
+    main{max-width:1180px;margin:auto;padding:32px} header{display:flex;justify-content:space-between;gap:24px;align-items:end;border-bottom:1px solid var(--line);padding-bottom:22px}
+    .eyebrow{color:var(--green);font-weight:700;letter-spacing:.14em;text-transform:uppercase} h1{font-size:34px;margin:5px 0 0} .stamp{text-align:right;color:var(--muted)}
+    .hero{display:grid;grid-template-columns:1.2fr repeat(3,1fr);gap:12px;margin:24px 0} .metric,.check,section{background:var(--panel);border:1px solid var(--line);border-radius:8px}
+    .metric{padding:18px} .metric b{display:block;font-size:25px;margin-top:4px} .metric span{color:var(--muted)} .overall{border-left:4px solid currentColor}
+    .verdict{margin:0 0 18px;color:var(--muted)} .checks{display:grid;grid-template-columns:repeat(3,1fr);gap:12px} .check{padding:16px} .check-top{display:flex;justify-content:space-between;gap:12px} .check p{color:var(--muted);margin:10px 0 0}
+    .ok{color:var(--green)} .warn{color:var(--amber)} .bad{color:var(--red)} section{padding:20px;margin-top:18px} h2{font-size:17px;margin:0 0 14px}
+    table{width:100%;border-collapse:collapse} th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line)} th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+    li{margin:7px 0} footer{color:var(--muted);font-size:12px;margin-top:20px} code{color:#d6e7cb;overflow-wrap:anywhere}
+    @media(max-width:800px){main{padding:18px}header{display:block}.stamp{text-align:left;margin-top:12px}.hero,.checks{grid-template-columns:1fr}}
+  </style>
+</head>
+<body><main>
+  <header><div><div class="eyebrow">Splunk Enterprise - MCO</div><h1>État de santé opérationnel</h1></div><div class="stamp">Collecte UTC<br>2026-08-07T14:05:16.157037+00:00</div></header>
+  <div class="hero">
+    <div class="metric overall warn"><span>Verdict</span><b>WATCH</b></div>
+    <div class="metric"><span>Version</span><b>9.4.13</b></div>
+    <div class="metric"><span>Build</span><b>1d070b2427bf</b></div>
+    <div class="metric"><span>Exécutions statusées 24 h</span><b>12</b></div>
+  </div>
+  <p class="verdict">Points à surveiller : Historique licence.</p>
+  <div class="checks"><article class='check'><div class='check-top'><span>Santé Splunk</span><b class='ok'>PASS</b></div><p>Synthèse serveur=green; service splunkd=green.</p></article><article class='check'><div class='check-top'><span>KV Store</span><b class='ok'>PASS</b></div><p>État déclaré=ready.</p></article><article class='check'><div class='check-top'><span>Licence</span><b class='ok'>PASS</b></div><p>État=OK; avertissements=0; critiques=0; lecture des messages=success.</p></article><article class='check'><div class='check-top'><span>Historique licence</span><b class='warn'>WATCH</b></div><p>Jours avec télémétrie licence=1; fenêtre trop courte pour une tendance robuste.</p></article><article class='check'><div class='check-top'><span>Scheduler 24 h</span><b class='ok'>PASS</b></div><p>Exécutions statusées=12; succès=12; sautées=0; échecs=0; autres statuts=0; comptabilisées=12; lignes de log sans statut=140 (hors exécutions).</p></article><article class='check'><div class='check-top'><span>Queues 15 min</span><b class='ok'>PASS</b></div><p>Files observées=6; remplissage maximal=0.78%.</p></article><article class='check'><div class='check-top'><span>Capacité indexes</span><b class='ok'>PASS</b></div><p>Indexes observés=9; occupation maximale=0.10%; limites inconnues=0.</p></article></div>
+  <section><h2>Scheduler, fenêtre 24 heures</h2><table><thead><tr><th>Lignes de log</th><th>Exécutions statusées</th><th>Succès</th><th>Sautées</th><th>Échecs</th><th>Autres</th><th>Sans champ status</th></tr></thead><tbody><tr><td>152</td><td>12</td><td>12</td><td>0</td><td>0</td><td>0</td><td>140</td></tr></tbody></table><p class="verdict">Les lignes sans champ status restent visibles, mais ne sont ni comptées comme exécutions ni assimilées à des recherches sautées.</p></section>
+  <section><h2>Capacité des indexes publics</h2><table><thead><tr><th>Index</th><th>Occupé</th><th>Maximum</th><th>Taux</th><th>Rétention</th></tr></thead><tbody><tr><td>notable</td><td>1.0 MB</td><td>1000 MB</td><td>0.10%</td><td>365 j</td></tr><tr><td>risk</td><td>1.0 MB</td><td>1000 MB</td><td>0.10%</td><td>365 j</td></tr><tr><td>history</td><td>1.0 MB</td><td>5000 MB</td><td>0.02%</td><td>7 j</td></tr><tr><td>main</td><td>1.0 MB</td><td>5000 MB</td><td>0.02%</td><td>90 j</td></tr><tr><td>os_linux</td><td>1.0 MB</td><td>5000 MB</td><td>0.02%</td><td>90 j</td></tr><tr><td>summary</td><td>1.0 MB</td><td>5000 MB</td><td>0.02%</td><td>90 j</td></tr><tr><td>windows</td><td>1.0 MB</td><td>8000 MB</td><td>0.01%</td><td>90 j</td></tr><tr><td>sysmon</td><td>1.0 MB</td><td>12000 MB</td><td>0.01%</td><td>90 j</td></tr><tr><td>splunklogger</td><td>0.0 MB</td><td>5000 MB</td><td>0.00%</td><td>90 j</td></tr></tbody></table></section>
+  <section><h2>Files d'attente, fenêtre 15 minutes</h2><table><thead><tr><th>Queue</th><th>Dernier remplissage (%)</th><th>Maximum (%)</th></tr></thead><tbody><tr><td>aggqueue</td><td>0.00</td><td>0.78</td></tr><tr><td>typingqueue</td><td>0.00</td><td>0.40</td></tr><tr><td>parsingqueue</td><td>0.00</td><td>0.11</td></tr><tr><td>auditqueue</td><td>0.00</td><td>0.00</td></tr><tr><td>indexqueue</td><td>0.00</td><td>0.00</td></tr><tr><td>nullqueue</td><td>0.00</td><td>0.00</td></tr></tbody></table></section>
+  <section><h2>Frontières de preuve</h2><ul><li>Instance standalone : aucun RF/SF, search head cluster, rolling restart ou test de continuité distribué n&#x27;est couvert par cette collecte.</li><li>Splunk Enterprise Security natif et Splunk_SA_CIM ne sont pas actifs : ce rapport couvre Splunk Enterprise, pas les workflows ES.</li><li>La tendance licence live repose sur 1 jour(s) observé(s) dans la fenêtre de 30 jours.</li><li>Les métriques sont ponctuelles et ne constituent ni un SLO de production ni une preuve de dimensionnement.</li><li>Un modèle de capacité public séparé repose sur 2 jour(s) de télémétrie licence et reste illustratif.</li></ul></section>
+  <footer>Rapport statique agrégé, sans événement brut, identifiant, endpoint, adresse privée ni nom d'hôte. Empreinte JSON SHA-256 : <code>da99160e27a28a2d4bbda783d76fbce35288f6410551ec01e7eb3f0c6827ae00</code>.</footer>
+</main></body></html>

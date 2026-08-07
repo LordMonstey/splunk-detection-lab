@@ -26,7 +26,31 @@ DETECTIONS_DIR = ROOT / "detections"
 SAVED_SEARCHES = ROOT / "conf" / "splunk" / "local" / "savedsearches.conf"
 INDEXES_CONF = ROOT / "conf" / "splunk" / "local" / "indexes.conf"
 PORTFOLIO_DATA = ROOT / "site" / "portfolio-data.js"
-SNAPSHOT = ROOT / "artifacts" / "public" / "splunk-snapshot-20260725.json"
+SNAPSHOT = ROOT / "artifacts" / "public" / "splunk-engineering-snapshot-20260806.json"
+EVIDENCE_REDACTION_REGISTER = (
+    ROOT / "artifacts" / "public" / "evidence-redaction-register-20260807.json"
+)
+EXPECTED_PUBLIC_SURFACES = {
+    "command-center": "assets/evidence/engineering-command-center.png",
+    "detection-factory": "assets/evidence/detection-factory-control-plane.png",
+    "risk-investigation": "assets/evidence/risk-correlation-assurance.png",
+}
+EXPECTED_CASE_SURFACES = {
+    "lsass": "assets/evidence/risk-correlation-assurance.png",
+    "regsvr32": "assets/evidence/detection-factory-control-plane.png",
+    "powershell": "assets/evidence/engineering-command-center.png",
+}
+ADMIN_EVIDENCE_ARTIFACTS = {
+    "custom-datamodel": "artifacts/public/custom-datamodel-live-evidence-10.2.1-20260807.json",
+    "upgrade-rollback": "artifacts/public/upgrade-evidence-9-4-13-to-10-2-1-live.json",
+    "tls-lifecycle": "artifacts/public/tls-rotation-evidence-20260807.json",
+    "rbac-governance": "artifacts/public/rbac-live-evidence-9.4.13-20260807.json",
+    "mco-readonly": "artifacts/public/mco-live-read-only-qualification-20260807.json",
+    "periodic-reporting": "artifacts/public/periodic-reporting-live-evidence-10.2.1-20260807.json",
+    "parsing-rollback": "artifacts/public/parsing-canary-rollback-evidence-20260807.json",
+    "cluster-resilience": "artifacts/public/cluster-resilience-evidence-20260806.json",
+    "linux-onboarding": "artifacts/public/linux-onboarding-evidence-20260807.json",
+}
 
 EXPECTED_DETECTION_COUNT = 18
 TACTIC_ALIASES = {
@@ -768,15 +792,680 @@ def validate_cases(
             errors.append(
                 f"LAB_DATA case {case_key!r}: missing evidence asset {evidence!r}"
             )
+        compare(
+            evidence,
+            EXPECTED_CASE_SURFACES.get(case_key),
+            f"LAB_DATA case {case_key!r} aggregate surface",
+            errors,
+        )
+        evidence_alt = require_mapping(
+            case.get("evidenceAlt"),
+            f"LAB_DATA case {case_key!r} evidenceAlt",
+            errors,
+        )
+        if "agrégée" not in str(evidence_alt.get("fr", "")).lower():
+            errors.append(
+                f"LAB_DATA case {case_key!r}: French caption must identify an "
+                "aggregate surface"
+            )
+        if "aggregate" not in str(evidence_alt.get("en", "")).lower():
+            errors.append(
+                f"LAB_DATA case {case_key!r}: English caption must identify an "
+                "aggregate surface"
+            )
         validation = site_detection.get("validation")
         if isinstance(validation, dict) and validation.get("evidence") is not None:
-            compare(
-                evidence,
-                validation.get("evidence"),
-                f"LAB_DATA case {case_key!r} evidence",
-                errors,
+            errors.append(
+                f"LAB_DATA case {case_key!r}: detection validation must not link "
+                "a public case-level image"
             )
     return len(indexed_cases)
+
+
+def validate_evidence_gallery(
+    portfolio: dict[str, Any],
+    errors: list[str],
+) -> int:
+    values = require_list(portfolio.get("evidence"), "LAB_DATA.evidence", errors)
+    gallery = index_unique(values, "id", "LAB_DATA.evidence", errors)
+    compare_key_sets(
+        set(gallery),
+        set(EXPECTED_PUBLIC_SURFACES),
+        "LAB_DATA public surface ids",
+        errors,
+    )
+    for surface_id, expected_image in EXPECTED_PUBLIC_SURFACES.items():
+        entry = gallery.get(surface_id)
+        if entry is None:
+            continue
+        compare(
+            entry.get("image"),
+            expected_image,
+            f"LAB_DATA public surface {surface_id} image",
+            errors,
+        )
+        image_path = ROOT / "site" / expected_image
+        if not image_path.is_file():
+            errors.append(
+                f"LAB_DATA public surface {surface_id}: missing image "
+                f"{expected_image!r}"
+            )
+        caption = require_mapping(
+            entry.get("caption"),
+            f"LAB_DATA public surface {surface_id} caption",
+            errors,
+        )
+        if "agrégée" not in str(caption.get("fr", "")).lower():
+            errors.append(
+                f"LAB_DATA public surface {surface_id}: French caption must "
+                "identify an aggregate capture"
+            )
+        if "aggregate" not in str(caption.get("en", "")).lower():
+            errors.append(
+                f"LAB_DATA public surface {surface_id}: English caption must "
+                "identify an aggregate capture"
+            )
+        claim = entry.get("claim")
+        if not isinstance(claim, str) or not claim:
+            errors.append(
+                f"LAB_DATA public surface {surface_id}: expected non-empty claim"
+            )
+        elif "tests/atomic/evidence" in claim or "screenshots/" in claim:
+            errors.append(
+                f"LAB_DATA public surface {surface_id}: raw evidence path is forbidden"
+            )
+    return len(gallery)
+
+
+def load_public_evidence(relative_path: str, errors: list[str]) -> dict[str, Any]:
+    path = (ROOT / relative_path).resolve()
+    public_root = (ROOT / "artifacts" / "public").resolve()
+    try:
+        path.relative_to(public_root)
+    except ValueError:
+        errors.append(f"public evidence path escapes artifacts/public: {relative_path!r}")
+        return {}
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        errors.append(f"{relative_path}: {exc}")
+        return {}
+    if not isinstance(value, dict):
+        errors.append(f"{relative_path}: root value must be an object")
+        return {}
+    return value
+
+
+def load_withdrawn_evidence_paths(errors: list[str]) -> set[str]:
+    try:
+        register = json.loads(EVIDENCE_REDACTION_REGISTER.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        errors.append(f"{display_path(EVIDENCE_REDACTION_REGISTER)}: {exc}")
+        return set()
+    if not isinstance(register, dict):
+        errors.append("evidence redaction register: root value must be an object")
+        return set()
+    entries = require_list(
+        register.get("withdrawn_assets"),
+        "evidence redaction register withdrawn_assets",
+        errors,
+    )
+    withdrawn: set[str] = set()
+    for position, entry in enumerate(entries):
+        if not isinstance(entry, dict):
+            errors.append(
+                f"evidence redaction register withdrawn_assets[{position}]: "
+                "expected object"
+            )
+            continue
+        path = entry.get("path")
+        if not isinstance(path, str) or not path:
+            errors.append(
+                f"evidence redaction register withdrawn_assets[{position}]: "
+                "missing path"
+            )
+            continue
+        if entry.get("status") != "withdrawn":
+            errors.append(
+                f"evidence redaction register {path!r}: expected status='withdrawn'"
+            )
+            continue
+        if path in withdrawn:
+            errors.append(f"evidence redaction register: duplicate path {path!r}")
+            continue
+        withdrawn.add(path)
+    return withdrawn
+
+
+def validate_admin_evidence(
+    portfolio: dict[str, Any],
+    errors: list[str],
+) -> int:
+    values = require_list(
+        portfolio.get("adminEvidence"),
+        "LAB_DATA.adminEvidence",
+        errors,
+    )
+    proofs = index_unique(values, "id", "LAB_DATA.adminEvidence", errors)
+    compare_key_sets(
+        set(proofs),
+        set(ADMIN_EVIDENCE_ARTIFACTS),
+        "LAB_DATA administration evidence ids",
+        errors,
+    )
+
+    artifacts: dict[str, dict[str, Any]] = {}
+    for proof_id, expected_path in ADMIN_EVIDENCE_ARTIFACTS.items():
+        proof = proofs.get(proof_id)
+        if proof is None:
+            continue
+        compare(
+            proof.get("artifact"),
+            expected_path,
+            f"LAB_DATA admin evidence {proof_id} artifact",
+            errors,
+        )
+        for field in ("category", "title", "metricLabel", "detail"):
+            localized = require_mapping(
+                proof.get(field),
+                f"LAB_DATA admin evidence {proof_id} {field}",
+                errors,
+            )
+            for language in ("fr", "en"):
+                if not isinstance(localized.get(language), str) or not localized.get(language):
+                    errors.append(
+                        f"LAB_DATA admin evidence {proof_id} {field}.{language}: "
+                        "expected non-empty string"
+                    )
+        artifacts[proof_id] = load_public_evidence(expected_path, errors)
+
+    upgrade = artifacts.get("upgrade-rollback", {})
+    phases = require_mapping(upgrade.get("phases"), "upgrade evidence phases", errors)
+    expected_versions = {
+        "pre_upgrade": "9.4.13",
+        "post_upgrade": "10.2.1",
+        "rollback": "9.4.13",
+        "final": "10.2.1",
+    }
+    passed_smoke_tests = 0
+    total_smoke_tests = 0
+    for phase_name, expected_version in expected_versions.items():
+        phase = require_mapping(
+            phases.get(phase_name),
+            f"upgrade evidence phase {phase_name}",
+            errors,
+        )
+        compare(
+            phase.get("version"),
+            expected_version,
+            f"upgrade evidence phase {phase_name} version",
+            errors,
+        )
+        smoke_tests = require_list(
+            phase.get("smoke_tests"),
+            f"upgrade evidence phase {phase_name} smoke tests",
+            errors,
+        )
+        total_smoke_tests += len(smoke_tests)
+        passed_smoke_tests += sum(
+            1
+            for test in smoke_tests
+            if isinstance(test, dict) and test.get("status") == "passed"
+        )
+    compare(total_smoke_tests, 32, "upgrade evidence smoke test count", errors)
+    compare(passed_smoke_tests, 32, "upgrade evidence passed smoke tests", errors)
+    upgrade_decisions = require_mapping(
+        upgrade.get("decisions"), "upgrade evidence decisions", errors
+    )
+    final_decision = require_mapping(
+        upgrade_decisions.get("final"), "upgrade evidence final decision", errors
+    )
+    compare(final_decision.get("decision"), "CLOSE", "upgrade final decision", errors)
+    if "upgrade-rollback" in proofs:
+        compare(
+            proofs["upgrade-rollback"].get("metric"),
+            "32/32",
+            "LAB_DATA upgrade metric",
+            errors,
+        )
+
+    tls = artifacts.get("tls-lifecycle", {})
+    tls_controls = require_mapping(tls.get("live_controls"), "TLS live controls", errors)
+    compare(tls.get("status"), "passed_after_remediation", "TLS evidence status", errors)
+    compare(len(tls_controls), 12, "TLS live control count", errors)
+    compare(
+        sum(value is True for value in tls_controls.values()),
+        12,
+        "TLS passed live controls",
+        errors,
+    )
+    if "tls-lifecycle" in proofs:
+        compare(proofs["tls-lifecycle"].get("metric"), "12/12", "LAB_DATA TLS metric", errors)
+
+    rbac = artifacts.get("rbac-governance", {})
+    rbac_summary = require_mapping(rbac.get("summary"), "RBAC summary", errors)
+    compare(rbac.get("status"), "passed", "RBAC evidence status", errors)
+    compare(rbac_summary.get("total"), 38, "RBAC test count", errors)
+    compare(rbac_summary.get("passed"), 38, "RBAC passed tests", errors)
+    rbac_cleanup = require_mapping(rbac.get("cleanup"), "RBAC cleanup", errors)
+    compare(rbac_cleanup.get("ephemeral_users_created"), 6, "RBAC temporary users created", errors)
+    compare(rbac_cleanup.get("ephemeral_users_removed"), 6, "RBAC temporary users removed", errors)
+    if "rbac-governance" in proofs:
+        compare(proofs["rbac-governance"].get("metric"), "38/38", "LAB_DATA RBAC metric", errors)
+
+    mco = artifacts.get("mco-readonly", {})
+    mco_controls = require_mapping(mco.get("controls"), "MCO controls", errors)
+    compare(mco.get("status"), "PASS", "MCO evidence status", errors)
+    compare(len(mco_controls), 5, "MCO control domain count", errors)
+    compare(
+        sum(
+            isinstance(control, dict) and control.get("status") == "PASS"
+            for control in mco_controls.values()
+        ),
+        5,
+        "MCO passed control domains",
+        errors,
+    )
+    if "mco-readonly" in proofs:
+        compare(proofs["mco-readonly"].get("metric"), "5/5", "LAB_DATA MCO metric", errors)
+
+    reporting = artifacts.get("periodic-reporting", {})
+    compare(reporting.get("status"), "PASS", "periodic reporting status", errors)
+    reporting_checks = require_mapping(
+        reporting.get("checks"), "periodic reporting checks", errors
+    )
+    compare(len(reporting_checks), 16, "periodic reporting check count", errors)
+    compare(
+        sum(value is True for value in reporting_checks.values()),
+        16,
+        "periodic reporting passed checks",
+        errors,
+    )
+    reporting_runtime = require_mapping(
+        reporting.get("runtime_contract"),
+        "periodic reporting runtime contract",
+        errors,
+    )
+    reporting_collectors = require_list(
+        reporting_runtime.get("collectors"),
+        "periodic reporting collectors",
+        errors,
+    )
+    compare(len(reporting_collectors), 2, "periodic reporting collector count", errors)
+    compare(
+        sum(
+            isinstance(collector, dict)
+            and collector.get("scheduled") is True
+            and collector.get("schedule_match") is True
+            and collector.get("search_contract_match") is True
+            for collector in reporting_collectors
+        ),
+        2,
+        "periodic reporting scheduled collector contracts",
+        errors,
+    )
+    reporting_dashboard = require_mapping(
+        reporting_runtime.get("dashboard"),
+        "periodic reporting dashboard",
+        errors,
+    )
+    compare(reporting_dashboard.get("query_count"), 10, "periodic reporting dashboard query count", errors)
+    compare(reporting_dashboard.get("aggregate_only"), True, "periodic reporting aggregate-only dashboard", errors)
+    reporting_execution = require_mapping(
+        reporting.get("aggregate_execution"),
+        "periodic reporting aggregate execution",
+        errors,
+    )
+    first_cycle = require_mapping(
+        reporting_execution.get("after_first_cycle"),
+        "periodic reporting first cycle",
+        errors,
+    )
+    replay_cycle = require_mapping(
+        reporting_execution.get("after_idempotence_replay"),
+        "periodic reporting replay cycle",
+        errors,
+    )
+    for label, cycle in (("first cycle", first_cycle), ("replay cycle", replay_cycle)):
+        compare(cycle.get("row_count"), 16, f"periodic reporting {label} row count", errors)
+        compare(cycle.get("valid_rows"), 16, f"periodic reporting {label} valid rows", errors)
+        compare(cycle.get("duplicate_keys"), 0, f"periodic reporting {label} duplicate keys", errors)
+        compare(cycle.get("family_count"), 2, f"periodic reporting {label} family count", errors)
+        compare(cycle.get("mco_daily_periods"), 1, f"periodic reporting {label} daily periods", errors)
+        compare(cycle.get("cim_weekly_periods"), 1, f"periodic reporting {label} weekly periods", errors)
+    compare(
+        reporting_execution.get("keyed_replay_stable"),
+        True,
+        "periodic reporting idempotent replay",
+        errors,
+    )
+    reporting_periods = require_mapping(
+        reporting.get("historical_periods_observed"),
+        "periodic reporting observed periods",
+        errors,
+    )
+    compare(reporting_periods.get("mco_daily"), 1, "periodic reporting daily period limit", errors)
+    compare(reporting_periods.get("cim_weekly"), 1, "periodic reporting weekly period limit", errors)
+    compare(reporting.get("trend_eligible"), False, "periodic reporting trend eligibility", errors)
+    compare(reporting.get("trend_claimed"), False, "periodic reporting trend claim", errors)
+    if "periodic-reporting" in proofs:
+        reporting_proof = proofs["periodic-reporting"]
+        compare(reporting_proof.get("metric"), "16/16", "LAB_DATA periodic reporting metric", errors)
+        reporting_reference = require_mapping(
+            reporting_proof.get("reference"),
+            "LAB_DATA periodic reporting reference",
+            errors,
+        )
+        compare(
+            reporting_reference.get("fr"),
+            "2 schedules · 16 lignes · 0 doublon · 10 requêtes agrégées",
+            "LAB_DATA periodic reporting French reference",
+            errors,
+        )
+        compare(
+            reporting_reference.get("en"),
+            "2 schedules · 16 rows · 0 duplicates · 10 aggregate queries",
+            "LAB_DATA periodic reporting English reference",
+            errors,
+        )
+
+    parsing = artifacts.get("parsing-rollback", {})
+    compare(parsing.get("evidence_kind"), "live-isolated-lab", "parsing evidence kind", errors)
+    parsing_change = require_mapping(parsing.get("change"), "parsing change", errors)
+    compare(
+        parsing_change.get("execution_mode"),
+        "canary-recipe-only",
+        "parsing execution boundary",
+        errors,
+    )
+    compare(
+        parsing_change.get("promotion_boundary"),
+        "candidate-not-promotion-eligible",
+        "parsing promotion boundary",
+        errors,
+    )
+    parsing_decisions = require_mapping(parsing.get("decisions"), "parsing decisions", errors)
+    expected_decisions = {
+        "baseline": "GO-CANARY",
+        "candidate": "NO-GO",
+        "rollback": "CLOSE",
+    }
+    for phase_name, expected_decision in expected_decisions.items():
+        decision = require_mapping(
+            parsing_decisions.get(phase_name),
+            f"parsing {phase_name} decision",
+            errors,
+        )
+        compare(
+            decision.get("decision"),
+            expected_decision,
+            f"parsing {phase_name} decision value",
+            errors,
+        )
+
+    parsing_phases = require_mapping(parsing.get("phases"), "parsing phases", errors)
+    expected_phase_contract = {
+        "baseline": ("PASS", 100.0, 100.0),
+        "candidate": ("NO-GO", 0.0, 0.0),
+        "rollback": ("PASS", 100.0, 100.0),
+    }
+    for phase_name, (expected_gate, expected_coverage, expected_timestamp) in expected_phase_contract.items():
+        phase = require_mapping(
+            parsing_phases.get(phase_name),
+            f"parsing {phase_name} phase",
+            errors,
+        )
+        compare(phase.get("gate"), expected_gate, f"parsing {phase_name} gate", errors)
+        compare(phase.get("expected_event_count"), 5, f"parsing {phase_name} expected events", errors)
+        compare(phase.get("observed_event_count"), 5, f"parsing {phase_name} observed events", errors)
+        compare(phase.get("distinct_event_count"), 5, f"parsing {phase_name} distinct events", errors)
+        compare(phase.get("duplicate_count"), 0, f"parsing {phase_name} duplicates", errors)
+        compare(phase.get("truncated_event_count"), 0, f"parsing {phase_name} truncation", errors)
+        compare(
+            phase.get("timestamp_conformance_pct"),
+            expected_timestamp,
+            f"parsing {phase_name} timestamp conformance",
+            errors,
+        )
+        field_coverage = require_mapping(
+            phase.get("required_field_coverage_pct"),
+            f"parsing {phase_name} field coverage",
+            errors,
+        )
+        compare_key_sets(
+            set(field_coverage),
+            {"action", "src", "user"},
+            f"parsing {phase_name} field coverage keys",
+            errors,
+        )
+        for field_name in ("action", "src", "user"):
+            compare(
+                field_coverage.get(field_name),
+                expected_coverage,
+                f"parsing {phase_name} {field_name} coverage",
+                errors,
+            )
+
+    candidate_failed_checks = require_list(
+        require_mapping(parsing_phases.get("candidate"), "parsing candidate phase", errors).get("failed_checks"),
+        "parsing candidate failed checks",
+        errors,
+    )
+    compare_key_sets(
+        set(candidate_failed_checks),
+        {"required_field_coverage", "timestamp_conformance"},
+        "parsing candidate failed checks",
+        errors,
+    )
+    parsing_packages = require_mapping(parsing.get("packages"), "parsing packages", errors)
+    baseline_package = require_mapping(parsing_packages.get("baseline"), "parsing baseline package", errors)
+    candidate_package = require_mapping(parsing_packages.get("candidate"), "parsing candidate package", errors)
+    rollback_package = require_mapping(parsing_packages.get("rollback"), "parsing rollback package", errors)
+    compare(baseline_package.get("version"), "1.0.0", "parsing baseline version", errors)
+    compare(candidate_package.get("version"), "1.1.0-rc1", "parsing candidate version", errors)
+    compare(rollback_package.get("version"), "1.0.0", "parsing rollback version", errors)
+    for hash_field in ("archive_sha256", "effective_config_sha256"):
+        compare(
+            rollback_package.get(hash_field),
+            baseline_package.get(hash_field),
+            f"parsing rollback {hash_field} parity",
+            errors,
+        )
+        if candidate_package.get(hash_field) == baseline_package.get(hash_field):
+            errors.append(f"parsing candidate {hash_field}: expected a controlled difference")
+
+    parsing_parity = require_mapping(parsing.get("rollback_parity"), "parsing rollback parity", errors)
+    compare(parsing_parity.get("status"), "RESTORED", "parsing rollback parity status", errors)
+    parity_checks = require_mapping(parsing_parity.get("checks"), "parsing rollback checks", errors)
+    if not parity_checks or not all(value is True for value in parity_checks.values()):
+        errors.append("parsing rollback checks: expected every check to pass")
+    public_redaction = require_mapping(parsing.get("public_redaction"), "parsing public redaction", errors)
+    if not public_redaction or not all(value is True for value in public_redaction.values()):
+        errors.append("parsing public redaction: expected every boundary to pass")
+    if "parsing-rollback" in proofs:
+        parsing_proof = proofs["parsing-rollback"]
+        compare(
+            parsing_proof.get("metric"),
+            "100 → 0 → 100",
+            "LAB_DATA parsing rollback metric",
+            errors,
+        )
+        parsing_reference = require_mapping(
+            parsing_proof.get("reference"),
+            "LAB_DATA parsing rollback reference",
+            errors,
+        )
+        compare(
+            parsing_reference.get("fr"),
+            "baseline PASS · candidat NO-GO · rollback PASS",
+            "LAB_DATA parsing rollback French reference",
+            errors,
+        )
+        compare(
+            parsing_reference.get("en"),
+            "baseline PASS · candidate NO-GO · rollback PASS",
+            "LAB_DATA parsing rollback English reference",
+            errors,
+        )
+
+    cluster = artifacts.get("cluster-resilience", {})
+    topology = require_mapping(cluster.get("topology"), "cluster topology", errors)
+    compare(topology.get("replication_factor"), 2, "cluster RF", errors)
+    compare(topology.get("search_factor"), 2, "cluster SF", errors)
+    cluster_test = require_mapping(cluster.get("test"), "cluster test", errors)
+    continuity = require_mapping(
+        cluster_test.get("search_continuity"), "cluster search continuity", errors
+    )
+    compare(continuity.get("success"), True, "cluster search continuity", errors)
+    recovered = require_mapping(
+        cluster_test.get("recovered_health"), "cluster recovered health", errors
+    )
+    for field in (
+        "all_peers_are_up",
+        "replication_factor_met",
+        "search_factor_met",
+        "all_data_is_searchable",
+        "no_fixup_tasks_in_progress",
+    ):
+        compare(recovered.get(field), True, f"cluster recovered health {field}", errors)
+    if "cluster-resilience" in proofs:
+        compare(
+            proofs["cluster-resilience"].get("metric"),
+            "RF2 / SF2",
+            "LAB_DATA cluster metric",
+            errors,
+        )
+
+    linux = artifacts.get("linux-onboarding", {})
+    compare(linux.get("overall_pass"), True, "Linux onboarding status", errors)
+    batch = require_mapping(linux.get("batch"), "Linux onboarding batch", errors)
+    inventory = require_mapping(
+        linux.get("inventory"), "Linux onboarding inventory", errors
+    )
+    observed = require_mapping(
+        inventory.get("observed_by_sourcetype"),
+        "Linux observed sourcetypes",
+        errors,
+    )
+    compare(batch.get("expected_events"), 13, "Linux expected event count", errors)
+    compare(sum(value for value in observed.values() if isinstance(value, int)), 13, "Linux observed event count", errors)
+    cim_contract = require_mapping(
+        linux.get("cim_field_contract"), "Linux CIM field contract", errors
+    )
+    compare(len(cim_contract), 4, "Linux CIM scope count", errors)
+    compare(
+        sum(
+            isinstance(scope, dict) and scope.get("completeness_percent") == 100.0
+            for scope in cim_contract.values()
+        ),
+        4,
+        "Linux complete CIM scopes",
+        errors,
+    )
+    linux_environment = require_mapping(
+        linux.get("environment"), "Linux onboarding environment", errors
+    )
+    compare(
+        linux_environment.get("application_version"),
+        "0.7.2",
+        "Linux onboarding historical app version",
+        errors,
+    )
+    if "linux-onboarding" in proofs:
+        compare(
+            proofs["linux-onboarding"].get("metric"),
+            "13/13",
+            "LAB_DATA Linux onboarding metric",
+            errors,
+        )
+
+    custom_dm = artifacts.get("custom-datamodel", {})
+    compare(custom_dm.get("overall_pass"), True, "custom data model status", errors)
+    dm_environment = require_mapping(
+        custom_dm.get("environment"), "custom data model environment", errors
+    )
+    compare(dm_environment.get("splunk_version"), "10.2.1", "custom data model Splunk version", errors)
+    compare(dm_environment.get("application_version"), "0.7.3", "custom data model app version", errors)
+    compare(dm_environment.get("splunkd_health"), "green", "custom data model splunkd health", errors)
+    compare(dm_environment.get("kv_store_status"), "ready", "custom data model KV Store status", errors)
+
+    dm_classification = require_mapping(
+        custom_dm.get("classification"), "custom data model classification", errors
+    )
+    compare(dm_classification.get("custom_data_model"), True, "custom data model boundary", errors)
+    compare(dm_classification.get("native_cim_data_model"), False, "native CIM boundary", errors)
+    compare(dm_classification.get("splunk_sa_cim_installed"), False, "Splunk_SA_CIM boundary", errors)
+    compare(
+        dm_classification.get("enterprise_security_app_installed"),
+        False,
+        "Enterprise Security boundary",
+        errors,
+    )
+
+    dm_acceptance = require_mapping(
+        custom_dm.get("acceptance"), "custom data model acceptance", errors
+    )
+    compare(len(dm_acceptance), 13, "custom data model acceptance count", errors)
+    compare(
+        sum(value is True for value in dm_acceptance.values()),
+        13,
+        "custom data model passed acceptance count",
+        errors,
+    )
+
+    dm_acceleration = require_mapping(
+        custom_dm.get("acceleration"), "custom data model acceleration", errors
+    )
+    dm_summary = require_mapping(
+        dm_acceleration.get("summary"), "custom data model summary", errors
+    )
+    compare(dm_acceleration.get("enabled"), True, "custom data model acceleration enabled", errors)
+    compare(dm_summary.get("complete"), True, "custom data model summary complete", errors)
+    compare(dm_summary.get("bucket_count"), 4, "custom data model summary bucket count", errors)
+    compare(dm_summary.get("last_error_present"), False, "custom data model summary error state", errors)
+
+    dm_quality = require_mapping(
+        custom_dm.get("data_quality"), "custom data model data quality", errors
+    )
+    compare(dm_quality.get("parity_percent"), 100.0, "custom data model parity", errors)
+    compare(dm_quality.get("count_delta"), 0, "custom data model count delta", errors)
+    compare(dm_quality.get("latest_delta_seconds"), 0.0, "custom data model latest delta", errors)
+    compare(dm_quality.get("freshness_sla_seconds"), 900, "custom data model freshness SLA", errors)
+    freshness_age = dm_quality.get("summary_freshness_age_seconds")
+    if not isinstance(freshness_age, (int, float)) or isinstance(freshness_age, bool) or not 0 <= freshness_age < 900:
+        errors.append("custom data model freshness: expected numeric value in [0, 900)")
+    raw_count = dm_quality.get("raw_event_count")
+    summary_count = dm_quality.get("summary_event_count")
+    if not isinstance(raw_count, int) or raw_count <= 0 or raw_count != summary_count:
+        errors.append("custom data model aggregate counts: expected equal non-zero integers")
+
+    meta = require_mapping(portfolio.get("meta"), "LAB_DATA.meta", errors)
+    compare(
+        meta.get("appVersion"),
+        dm_environment.get("application_version"),
+        "LAB_DATA current app version",
+        errors,
+    )
+    if "custom-datamodel" in proofs:
+        custom_proof = proofs["custom-datamodel"]
+        compare(custom_proof.get("metric"), "13/13", "LAB_DATA custom data model metric", errors)
+        dm_reference = require_mapping(
+            custom_proof.get("reference"), "LAB_DATA custom data model reference", errors
+        )
+        compare(
+            dm_reference.get("fr"),
+            "parité 100 % · 4 buckets · fraîcheur < 900 s",
+            "LAB_DATA custom data model French reference",
+            errors,
+        )
+        compare(
+            dm_reference.get("en"),
+            "100% parity · 4 buckets · freshness < 900 s",
+            "LAB_DATA custom data model English reference",
+            errors,
+        )
+
+    return len(proofs)
 
 
 def validate_snapshot(
@@ -784,6 +1473,7 @@ def validate_snapshot(
     index_stanzas: dict[str, dict[str, str]],
     portfolio: dict[str, Any],
     snapshot: dict[str, Any],
+    withdrawn_evidence_paths: set[str],
     errors: list[str],
 ) -> tuple[int | None, int]:
     metrics = require_mapping(snapshot.get("metrics"), "snapshot.metrics", errors)
@@ -1011,12 +1701,12 @@ def validate_snapshot(
     configured_index_stanzas = {
         name: stanza for name, stanza in index_stanzas.items() if name != "default"
     }
-    compare_key_sets(
-        set(configured_index_stanzas),
-        set(snapshot_indexes),
-        "indexes.conf index names",
-        errors,
-    )
+    missing_snapshot_indexes = set(snapshot_indexes) - set(configured_index_stanzas)
+    if missing_snapshot_indexes:
+        errors.append(
+            "indexes.conf index names: missing snapshot indexes "
+            f"{sorted(missing_snapshot_indexes)}"
+        )
     compare(
         metrics.get("configured_indexes"),
         len(snapshot_indexes),
@@ -1112,9 +1802,11 @@ def validate_snapshot(
             )
             continue
         if not evidence_path.is_file():
-            errors.append(
-                f"snapshot.evidence[{position}]: missing file {relative_path!r}"
-            )
+            if relative_path not in withdrawn_evidence_paths:
+                errors.append(
+                    f"snapshot.evidence[{position}]: missing file {relative_path!r} "
+                    "without an exact withdrawn entry"
+                )
             continue
         actual_sha256 = hashlib.sha256(evidence_path.read_bytes()).hexdigest()
         compare(
@@ -1133,6 +1825,7 @@ def main() -> int:
     index_stanzas = parse_conf(INDEXES_CONF, errors)
     portfolio = load_portfolio_data(errors)
     snapshot = load_snapshot(errors)
+    withdrawn_evidence_paths = load_withdrawn_evidence_paths(errors)
 
     statuses, site_detection_count = validate_detection_sources(
         detections,
@@ -1142,11 +1835,14 @@ def main() -> int:
         errors,
     )
     case_count = validate_cases(detections, searches, portfolio, errors)
+    gallery_count = validate_evidence_gallery(portfolio, errors)
+    admin_evidence_count = validate_admin_evidence(portfolio, errors)
     searchable_events, index_count = validate_snapshot(
         detections,
         index_stanzas,
         portfolio,
         snapshot,
+        withdrawn_evidence_paths,
         errors,
     )
 
@@ -1156,6 +1852,8 @@ def main() -> int:
         f"{statuses.get('testing', 0)} Testing), "
         f"{site_detection_count} portfolio entries, "
         f"{case_count} investigation cases, "
+        f"{gallery_count} reviewed aggregate surfaces, "
+        f"{admin_evidence_count} administration proofs, "
         f"{searchable_events!r} searchable events, "
         f"{index_count} indexes"
     )

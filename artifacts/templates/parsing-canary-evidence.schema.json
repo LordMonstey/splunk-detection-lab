@@ -1,0 +1,342 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Splunk parsing canary and rollback live evidence",
+  "description": "Contract for sanitized evidence proving a conformant baseline, a controlled parsing NO-GO, and restored parity after rollback. This schema is not execution evidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "evidence_kind",
+    "run_id",
+    "project",
+    "change",
+    "packages",
+    "phases",
+    "decisions",
+    "rollback_parity",
+    "public_redaction",
+    "source_contract_sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "evidence_kind": { "const": "live-isolated-lab" },
+    "run_id": {
+      "type": "string",
+      "pattern": "^parsing-[0-9]{8}T[0-9]{6}Z-[a-z0-9]{6,16}$"
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "environment_alias",
+        "topology",
+        "scoped_index_alias",
+        "scoped_sourcetype_alias",
+        "app_id",
+        "failure_injection"
+      ],
+      "properties": {
+        "environment_alias": {
+          "type": "string",
+          "pattern": "^lab-[a-z0-9-]{3,48}$"
+        },
+        "topology": { "const": "standalone" },
+        "scoped_index_alias": { "const": "idx-recette-parsing" },
+        "scoped_sourcetype_alias": { "const": "canary-auth" },
+        "app_id": { "const": "splunk_parsing_canary_qualification" },
+        "failure_injection": { "const": "controlled-field-and-timestamp-regression" }
+      }
+    },
+    "change": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "started_at",
+        "completed_at",
+        "execution_mode",
+        "promotion_boundary"
+      ],
+      "properties": {
+        "started_at": { "$ref": "#/$defs/timestamp" },
+        "completed_at": { "$ref": "#/$defs/timestamp" },
+        "execution_mode": { "const": "canary-recipe-only" },
+        "promotion_boundary": { "const": "candidate-not-promotion-eligible" }
+      }
+    },
+    "packages": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseline", "candidate", "rollback"],
+      "properties": {
+        "baseline": {
+          "allOf": [
+            { "$ref": "#/$defs/package" },
+            { "properties": { "version": { "const": "1.0.0" } } }
+          ]
+        },
+        "candidate": {
+          "allOf": [
+            { "$ref": "#/$defs/package" },
+            { "properties": { "version": { "const": "1.1.0-rc1" } } }
+          ]
+        },
+        "rollback": {
+          "allOf": [
+            { "$ref": "#/$defs/package" },
+            { "properties": { "version": { "const": "1.0.0" } } }
+          ]
+        }
+      }
+    },
+    "phases": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseline", "candidate", "rollback"],
+      "properties": {
+        "baseline": {
+          "allOf": [
+            { "$ref": "#/$defs/phase" },
+            {
+              "properties": {
+                "gate": { "const": "PASS" },
+                "failed_checks": { "maxItems": 0 }
+              }
+            }
+          ]
+        },
+        "candidate": {
+          "allOf": [
+            { "$ref": "#/$defs/phase" },
+            {
+              "properties": {
+                "gate": { "const": "NO-GO" },
+                "failed_checks": {
+                  "minItems": 1,
+                  "contains": {
+                    "enum": ["required_field_coverage", "timestamp_conformance"]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "rollback": {
+          "allOf": [
+            { "$ref": "#/$defs/phase" },
+            {
+              "properties": {
+                "gate": { "const": "PASS" },
+                "failed_checks": { "maxItems": 0 }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "decisions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseline", "candidate", "rollback"],
+      "properties": {
+        "baseline": {
+          "$ref": "#/$defs/decision_go_canary"
+        },
+        "candidate": {
+          "$ref": "#/$defs/decision_no_go"
+        },
+        "rollback": {
+          "$ref": "#/$defs/decision_close"
+        }
+      }
+    },
+    "rollback_parity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "checks",
+        "field_coverage_delta_percentage_points",
+        "timestamp_conformance_delta_percentage_points",
+        "p95_index_lag_delta_seconds"
+      ],
+      "properties": {
+        "status": { "const": "RESTORED" },
+        "checks": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "same_baseline_artifact",
+            "event_count_restored",
+            "field_coverage_restored",
+            "timestamp_conformance_restored",
+            "event_integrity_restored",
+            "index_lag_comparable"
+          ],
+          "properties": {
+            "same_baseline_artifact": { "const": true },
+            "event_count_restored": { "const": true },
+            "field_coverage_restored": { "const": true },
+            "timestamp_conformance_restored": { "const": true },
+            "event_integrity_restored": { "const": true },
+            "index_lag_comparable": { "const": true }
+          }
+        },
+        "field_coverage_delta_percentage_points": {
+          "$ref": "#/$defs/field_percentage_deltas"
+        },
+        "timestamp_conformance_delta_percentage_points": {
+          "type": "number",
+          "minimum": -0.01,
+          "maximum": 0.01
+        },
+        "p95_index_lag_delta_seconds": {
+          "type": "number",
+          "minimum": -60,
+          "maximum": 60
+        }
+      }
+    },
+    "public_redaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "credentials_removed",
+        "private_addresses_removed",
+        "hostnames_replaced_with_aliases",
+        "raw_events_excluded",
+        "search_identifiers_excluded"
+      ],
+      "properties": {
+        "credentials_removed": { "const": true },
+        "private_addresses_removed": { "const": true },
+        "hostnames_replaced_with_aliases": { "const": true },
+        "raw_events_excluded": { "const": true },
+        "search_identifiers_excluded": { "const": true }
+      }
+    },
+    "source_contract_sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "archive_sha256", "effective_config_sha256"],
+      "properties": {
+        "version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-z0-9.]+)?$"
+        },
+        "archive_sha256": { "$ref": "#/$defs/sha256" },
+        "effective_config_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "field_percentages": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["user", "src", "action"],
+      "properties": {
+        "user": { "type": "number" },
+        "src": { "type": "number" },
+        "action": { "type": "number" }
+      }
+    },
+    "field_percentage_deltas": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["user", "src", "action"],
+      "properties": {
+        "user": { "type": "number", "minimum": -0.01, "maximum": 0.01 },
+        "src": { "type": "number", "minimum": -0.01, "maximum": 0.01 },
+        "action": { "type": "number", "minimum": -0.01, "maximum": 0.01 }
+      }
+    },
+    "phase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "captured_at",
+        "expected_event_count",
+        "observed_event_count",
+        "distinct_event_count",
+        "required_field_coverage_pct",
+        "minimum_required_field_coverage_pct",
+        "timestamp_conformance_pct",
+        "duplicate_count",
+        "truncated_event_count",
+        "p95_index_lag_seconds",
+        "gate",
+        "failed_checks",
+        "aggregate_evidence_sha256"
+      ],
+      "properties": {
+        "run_id": {
+          "type": "string",
+          "pattern": "^parsing-[0-9]{8}T[0-9]{6}Z-[a-z0-9]{6,16}-(baseline|candidate|rollback)$"
+        },
+        "captured_at": { "$ref": "#/$defs/timestamp" },
+        "expected_event_count": { "const": 5 },
+        "observed_event_count": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "distinct_event_count": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "required_field_coverage_pct": { "$ref": "#/$defs/field_percentages" },
+        "minimum_required_field_coverage_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "timestamp_conformance_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "duplicate_count": { "type": "integer", "minimum": 0 },
+        "truncated_event_count": { "type": "integer", "minimum": 0 },
+        "p95_index_lag_seconds": { "type": "number", "minimum": 0 },
+        "gate": { "enum": ["PASS", "NO-GO"] },
+        "failed_checks": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "event_count",
+              "event_uniqueness",
+              "required_field_coverage",
+              "timestamp_conformance",
+              "event_integrity",
+              "index_lag"
+            ]
+          }
+        },
+        "aggregate_evidence_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "decision_go_canary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "reason"],
+      "properties": {
+        "decision": { "const": "GO-CANARY" },
+        "reason": { "type": "string", "minLength": 10, "maxLength": 200 }
+      }
+    },
+    "decision_no_go": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "reason"],
+      "properties": {
+        "decision": { "const": "NO-GO" },
+        "reason": { "type": "string", "minLength": 10, "maxLength": 200 }
+      }
+    },
+    "decision_close": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "reason"],
+      "properties": {
+        "decision": { "const": "CLOSE" },
+        "reason": { "type": "string", "minLength": 10, "maxLength": 200 }
+      }
+    }
+  }
+}

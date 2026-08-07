@@ -3,18 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self'; script-src-attr 'none'; style-src 'self'; style-src-attr 'none'; img-src 'self'; font-src 'self'; connect-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="no-referrer">
-  <meta name="description" content="Portfolio Splunk orienté administration de plateforme et ingénierie de détection : données publiques assainies, recherches planifiées, ATT&CK, SPL, validation et preuves.">
+  <meta name="description" content="Portfolio Splunk Administration et Detection Engineering : upgrade avec rollback, TLS, RBAC, MCO, CIM, RBA et preuves publiques assainies.">
   <meta name="theme-color" content="#171c21">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Laboratoire Splunk · Plateforme & ingénierie de détection">
-  <meta property="og:description" content="Une surface opérateur publique et autonome : posture de détection, plateforme, investigations et assurance.">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:title" content="Splunk Administration & Detection Engineering · A.S">
+  <meta property="og:description" content="Upgrade, rollback, TLS, RBAC, MCO, onboarding CIM, RBA et preuves publiques vérifiables.">
   <meta property="og:url" content="https://lordmonstey.github.io/splunk-detection-lab/">
   <meta property="og:image" content="https://lordmonstey.github.io/splunk-detection-lab/assets/portfolio-preview.png">
+  <meta property="og:image:alt" content="Qualifications Splunk Administration et Detection Engineering">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <title>Laboratoire Splunk · Plateforme & ingénierie de détection · A.S</title>
+  <link rel="canonical" href="https://lordmonstey.github.io/splunk-detection-lab/">
+  <title>Splunk Administration & Detection Engineering · A.S</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <script src="portfolio-data.js" defer></script>
@@ -24,12 +27,12 @@
   <a class="skip-link" href="#workspace" data-i18n="skip">Aller au contenu</a>
 
   <header class="global-bar">
-    <a class="lab-wordmark" href="#posture" aria-label="Splunk Lab, posture de détection" data-i18n-aria-label="ariaWordmark">
+    <a class="lab-wordmark" href="#posture" aria-label="Splunk Engineering Lab" data-i18n-aria-label="ariaWordmark">
       <span class="wordmark-splunk">splunk</span><span class="wordmark-command">&gt;</span><span class="wordmark-lab">lab</span>
     </a>
-    <span class="global-context" data-i18n="publicWorkspace">INGÉNIERIE DE DÉTECTION · OPÉRATIONS SPLUNK</span>
+    <span class="global-context" data-i18n="publicWorkspace">ADMINISTRATION SPLUNK · INGÉNIERIE DE DÉTECTION</span>
     <div class="global-actions">
-      <span class="global-health"><i aria-hidden="true"></i><span data-i18n="snapshotReady">Snapshot disponible</span></span>
+      <span class="global-health"><i aria-hidden="true"></i><span data-i18n="snapshotReady">Upgrade 10.2.1 qualifié</span></span>
       <a href="https://github.com/LordMonstey/splunk-detection-lab" target="_blank" rel="noopener noreferrer">
         <span data-i18n="repository">Dépôt</span><span aria-hidden="true"> ↗</span>
       </a>
@@ -47,8 +50,8 @@
         <span class="mark-signal"><i></i><i></i><i></i><i></i></span>
       </span>
       <span class="application-title">
-        <strong>Detection Engineering Lab</strong>
-        <small data-i18n="appSubtitle">PLATEFORME · CONTENU · PREUVES</small>
+        <strong>Splunk Engineering Lab</strong>
+        <small data-i18n="appSubtitle">PLATEFORME · DÉTECTION · PREUVES</small>
       </span>
       <span class="author-badge" aria-label="Signé A.S" data-i18n-aria-label="ariaSigned">A.S</span>
     </div>
@@ -64,16 +67,16 @@
         <span data-i18n="navInvestigations">Investigations</span>
       </button>
       <button type="button" role="tab" aria-selected="false" aria-controls="assurance" data-view="assurance">
-        <span data-i18n="navAssurance">Assurance</span>
+        <span data-i18n="navAssurance">Administration & preuves</span>
       </button>
     </nav>
   </div>
 
   <aside class="snapshot-banner" aria-label="Contexte des données" data-i18n-aria-label="ariaDataContext">
     <span class="snapshot-mode"><i aria-hidden="true"></i><b data-i18n="snapshotMode">SNAPSHOT PUBLIC</b></span>
-    <span data-i18n="snapshotDescription">Données figées et assainies · aucune connexion à la VM · 25 juillet 2026</span>
+    <span data-i18n="snapshotDescription">Détection figée le 6 août · qualifications admin du 7 août · aucune connexion à la VM</span>
     <span class="snapshot-separator" aria-hidden="true"></span>
-    <code>public-search-snapshot-2026-07-25</code>
+    <code>public-validation-snapshot-2026-08-06</code>
   </aside>
 
   <main id="workspace">
@@ -179,24 +182,34 @@
         <article class="panel output-panel">
           <header class="panel-heading">
             <div>
-              <h2 data-i18n="esDestinations">Destinations ES-ready</h2>
-              <p data-i18n="configuredNotActive">Configurées dans le lab, inactives dans ce snapshot</p>
+              <h2 data-i18n="esDestinations">Pipeline RBA compatible Splunk ES</h2>
+              <p data-i18n="configuredNotActive">Sorties matérialisées, corrélées et versionnées sur la campagne</p>
             </div>
-            <span class="state-pill inactive" data-i18n="inactive">INACTIF</span>
+            <span class="state-pill healthy" data-i18n="inactive">VÉRIFIÉ</span>
           </header>
           <div class="output-state">
             <div>
               <span>risk</span>
-              <strong>0</strong>
-              <small data-i18n="indexedEvents">événement indexé</small>
+              <strong>19</strong>
+              <small data-i18n="indexedEvents">modificateurs indexés</small>
             </div>
             <div>
               <span>notable</span>
-              <strong>0</strong>
-              <small data-i18n="indexedEventsPlural">événements indexés</small>
+              <strong>2</strong>
+              <small data-i18n="indexedEventsPlural">versions du finding</small>
+            </div>
+            <div>
+              <span>current finding</span>
+              <strong>1</strong>
+              <small data-i18n="currentFinding">file dédupliquée</small>
+            </div>
+            <div>
+              <span>cumulative risk</span>
+              <strong>1 185</strong>
+              <small data-i18n="fiveTechniques">cinq techniques corrélées</small>
             </div>
           </div>
-          <p data-i18n="esDisclaimer">Aucune donnée RBA ou Enterprise Security n’est simulée sur cette page.</p>
+          <p data-i18n="esDisclaimer">RBA ES-compatible vérifié dans les indexes risk/notable ; aucune instance ES native n’est prétendue active.</p>
         </article>
 
         <article class="panel matrix-panel">
@@ -252,11 +265,11 @@
         <div>
           <p class="eyebrow"><span data-i18n="platformEngineering">PLATFORM ENGINEERING</span> / <b data-i18n="dataQuality">QUALITÉ DES DONNÉES</b></p>
           <h1 data-i18n="platformTitle">Santé de la plateforme et des données</h1>
-          <p data-i18n="platformIntro">Une vue d’administration lisible hors VM : capacité, rétention, composition du snapshot et chemin de livraison.</p>
+          <p data-i18n="platformIntro">Le snapshot de détection reste figé ; les qualifications d’administration du 7 août sont reliées à leurs preuves publiques.</p>
         </div>
         <div class="heading-facts">
-          <span><small data-i18n="instance">INSTANCE</small><b>standalone</b></span>
-          <span><small data-i18n="license">LICENCE</small><b>Splunk Free</b></span>
+          <span><small data-i18n="instance">RUNTIME FINAL</small><b>standalone · 10.2.1</b></span>
+          <span><small data-i18n="license">APPLICATION</small><b>splunk-detection-lab · 0.7.3</b></span>
         </div>
       </header>
 
@@ -290,14 +303,14 @@
           <header class="panel-heading">
             <div>
               <h2 data-i18n="snapshotManifest">Manifeste du snapshot</h2>
-              <p>public-search-snapshot-2026-07-25</p>
+              <p>public-validation-snapshot-2026-08-06</p>
             </div>
           </header>
           <dl class="manifest-list">
-            <div><dt data-i18n="captured">Capturé</dt><dd>25/07/2026</dd></div>
+            <div><dt data-i18n="captured">Capturé</dt><dd>06/08/2026</dd></div>
             <div><dt data-i18n="scope">Périmètre</dt><dd data-i18n="sanitizedWindow">Fenêtre assainie</dd></div>
             <div><dt data-i18n="transport">Transport</dt><dd data-i18n="noNetwork">Aucun · objet JS local</dd></div>
-            <div><dt data-i18n="integrity">Intégrité</dt><dd>473 = 390 + 83</dd></div>
+            <div><dt data-i18n="integrity">Intégrité</dt><dd>173 = 148 + 4 + 19 + 2</dd></div>
           </dl>
           <div class="supported-queries">
             <b data-i18n="supportedQueries">REQUÊTES PRISES EN CHARGE</b>
@@ -311,10 +324,10 @@
         <article class="panel index-panel">
           <header class="panel-heading">
             <div>
-              <h2 data-i18n="indexInventory">Inventaire des indexes</h2>
-              <p>indexes.conf · retention policy · public snapshot</p>
+              <h2 data-i18n="indexInventory">Indexes du snapshot de détection</h2>
+              <p data-i18n="indexInventoryDetail">Inventaire figé du 6 août · capacité et rétention observées</p>
             </div>
-            <span class="panel-source">conf/splunk/local/indexes.conf</span>
+            <span class="panel-source">splunk-engineering-snapshot-20260806.json</span>
           </header>
           <div class="table-scroll">
             <table class="data-table index-table">
@@ -380,9 +393,9 @@
           </header>
           <ul class="control-list">
             <li><span>btool check</span><b data-i18n="confSyntax">Syntaxe des .conf</b><i class="control-ok">PASS</i></li>
-            <li><span>allowlist_lsass_access</span><b data-i18n="lookupControl">Lookup d’allowlist</b><i class="control-ok">PASS</i></li>
-            <li><span>SSH</span><b data-i18n="sshControl">Authentification par clé</b><i class="control-ok">KEY ONLY</i></li>
-            <li><span>8089 / loopback</span><b data-i18n="managementApiControl">API de management hors loopback</b><i class="control-off">OFF</i></li>
+            <li><span>KV Store</span><b data-i18n="kvStoreControl">État après rotation TLS</b><i class="control-ok">READY</i></li>
+            <li><span>TLS 8089</span><b data-i18n="managementApiControl">Chaîne et nom DNS vérifiés</b><i class="control-ok">PASS</i></li>
+            <li><span>RBAC</span><b data-i18n="rbacControl">Tests positifs et négatifs</b><i class="control-ok">38/38</i></li>
           </ul>
         </aside>
       </div>
@@ -391,15 +404,40 @@
     <section id="investigations" class="view-panel" role="tabpanel" aria-labelledby="tab-investigations" data-view-panel="investigations" hidden>
       <header class="view-heading">
         <div>
-          <p class="eyebrow"><span data-i18n="analystWorkflow">ANALYST WORKFLOW</span> / <b data-i18n="fieldEvidence">PREUVE TERRAIN</b></p>
+          <p class="eyebrow"><span data-i18n="analystWorkflow">ANALYST WORKFLOW</span> / <b data-i18n="fieldEvidence">SURFACES AGRÉGÉES</b></p>
           <h1 data-i18n="investigationTitle">Atelier d’investigation</h1>
-          <p data-i18n="investigationIntro">Trois cas validés relient l’émulation, la télémétrie source, le SPL déployé, le tuning et l’action analyste.</p>
+          <p data-i18n="investigationIntro">Trois cas relient l’hypothèse, les champs attendus, le SPL déployé, le tuning et l’action analyste. Les visuels associés restent strictement agrégés.</p>
         </div>
         <div class="heading-facts">
-          <span><small data-i18n="method">MÉTHODE</small><b data-i18n="methodFlow">Atomic / manuel → Sysmon → SPL</b></span>
-          <span><small data-i18n="evidence">PREUVE</small><b data-i18n="committed">Commitée</b></span>
+          <span><small data-i18n="method">MÉTHODE</small><b data-i18n="methodFlow">Scénario contrôlé → Sysmon → SPL</b></span>
+          <span><small data-i18n="evidence">VISUELS</small><b data-i18n="committed">Agrégés / revus</b></span>
         </div>
       </header>
+
+      <article class="rba-overview" aria-label="Synthèse de corrélation RBA" data-i18n-aria-label="ariaRbaOverview">
+        <header>
+          <div>
+            <p class="eyebrow">RISK-BASED ALERTING / <b>ENTITY CORRELATION</b></p>
+            <h2 data-i18n="rbaOverviewTitle">Une attaque multi-technique, un finding exploitable</h2>
+            <p data-i18n="rbaOverviewDetail">Les signaux unitaires conservent leur contexte ; la corrélation agrège la diversité ATT&CK et déduplique la file analyste.</p>
+          </div>
+          <span class="rba-posture"><small>POSTURE</small><b>CRITICAL</b></span>
+        </header>
+        <div class="rba-metrics">
+          <div><small>RISK MODIFIERS</small><strong>19</strong><span data-i18n="normalizedSignals">signaux normalisés</span></div>
+          <div><small>CUMULATIVE RISK</small><strong>1 185</strong><span data-i18n="entityCentered">centré entité</span></div>
+          <div><small>ATT&amp;CK</small><strong>5</strong><span data-i18n="distinctTechniques">techniques distinctes</span></div>
+          <div><small>CURRENT FINDING</small><strong>1</strong><span data-i18n="deduplicatedQueue">file dédupliquée</span></div>
+          <div><small>VALIDATION</small><strong>18/18</strong><span data-i18n="dispatchPass">dispatchs sans erreur</span></div>
+        </div>
+        <div class="rba-story" aria-label="Contributions au risque" data-i18n-aria-label="ariaRiskContributions">
+          <div class="weight-12"><span>T1059.001</span><i></i><b>12</b><small>PowerShell Encoded</small></div>
+          <div class="weight-2"><span>T1003.001</span><i></i><b>2</b><small>LSASS Access</small></div>
+          <div class="weight-2"><span>T1140</span><i></i><b>2</b><small>Certutil Decode</small></div>
+          <div class="weight-2"><span>T1547.001</span><i></i><b>2</b><small>Run Key</small></div>
+          <div class="weight-1"><span>T1136.001</span><i></i><b>1</b><small>Local Account</small></div>
+        </div>
+      </article>
 
       <div class="investigation-shell">
         <aside class="case-queue">
@@ -409,7 +447,7 @@
           </header>
           <div id="case-tabs" role="tablist" aria-orientation="vertical"></div>
           <footer>
-            <span data-i18n="sampleNotice">Échantillons assainis</span>
+            <span data-i18n="sampleNotice">Schémas de triage</span>
             <i aria-hidden="true"></i>
           </footer>
         </aside>
@@ -446,7 +484,7 @@
             </section>
 
             <aside class="analyst-panel">
-              <header><span data-i18n="preservedFields">CHAMPS CONSERVÉS</span><b data-i18n="sanitizedSample">ÉCHANTILLON ASSAINI</b></header>
+              <header><span data-i18n="preservedFields">CHAMPS DE TRIAGE</span><b data-i18n="sanitizedSample">VALEURS ATTENDUES</b></header>
               <dl id="case-fields"></dl>
               <div class="response-block">
                 <small data-i18n="analystAction">ACTION ANALYSTE</small>
@@ -457,14 +495,14 @@
 
           <div class="case-validation-grid">
             <button id="case-evidence" class="case-evidence" type="button">
-              <img id="case-evidence-image" src="assets/evidence/t1003-lsass.png" alt="Résultat Splunk de validation du cas sélectionné">
-              <span><b data-i18n="openEvidence">OUVRIR LA PREUVE</b><small id="case-evidence-caption"></small></span>
+              <img id="case-evidence-image" src="assets/evidence/risk-correlation-assurance.png" alt="Surface Splunk agrégée associée au cas sélectionné">
+              <span><b data-i18n="openEvidence">OUVRIR LA SURFACE AGRÉGÉE</b><small id="case-evidence-caption"></small></span>
             </button>
             <ol class="case-path">
               <li><span>01</span><div><b data-i18n="emulate">Émuler</b><p data-i18n="emulateDetail">Atomic ou scénario manuel borné.</p></div></li>
               <li><span>02</span><div><b data-i18n="collect">Collecter</b><p data-i18n="collectDetail">Conserver les champs nécessaires au triage.</p></div></li>
               <li><span>03</span><div><b data-i18n="match">Détecter</b><p data-i18n="matchDetail">Appliquer le SPL et les exclusions explicites.</p></div></li>
-              <li><span>04</span><div><b data-i18n="validate">Valider</b><p data-i18n="validateDetail">Retrouver l’événement et commiter la preuve.</p></div></li>
+              <li><span>04</span><div><b data-i18n="validate">Valider</b><p data-i18n="validateDetail">Contrôler les résultats agrégés et consigner la décision.</p></div></li>
               <li><span>05</span><div><b data-i18n="respond">Répondre</b><p data-i18n="respondDetail">Passer du signal au contexte et à la décision.</p></div></li>
             </ol>
           </div>
@@ -477,7 +515,7 @@
         <div>
           <p class="eyebrow"><span data-i18n="engineeringAssurance">ENGINEERING ASSURANCE</span> / <b data-i18n="traceability">TRAÇABILITÉ</b></p>
           <h1 data-i18n="assuranceTitle">Preuves & maîtrise de la livraison</h1>
-          <p data-i18n="assuranceIntro">Chaque affirmation publique renvoie à une configuration, une spécification ou une capture ; les limites restent visibles.</p>
+          <p data-i18n="assuranceIntro">Chaque affirmation publique renvoie à une configuration, une spécification ou un artefact agrégé ; les limites restent visibles.</p>
         </div>
         <div class="heading-facts">
           <span><small data-i18n="deliveryModel">MODÈLE</small><b>Detection-as-Code</b></span>
@@ -486,6 +524,17 @@
       </header>
 
       <div class="assurance-layout">
+        <article class="panel admin-evidence-panel">
+          <header class="panel-heading">
+            <div>
+              <h2 data-i18n="adminQualification">Qualifications d’administration vérifiables</h2>
+              <p data-i18n="adminQualificationDetail">Neuf domaines, neuf artefacts publics assainis, aucune dépendance à la VM</p>
+            </div>
+            <span class="state-pill healthy" data-i18n="qualificationClosed">QUALIFICATION CLOSE</span>
+          </header>
+          <div id="admin-evidence-grid" class="admin-evidence-grid"></div>
+        </article>
+
         <article class="panel claim-ledger">
           <header class="panel-heading">
             <div>
@@ -506,9 +555,9 @@
               </thead>
               <tbody>
                 <tr>
-                  <td data-i18n="claimTelemetry">Composition des 473 événements</td>
-                  <td><code>public-search-snapshot-2026-07-25</code></td>
-                  <td><span class="ledger-state">390 + 83 = 473</span></td>
+                  <td data-i18n="claimTelemetry">Composition des 173 événements</td>
+                  <td><code>public-validation-snapshot-2026-08-06</code></td>
+                  <td><span class="ledger-state">148 + 4 + 19 + 2</span></td>
                   <td data-i18n="frozenAggregate">Agrégat figé</td>
                 </tr>
                 <tr>
@@ -524,10 +573,10 @@
                   <td data-i18n="contentPosture">Posture du contenu</td>
                 </tr>
                 <tr>
-                  <td data-i18n="claimEvidence">Preuves et constats de validation</td>
-                  <td><code>tests/atomic/evidence/</code></td>
-                  <td><span class="ledger-state">PNG + runbook</span></td>
-                  <td data-i18n="controlledLab">Lab contrôlé</td>
+                  <td data-i18n="claimEvidence">Résultats et constats de validation</td>
+                  <td><code>artifacts/public/splunk-engineering-snapshot-20260806.json</code></td>
+                  <td><span class="ledger-state">Métriques agrégées</span></td>
+                  <td data-i18n="controlledLab">Snapshot historique</td>
                 </tr>
                 <tr>
                   <td data-i18n="claimRetention">Capacité et rétention</td>
@@ -546,7 +595,7 @@
               <h2 data-i18n="promotionQueue">File de promotion</h2>
               <p data-i18n="promotionQueueDetail">Un blocage concret, pas un score décoratif</p>
             </div>
-            <span class="state-pill boundary">TESTING</span>
+            <span class="state-pill healthy">PASS · MATCHED</span>
           </header>
           <div class="promotion-card">
             <div class="promotion-head">
@@ -554,10 +603,10 @@
               <strong>RISK 60</strong>
             </div>
             <dl class="promotion-details">
-              <div><dt data-i18n="promotionFinding">CONSTAT</dt><dd data-i18n="promotionFindingDetail">Le test Atomic renomme certutil.exe.</dd></div>
+              <div><dt data-i18n="promotionFinding">CONSTAT</dt><dd data-i18n="promotionFindingDetail">Deux événements Certutil ont franchi la détection lors du replay contrôlé.</dd></div>
               <div><dt data-i18n="promotionCandidate">CANDIDAT</dt><dd><code>Image OR OriginalFileName="CertUtil.exe"</code></dd></div>
-              <div><dt data-i18n="promotionBlockerLabel">BLOCAGE</dt><dd data-i18n="promotionBlocker">L’extraction de OriginalFileName n’est pas encore prouvée de bout en bout.</dd></div>
-              <div><dt data-i18n="promotionNextProof">PROCHAINE PREUVE</dt><dd data-i18n="promotionNextProofDetail">Rejouer T1140 #2, capturer le résultat et l’événement brut, puis promouvoir.</dd></div>
+              <div><dt data-i18n="promotionBlockerLabel">CONTRÔLE</dt><dd data-i18n="promotionBlocker">Conserver Image, OriginalFileName, parent et ligne de commande avant revue du bruit.</dd></div>
+              <div><dt data-i18n="promotionNextProof">PROCHAINE ÉTAPE</dt><dd data-i18n="promotionNextProofDetail">Élargir le dataset bénin, mesurer le taux de faux positifs, puis décider la promotion Production.</dd></div>
             </dl>
           </div>
         </article>
@@ -566,9 +615,9 @@
           <header class="panel-heading">
             <div>
               <h2 data-i18n="validationGallery">Galerie de validation</h2>
-              <p data-i18n="galleryDetail">Captures conservées avec le chemin de preuve</p>
+              <p data-i18n="galleryDetail">Trois captures revues, limitées aux métriques et vues agrégées</p>
             </div>
-            <span class="panel-source">tests/atomic/evidence/</span>
+            <span class="panel-source">ALLOWLIST · 3 CAPTURES AGRÉGÉES</span>
           </header>
           <div id="evidence-gallery" class="evidence-gallery"></div>
         </article>
@@ -576,8 +625,8 @@
         <article class="panel gap-panel">
           <header class="panel-heading">
             <div>
-              <h2 data-i18n="declaredGaps">Écarts déclarés</h2>
-              <p data-i18n="gapsDetail">La dépendance manquante est traitée comme une donnée d’ingénierie</p>
+              <h2 data-i18n="declaredGaps">Roadmap d’extension</h2>
+              <p data-i18n="gapsDetail">Chaque extension est reliée à la source de données qui la rend mesurable</p>
             </div>
             <span class="state-pill boundary" data-i18n="boundary">PÉRIMÈTRE</span>
           </header>
@@ -595,7 +644,7 @@
             <div><span class="control-number">01</span><b data-i18n="staticOnly">HTML, CSS et JS statiques</b><p data-i18n="staticOnlyDetail">Aucun backend, formulaire ou compte utilisateur.</p></div>
             <div><span class="control-number">02</span><b data-i18n="sameOrigin">Ressources servies localement</b><p data-i18n="sameOriginDetail">Aucune police, bibliothèque ou télémétrie tierce.</p></div>
             <div><span class="control-number">03</span><b>CSP + Referrer Policy</b><p data-i18n="cspDetail">Scripts, styles et images limités à l’origine.</p></div>
-            <div><span class="control-number">04</span><b data-i18n="noSecrets">Aucun secret client</b><p data-i18n="noSecretsDetail">Le snapshot ne contient ni adresse privée, ni identifiant d’administration.</p></div>
+            <div><span class="control-number">04</span><b data-i18n="noSecrets">Validation avant publication</b><p data-i18n="noSecretsDetail">Le contrôle CI impose une allowlist PNG et bloque preuves brutes, secrets, adresses privées, identifiants retirés et métadonnées.</p></div>
           </div>
         </article>
 
@@ -607,11 +656,11 @@
             </div>
           </header>
           <div class="scope-list">
-            <p><i class="scope-yes">✓</i><span data-i18n="scopeYes1">Splunk Enterprise standalone et administration locale</span></p>
-            <p><i class="scope-yes">✓</i><span data-i18n="scopeYes2">Sysmon + canaux Windows via Universal Forwarder</span></p>
-            <p><i class="scope-yes">✓</i><span data-i18n="scopeYes3">Détection-as-code et validation contrôlée</span></p>
-            <p><i class="scope-no">—</i><span data-i18n="scopeNo1">Aucune instance Enterprise Security présentée comme active</span></p>
-            <p><i class="scope-no">—</i><span data-i18n="scopeNo2">Aucun SOAR, cluster indexer ou domaine Active Directory</span></p>
+            <p><i class="scope-yes">✓</i><span data-i18n="scopeYes1">Runtime final standalone : Splunk Enterprise 10.2.1, app 0.7.3</span></p>
+            <p><i class="scope-yes">✓</i><span data-i18n="scopeYes2">Onboarding Windows et Linux, parsing et contrôles CIM</span></p>
+            <p><i class="scope-yes">✓</i><span data-i18n="scopeYes3">Detection-as-Code, RBA ES-compatible et validation contrôlée</span></p>
+            <p><i class="scope-yes">✓</i><span data-i18n="scopeYes4">Qualification cluster séparée : RF=2/SF=2 et continuité de recherche</span></p>
+            <p><i class="scope-no">—</i><span data-i18n="scopeNo2">Enterprise Security natif, SOAR et Active Directory non activés dans le runtime final</span></p>
           </div>
         </aside>
       </div>
@@ -621,7 +670,7 @@
   <footer class="site-footer">
     <div>
       <span class="footer-mark" aria-hidden="true">&gt;_</span>
-      <p><strong>Splunk Platform & Detection Engineering Lab</strong><small data-i18n="footerDetail">Configuration, SPL et preuves versionnés</small></p>
+      <p><strong>Splunk Administration & Detection Engineering Lab</strong><small data-i18n="footerDetail">Configuration, SPL et preuves versionnés</small></p>
     </div>
     <span class="footer-signature"><small data-i18n="craftedBy">Conçu et maintenu par</small><b>A.S</b></span>
     <nav aria-label="Liens de pied de page" data-i18n-aria-label="ariaFooterLinks">
@@ -635,7 +684,7 @@
       <div><b id="modal-title" data-i18n="evidenceTitle">Preuve de validation</b><span id="modal-caption"></span></div>
       <button id="modal-close" type="button" aria-label="Fermer" data-i18n-aria-label="ariaClose">×</button>
     </div>
-    <img id="modal-image" src="assets/evidence/t1003-lsass.png" alt="Capture Splunk de validation en pleine résolution">
+    <img id="modal-image" src="assets/evidence/risk-correlation-assurance.png" alt="Surface Splunk agrégée en pleine résolution">
   </dialog>
 
   <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>

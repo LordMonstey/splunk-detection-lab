@@ -68,7 +68,8 @@ process_name="rundll32.exe"
 
 - Atomic Red Team test: T1218.011 #1 — `rundll32.exe javascript:`
 - Expected detection latency: < 5 minutes
-- Evidence (screenshot + raw event): `tests/atomic/evidence/T1218.011-1.png`
+- Public evidence: aggregate JSON only; keep screenshots and raw events in the
+  ignored private evidence area.
 
 Manual reproduction:
 

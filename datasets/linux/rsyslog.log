@@ -1,0 +1,5 @@
+2026-01-01T08:01:20Z lab-linux-01 sshd[812]: Accepted publickey for analyst from 198.51.100.24 port 54210 ssh2
+2026-01-01T08:01:30Z lab-linux-01 sshd[824]: Failed password for invalid user operator from 198.51.100.24 port 54211 ssh2
+2026-01-01T08:01:40Z lab-linux-01 sudo[840]: analyst : TTY=pts/0 ; PWD=/home/analyst ; USER=root ; COMMAND=/usr/bin/systemctl restart auditd.service
+2026-01-01T08:01:50Z lab-linux-01 useradd[855]: new user: name=svc_archive, UID=1103, GID=1103, home=/srv/svc_archive, shell=/usr/sbin/nologin, from=/dev/pts/0
+2026-01-01T08:02:00Z lab-linux-01 systemd[1]: Started archive-agent.service successfully

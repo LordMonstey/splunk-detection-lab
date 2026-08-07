@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-06T20:10:00+00:00",
+  "scope": "distributed Splunk Enterprise platform supporting Splunk ES administration procedures",
+  "platform": {
+    "version": "10.2.1",
+    "nodes": 5,
+    "roles": {
+      "cluster_manager": 1,
+      "indexer_peers": 2,
+      "search_head": 1,
+      "monitoring_console": 1
+    },
+    "unique_server_names": 5,
+    "unique_instance_guids": 5,
+    "replication_factor": 2,
+    "search_factor": 2
+  },
+  "operational_health": {
+    "peer_status": "2/2 Up",
+    "all_peers_are_up": true,
+    "replication_factor_met": true,
+    "search_factor_met": true,
+    "all_data_is_searchable": true,
+    "no_fixup_tasks_in_progress": true,
+    "pre_flight_check": true
+  },
+  "monitoring_console": {
+    "configured": true,
+    "distributed_search_peers_up": 4,
+    "roles_inventoried": 5,
+    "inventoried_role_labels": [
+      "cluster-manager",
+      "indexer-1",
+      "indexer-2",
+      "license-monitoring",
+      "search-head"
+    ]
+  },
+  "continuity_test": {
+    "action": "controlled restart of one indexer peer",
+    "remaining_peer_served_events": 18812,
+    "all_data_searchable_during_restart": true,
+    "full_health_recovery_seconds": 222,
+    "evidence": "artifacts/public/cluster-resilience-evidence-20260806.json"
+  },
+  "security": {
+    "credentials_included": false,
+    "private_addresses_included": false,
+    "raw_events_included": false,
+    "host_paths_included": false
+  }
+}

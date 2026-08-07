@@ -6,6 +6,9 @@ on:
       - main
     paths:
       - "site/**"
+      - "artifacts/public/**"
+      - "scripts/validate_site.py"
+      - "scripts/validate_portfolio_consistency.py"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -29,6 +32,14 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
+
+      - name: Install pinned validator dependency
+        run: python3 -m pip install --disable-pip-version-check PyYAML==6.0.3
+
+      - name: Validate public surface before deployment
+        run: |
+          python3 scripts/validate_site.py
+          python3 scripts/validate_portfolio_consistency.py
 
       - name: Configure Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5

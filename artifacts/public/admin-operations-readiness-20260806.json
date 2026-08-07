@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "collected_at": "2026-08-06T20:06:47.237653+00:00",
+  "scope": "splunk-es-admin-program",
+  "summary": {
+    "checks": 14,
+    "passed": 14,
+    "failed": 0,
+    "status": "passed"
+  },
+  "checks": [
+    {
+      "name": "required_assets",
+      "status": "passed",
+      "detail": "missing=[]"
+    },
+    {
+      "name": "six_independent_projects",
+      "status": "passed",
+      "detail": "projects=[1, 2, 3, 4, 5, 6]"
+    },
+    {
+      "name": "project_delivery_contract",
+      "status": "passed",
+      "detail": "complete_projects=6/6"
+    },
+    {
+      "name": "mco_control_register",
+      "status": "passed",
+      "detail": "controls=15 unique=15"
+    },
+    {
+      "name": "mco_domain_coverage",
+      "status": "passed",
+      "detail": "domains=['Change', 'Cluster', 'Configuration', 'Continuity', 'Ingestion', 'Licensing', 'Platform', 'Reporting', 'Scheduler', 'Storage', 'TLS', 'Upgrade']"
+    },
+    {
+      "name": "control_to_runbook_traceability",
+      "status": "passed",
+      "detail": "unresolved=[]"
+    },
+    {
+      "name": "admin_dashboard_structure",
+      "status": "passed",
+      "detail": "queries=13"
+    },
+    {
+      "name": "admin_dashboard_coverage",
+      "status": "passed",
+      "detail": "missing=[]"
+    },
+    {
+      "name": "admin_first_navigation",
+      "status": "passed",
+      "detail": "default=['splunk_es_admin_operations_center']"
+    },
+    {
+      "name": "admin_first_application_identity",
+      "status": "passed",
+      "detail": "label=Splunk ES Administration version=0.7.0"
+    },
+    {
+      "name": "distributed_platform_evidence",
+      "status": "passed",
+      "detail": "version=10.2.1 nodes=5 roles={'cluster_manager': 1, 'indexer_peers': 2, 'search_head': 1, 'monitoring_console': 1}"
+    },
+    {
+      "name": "cluster_health_evidence",
+      "status": "passed",
+      "detail": "health=True mc_peers=4 roles=5"
+    },
+    {
+      "name": "continuity_evidence",
+      "status": "passed",
+      "detail": "events=18812 recovery=222s"
+    },
+    {
+      "name": "public_evidence_safety",
+      "status": "passed",
+      "detail": "{\"credential_assignment\": 0, \"placeholder\": 0, \"private_ipv4\": 0, \"unsupported_live_cluster_claim\": 0}"
+    }
+  ],
+  "artifacts": {
+    "docs\\splunk-es-admin-program.md": {
+      "sha256": "bd60c712c225ce5feef1af5b2113df721ee193ce076813fb6c778bc311c5b505",
+      "bytes": 8393
+    },
+    "conf\\splunk\\local\\data\\ui\\views\\splunk_es_admin_operations_center.xml": {
+      "sha256": "5a96c2c5625401151209c13eed62782d050e27a4d7beee87fb1b73780b60527d",
+      "bytes": 10177
+    },
+    "conf\\splunk\\lookups\\admin_mco_control_register.csv": {
+      "sha256": "03c4cde485d58e57bf48ce6dd2c14bcf11361f78d57e018245b188533fde0e66",
+      "bytes": 2197
+    },
+    "conf\\splunk\\local\\data\\ui\\nav\\default.xml": {
+      "sha256": "062a188009b8ce76634f30ddcf6f4da0f41074fae0f49c7b23d7a9cbca55cfd7",
+      "bytes": 457
+    },
+    "conf\\splunk\\default\\app.conf": {
+      "sha256": "d28883d0bb23c92741732bd260e682b94434d4eb54a8e72751d9273a19032cf6",
+      "bytes": 327
+    },
+    "artifacts\\public\\splunk-admin-platform-evidence-20260806.json": {
+      "sha256": "37f95fb64147c77bc2ced93b3c5c274b72f8afac63d045bd9a5c1f3ca9d61fdd",
+      "bytes": 1469
+    },
+    "artifacts\\public\\cluster-resilience-evidence-20260806.json": {
+      "sha256": "e4098c3b0fb60c3d83be7b48a211bf9a62ca212f80b25041f558185f2658874f",
+      "bytes": 1890
+    },
+    "docs\\enterprise-security-recovery.md": {
+      "sha256": "c5278c58689e7639bb3b38c6f60878e344b054f67856e913f2390f6a2f8be685",
+      "bytes": 4034
+    },
+    "docs\\runbooks\\cluster-mco-resilience.md": {
+      "sha256": "b9cd40264948c9ff322d367cf3ea9c5376d4e8d3782a77c6223f0d0e67d7aec9",
+      "bytes": 3616
+    },
+    "docs\\runbooks\\splunk-es-upgrade-rollback.md": {
+      "sha256": "f92ec12dbdec8ee598be96f062ec27a1b6850821898f4bed0a2b90c96961aaf0",
+      "bytes": 2828
+    },
+    "docs\\runbooks\\tls-certificate-lifecycle.md": {
+      "sha256": "76f6f27fe1d160badd21b53dc4241d5dc9c7b78e3d9d6f7b27d086b090e0531b",
+      "bytes": 2344
+    },
+    "docs\\runbooks\\troubleshooting-ingestion.md": {
+      "sha256": "31ed6511986156aed5c8311b863b78c1484b958bc3a44a16ec9be58a41ded3a5",
+      "bytes": 1065
+    }
+  }
+}

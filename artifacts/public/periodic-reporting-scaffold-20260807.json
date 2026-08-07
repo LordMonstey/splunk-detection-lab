@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-07T15:52:22.179351+00:00",
+  "evidence_type": "offline-design-qualification",
+  "scope": "periodic-mco-cim-reporting-scaffold",
+  "status": "PASS",
+  "live_execution": "NOT_PERFORMED",
+  "historical_periods_observed": 0,
+  "trend_claimed": false,
+  "storage": {
+    "type": "kvstore_lookup",
+    "collection": "mco_cim_periodic_history",
+    "enforce_types": true,
+    "schema_version": 1,
+    "stored_field_count": 13
+  },
+  "collectors": [
+    {
+      "name": "report_mco_daily_aggregate",
+      "family": "mco_daily",
+      "cron": "15 1 * * *",
+      "closed_period": {
+        "earliest": "-1d@d",
+        "latest": "@d"
+      },
+      "metric_count": 7,
+      "idempotent_keyed_upsert": true
+    },
+    {
+      "name": "report_cim_weekly_aggregate",
+      "family": "cim_weekly",
+      "cron": "45 1 * * 1",
+      "closed_period": {
+        "earliest": "-1w@w",
+        "latest": "@w"
+      },
+      "metric_count": 9,
+      "idempotent_keyed_upsert": true
+    }
+  ],
+  "dashboard": {
+    "name": "periodic_mco_cim_reporting",
+    "query_count": 10,
+    "aggregate_only": true,
+    "trend_minimum_periods": 2,
+    "baseline_labelled": true
+  },
+  "checks": {
+    "required_files_present": true,
+    "schema_closed_and_versioned": true,
+    "kv_types_enforced": true,
+    "lookup_is_kv_store": true,
+    "collectors_enabled": true,
+    "keyed_upsert_present": true,
+    "non_overlapping_schedules": true,
+    "dashboard_aggregate_only": true,
+    "trend_requires_two_periods": true,
+    "forbidden_stored_fields_absent": true
+  },
+  "source_hashes": {
+    "conf/splunk/local/savedsearches.conf": "079a5fdafbb1bf5b95f38617f66aee0b3bd05f58a02ac6ee502fff9898309196",
+    "conf/splunk/default/collections.conf": "8cabc0b16a45e7c02bb1276b4df802604cce8e40f840b44ba05351133794600d",
+    "conf/splunk/default/transforms.conf": "07fab73983ca0e96212720d2e1186f593bdc7f17afab3268ac31d6e6c4be6e69",
+    "conf/splunk/local/data/ui/views/periodic_mco_cim_reporting.xml": "e69c20ece8b3c49661e8fe0c0f746408bf2f10532bdf4fe928820e8200463cb4",
+    "conf/splunk/local/data/ui/nav/default.xml": "fd75605d053b1613fbbd1d2df2762986fbf2e8a9a2f34597f8716b87dd0e1287",
+    "artifacts/templates/periodic-reporting-row.schema.json": "e67a61dfdc6beb23116a4caa9236f63568b6553f1f4897518ae2c28a622a1fd2"
+  },
+  "security": {
+    "credentials_included": false,
+    "management_endpoint_included": false,
+    "private_addresses_included": false,
+    "raw_events_included": false,
+    "host_or_source_names_stored": false
+  },
+  "limitations": [
+    "This artifact qualifies the offline scaffold only.",
+    "No live collector execution or historical trend is claimed.",
+    "Late-dataset counts cover datasets observed during the closed period only."
+  ]
+}

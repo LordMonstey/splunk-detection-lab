@@ -1,0 +1,141 @@
+{
+  "change": {
+    "completed_at": "2026-08-07T16:10:11Z",
+    "execution_mode": "canary-recipe-only",
+    "promotion_boundary": "candidate-not-promotion-eligible",
+    "started_at": "2026-08-07T16:06:46Z"
+  },
+  "decisions": {
+    "baseline": {
+      "decision": "GO-CANARY",
+      "reason": "baseline quality gate passed"
+    },
+    "candidate": {
+      "decision": "NO-GO",
+      "reason": "controlled parsing regression was detected before promotion"
+    },
+    "rollback": {
+      "decision": "CLOSE",
+      "reason": "baseline artifact and data-quality parity were restored"
+    }
+  },
+  "evidence_kind": "live-isolated-lab",
+  "packages": {
+    "baseline": {
+      "archive_sha256": "34797a39357e946080e77dfec72b01d5d96307362aa0e7f02f276fe585055530",
+      "effective_config_sha256": "96f8e0818ad14e99ce1872e07e23ce87b08165a098d82755e07b14271ec22ed6",
+      "version": "1.0.0"
+    },
+    "candidate": {
+      "archive_sha256": "e73ecb0bab9b91de01bf3b4dbc72520b3a7a875cff4573a24e7e0c8f2f073456",
+      "effective_config_sha256": "ef90687602ad742b8f94639196c41676a03ec1eba88ef1a611cb70e91c68a236",
+      "version": "1.1.0-rc1"
+    },
+    "rollback": {
+      "archive_sha256": "34797a39357e946080e77dfec72b01d5d96307362aa0e7f02f276fe585055530",
+      "effective_config_sha256": "96f8e0818ad14e99ce1872e07e23ce87b08165a098d82755e07b14271ec22ed6",
+      "version": "1.0.0"
+    }
+  },
+  "phases": {
+    "baseline": {
+      "aggregate_evidence_sha256": "b8289f747f3386a142aa8a4793af9f39bded416baa2910cdff455ee4b186b0d7",
+      "captured_at": "2026-08-07T16:07:56Z",
+      "distinct_event_count": 5,
+      "duplicate_count": 0,
+      "expected_event_count": 5,
+      "failed_checks": [],
+      "gate": "PASS",
+      "minimum_required_field_coverage_pct": 100.0,
+      "observed_event_count": 5,
+      "p95_index_lag_seconds": 302.0,
+      "required_field_coverage_pct": {
+        "action": 100.0,
+        "src": 100.0,
+        "user": 100.0
+      },
+      "run_id": "parsing-20260807T160646Z-8ceae0d8-baseline",
+      "timestamp_conformance_pct": 100.0,
+      "truncated_event_count": 0
+    },
+    "candidate": {
+      "aggregate_evidence_sha256": "4c468522c9069da84cc63ecc4c217899463101d4705b63ba8a6c8e08c3e0aab0",
+      "captured_at": "2026-08-07T16:09:05Z",
+      "distinct_event_count": 5,
+      "duplicate_count": 0,
+      "expected_event_count": 5,
+      "failed_checks": [
+        "required_field_coverage",
+        "timestamp_conformance"
+      ],
+      "gate": "NO-GO",
+      "minimum_required_field_coverage_pct": 0.0,
+      "observed_event_count": 5,
+      "p95_index_lag_seconds": 0.0,
+      "required_field_coverage_pct": {
+        "action": 0.0,
+        "src": 0.0,
+        "user": 0.0
+      },
+      "run_id": "parsing-20260807T160646Z-8ceae0d8-candidate",
+      "timestamp_conformance_pct": 0.0,
+      "truncated_event_count": 0
+    },
+    "rollback": {
+      "aggregate_evidence_sha256": "0f8b0f7e904c52ec1fc6efe892d72b690d7e3dd43c33b68bfac32a4e490832a9",
+      "captured_at": "2026-08-07T16:10:10Z",
+      "distinct_event_count": 5,
+      "duplicate_count": 0,
+      "expected_event_count": 5,
+      "failed_checks": [],
+      "gate": "PASS",
+      "minimum_required_field_coverage_pct": 100.0,
+      "observed_event_count": 5,
+      "p95_index_lag_seconds": 301.0,
+      "required_field_coverage_pct": {
+        "action": 100.0,
+        "src": 100.0,
+        "user": 100.0
+      },
+      "run_id": "parsing-20260807T160646Z-8ceae0d8-rollback",
+      "timestamp_conformance_pct": 100.0,
+      "truncated_event_count": 0
+    }
+  },
+  "project": {
+    "app_id": "splunk_parsing_canary_qualification",
+    "environment_alias": "lab-parsing-canary",
+    "failure_injection": "controlled-field-and-timestamp-regression",
+    "scoped_index_alias": "idx-recette-parsing",
+    "scoped_sourcetype_alias": "canary-auth",
+    "topology": "standalone"
+  },
+  "public_redaction": {
+    "credentials_removed": true,
+    "hostnames_replaced_with_aliases": true,
+    "private_addresses_removed": true,
+    "raw_events_excluded": true,
+    "search_identifiers_excluded": true
+  },
+  "rollback_parity": {
+    "checks": {
+      "event_count_restored": true,
+      "event_integrity_restored": true,
+      "field_coverage_restored": true,
+      "index_lag_comparable": true,
+      "same_baseline_artifact": true,
+      "timestamp_conformance_restored": true
+    },
+    "field_coverage_delta_percentage_points": {
+      "action": 0.0,
+      "src": 0.0,
+      "user": 0.0
+    },
+    "p95_index_lag_delta_seconds": -1.0,
+    "status": "RESTORED",
+    "timestamp_conformance_delta_percentage_points": 0.0
+  },
+  "run_id": "parsing-20260807T160646Z-8ceae0d8",
+  "schema_version": "1.0",
+  "source_contract_sha256": "56cb5dbca2722d42f6904ba7081e8a2ac4b431f4dba053efa8322da88d3e527c"
+}
