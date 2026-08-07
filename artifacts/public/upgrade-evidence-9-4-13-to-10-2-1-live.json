@@ -1,0 +1,393 @@
+{
+  "backup": {
+    "captured_at": "2026-08-07T14:11:33.891Z",
+    "configuration_archive_sha256": "10b6ecfcd9be0896fdce8cf89dfdcccd9d9f00293c4a9658959f41bc372a4d1d",
+    "custom_apps_archive_sha256": "5bd9338b75aa984c63b27e44a6ceaa6a32e1a9263d178f6bdf1d3ca21769feb9",
+    "kv_store_archive_sha256": "adf9564ed0b864cfb1002307ac661b711e0d7a9feb834e1fdee8e5f6a9cc1bc6",
+    "manifest_sha256": "58a10c161fc3273bf6a0603b6d3fea543400ee01f2a0015b8bbeefb4aa0ae00b",
+    "restore_test_status": "verified",
+    "restore_tested_at": "2026-08-07T14:38:19.904Z",
+    "snapshot_alias": "snapshot-baseline-9-4-13",
+    "snapshot_metadata_sha256": "118542a8c8c249f2cdaf57ce8846b9451e7dc65c2588ecd38927a705ed60bb1b"
+  },
+  "change": {
+    "compatibility_matrix_reviewed": true,
+    "completed_at": "2026-08-07T14:49:16.688Z",
+    "direct_path_checked_against_vendor_documentation": true,
+    "execution_mode": "live-lab",
+    "rollback_method": "snapshot-and-backup-restoration",
+    "started_at": "2026-08-07T14:09:53.302Z",
+    "upgrade_strategy": "in-place-upgrade-with-restorable-baseline"
+  },
+  "decisions": {
+    "final": {
+      "decision": "CLOSE",
+      "reason": "Final target healthy with eight controls and no observed drift."
+    },
+    "post_upgrade": {
+      "decision": "GO-ROLLBACK-DRILL",
+      "reason": "Target version healthy; controlled rollback drill authorized."
+    },
+    "pre_upgrade": {
+      "decision": "GO",
+      "reason": "Verified backups and eight baseline controls passed."
+    },
+    "rollback": {
+      "decision": "GO-FINAL-UPGRADE",
+      "reason": "Baseline restored with matching inventories and manifests."
+    }
+  },
+  "evidence_kind": "live-isolated-lab",
+  "phases": {
+    "final": {
+      "build": "c892b66d163d",
+      "captured_at": "2026-08-07T14:47:18Z",
+      "hashes": {
+        "custom_apps_manifest_sha256": "338511b90d107c3b682853e5ea3ce3ea95876a9c9d53d393443f37c4bf30d183",
+        "kv_store_export_sha256": "2c7e9b578c3673a71b1f841d1a3aab753f04684d6d607ecfb09d827f248a911f",
+        "managed_configuration_manifest_sha256": "0df4af5424b868a4a0f33dc21204b1de79d26e6987c64270b7bcaf60d0902a84",
+        "saved_searches_export_sha256": "2dc6b20abebedff727f9e73606aecc8da0864c86d0418526822ede8a5a0efb6b"
+      },
+      "health": {
+        "fatal_error_count": 0,
+        "searchable": true,
+        "skipped_search_count": 0,
+        "splunkd_status": "running",
+        "status": "green"
+      },
+      "inventory": {
+        "custom_app_count": 4,
+        "enabled_saved_search_count": 1,
+        "installed_app_count": 34,
+        "saved_search_count": 27
+      },
+      "kv_store": {
+        "collection_count": 20,
+        "status": "ready"
+      },
+      "license": {
+        "state": "OK",
+        "violation_count": 0
+      },
+      "smoke_tests": [
+        {
+          "duration_ms": 16,
+          "evidence_sha256": "2f9c9e2c5c8304c327d49ce81c13a72038e507d4b63f4e251cad8cedc21134db",
+          "id": "authentication",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 344,
+          "evidence_sha256": "8cf88ede3b71f49944260024102b07eb9f363381fb7fff222c0790873f70ef7b",
+          "id": "interactive_search",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 375,
+          "evidence_sha256": "adbfc132d2bd09b87cff885b76569dbcde8039679ac18a1cf3c9c9edb9a70ffb",
+          "id": "scheduled_search",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 312,
+          "evidence_sha256": "ad150ad341288784eac63b0af5c1a366262aec3bb972c313fd2f9709d9fa914e",
+          "id": "ingestion_freshness",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 32,
+          "evidence_sha256": "e3400de92de488e4e9d1a0161182af1a3b27494ab16b6c88232ad4dc8fea8bdd",
+          "id": "kv_store",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 0,
+          "evidence_sha256": "77486c8de8006e660b17ecb68356a3687a058cbc1ff14040acefe09f395b1157",
+          "id": "license",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 375,
+          "evidence_sha256": "60d620b68f942f4a8d09128c0c42804e5c91812f20f41320774cdb475ea8760b",
+          "id": "dashboard_load",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 0,
+          "evidence_sha256": "46c9f6ebf51eaa99eb27e43d7883bad9c17dd506a7b022ed43628920d9dd445b",
+          "id": "configuration_check",
+          "status": "passed"
+        }
+      ],
+      "version": "10.2.1"
+    },
+    "post_upgrade": {
+      "build": "c892b66d163d",
+      "captured_at": "2026-08-07T14:35:33Z",
+      "hashes": {
+        "custom_apps_manifest_sha256": "338511b90d107c3b682853e5ea3ce3ea95876a9c9d53d393443f37c4bf30d183",
+        "kv_store_export_sha256": "2c7e9b578c3673a71b1f841d1a3aab753f04684d6d607ecfb09d827f248a911f",
+        "managed_configuration_manifest_sha256": "0df4af5424b868a4a0f33dc21204b1de79d26e6987c64270b7bcaf60d0902a84",
+        "saved_searches_export_sha256": "2dc6b20abebedff727f9e73606aecc8da0864c86d0418526822ede8a5a0efb6b"
+      },
+      "health": {
+        "fatal_error_count": 0,
+        "searchable": true,
+        "skipped_search_count": 0,
+        "splunkd_status": "running",
+        "status": "green"
+      },
+      "inventory": {
+        "custom_app_count": 4,
+        "enabled_saved_search_count": 1,
+        "installed_app_count": 34,
+        "saved_search_count": 27
+      },
+      "kv_store": {
+        "collection_count": 20,
+        "status": "ready"
+      },
+      "license": {
+        "state": "OK",
+        "violation_count": 0
+      },
+      "smoke_tests": [
+        {
+          "duration_ms": 32,
+          "evidence_sha256": "2f9c9e2c5c8304c327d49ce81c13a72038e507d4b63f4e251cad8cedc21134db",
+          "id": "authentication",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 359,
+          "evidence_sha256": "8cf88ede3b71f49944260024102b07eb9f363381fb7fff222c0790873f70ef7b",
+          "id": "interactive_search",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 375,
+          "evidence_sha256": "adbfc132d2bd09b87cff885b76569dbcde8039679ac18a1cf3c9c9edb9a70ffb",
+          "id": "scheduled_search",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 359,
+          "evidence_sha256": "ad150ad341288784eac63b0af5c1a366262aec3bb972c313fd2f9709d9fa914e",
+          "id": "ingestion_freshness",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 32,
+          "evidence_sha256": "e3400de92de488e4e9d1a0161182af1a3b27494ab16b6c88232ad4dc8fea8bdd",
+          "id": "kv_store",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 0,
+          "evidence_sha256": "77486c8de8006e660b17ecb68356a3687a058cbc1ff14040acefe09f395b1157",
+          "id": "license",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 343,
+          "evidence_sha256": "60d620b68f942f4a8d09128c0c42804e5c91812f20f41320774cdb475ea8760b",
+          "id": "dashboard_load",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 0,
+          "evidence_sha256": "dc78ac61a8c96e889fb2403733d163ab7a3c5f48f8de7956d06de14d3968340f",
+          "id": "configuration_check",
+          "status": "passed"
+        }
+      ],
+      "version": "10.2.1"
+    },
+    "pre_upgrade": {
+      "build": "1d070b2427bf",
+      "captured_at": "2026-08-07T14:19:34Z",
+      "hashes": {
+        "custom_apps_manifest_sha256": "338511b90d107c3b682853e5ea3ce3ea95876a9c9d53d393443f37c4bf30d183",
+        "kv_store_export_sha256": "2c7e9b578c3673a71b1f841d1a3aab753f04684d6d607ecfb09d827f248a911f",
+        "managed_configuration_manifest_sha256": "0df4af5424b868a4a0f33dc21204b1de79d26e6987c64270b7bcaf60d0902a84",
+        "saved_searches_export_sha256": "2dc6b20abebedff727f9e73606aecc8da0864c86d0418526822ede8a5a0efb6b"
+      },
+      "health": {
+        "fatal_error_count": 0,
+        "searchable": true,
+        "skipped_search_count": 0,
+        "splunkd_status": "running",
+        "status": "green"
+      },
+      "inventory": {
+        "custom_app_count": 4,
+        "enabled_saved_search_count": 1,
+        "installed_app_count": 31,
+        "saved_search_count": 26
+      },
+      "kv_store": {
+        "collection_count": 15,
+        "status": "ready"
+      },
+      "license": {
+        "state": "OK",
+        "violation_count": 0
+      },
+      "smoke_tests": [
+        {
+          "duration_ms": 16,
+          "evidence_sha256": "97ebba0bea48319336b85e529e42c5e9b81d203e8372ac61fce8d9d001da5194",
+          "id": "authentication",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 328,
+          "evidence_sha256": "8cf88ede3b71f49944260024102b07eb9f363381fb7fff222c0790873f70ef7b",
+          "id": "interactive_search",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 360,
+          "evidence_sha256": "adbfc132d2bd09b87cff885b76569dbcde8039679ac18a1cf3c9c9edb9a70ffb",
+          "id": "scheduled_search",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 375,
+          "evidence_sha256": "ad150ad341288784eac63b0af5c1a366262aec3bb972c313fd2f9709d9fa914e",
+          "id": "ingestion_freshness",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 31,
+          "evidence_sha256": "e3400de92de488e4e9d1a0161182af1a3b27494ab16b6c88232ad4dc8fea8bdd",
+          "id": "kv_store",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 0,
+          "evidence_sha256": "77486c8de8006e660b17ecb68356a3687a058cbc1ff14040acefe09f395b1157",
+          "id": "license",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 875,
+          "evidence_sha256": "60d620b68f942f4a8d09128c0c42804e5c91812f20f41320774cdb475ea8760b",
+          "id": "dashboard_load",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 0,
+          "evidence_sha256": "46adf784ac1e9f7b41a70eead339a049272d14ee9d3f1483d4f601f383e8b722",
+          "id": "configuration_check",
+          "status": "passed"
+        }
+      ],
+      "version": "9.4.13"
+    },
+    "rollback": {
+      "build": "1d070b2427bf",
+      "captured_at": "2026-08-07T14:38:19Z",
+      "hashes": {
+        "custom_apps_manifest_sha256": "338511b90d107c3b682853e5ea3ce3ea95876a9c9d53d393443f37c4bf30d183",
+        "kv_store_export_sha256": "2c7e9b578c3673a71b1f841d1a3aab753f04684d6d607ecfb09d827f248a911f",
+        "managed_configuration_manifest_sha256": "0df4af5424b868a4a0f33dc21204b1de79d26e6987c64270b7bcaf60d0902a84",
+        "saved_searches_export_sha256": "2dc6b20abebedff727f9e73606aecc8da0864c86d0418526822ede8a5a0efb6b"
+      },
+      "health": {
+        "fatal_error_count": 0,
+        "searchable": true,
+        "skipped_search_count": 0,
+        "splunkd_status": "running",
+        "status": "green"
+      },
+      "inventory": {
+        "custom_app_count": 4,
+        "enabled_saved_search_count": 1,
+        "installed_app_count": 31,
+        "saved_search_count": 26
+      },
+      "kv_store": {
+        "collection_count": 15,
+        "status": "ready"
+      },
+      "license": {
+        "state": "OK",
+        "violation_count": 0
+      },
+      "smoke_tests": [
+        {
+          "duration_ms": 31,
+          "evidence_sha256": "97ebba0bea48319336b85e529e42c5e9b81d203e8372ac61fce8d9d001da5194",
+          "id": "authentication",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 110,
+          "evidence_sha256": "8cf88ede3b71f49944260024102b07eb9f363381fb7fff222c0790873f70ef7b",
+          "id": "interactive_search",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 343,
+          "evidence_sha256": "adbfc132d2bd09b87cff885b76569dbcde8039679ac18a1cf3c9c9edb9a70ffb",
+          "id": "scheduled_search",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 313,
+          "evidence_sha256": "ad150ad341288784eac63b0af5c1a366262aec3bb972c313fd2f9709d9fa914e",
+          "id": "ingestion_freshness",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 15,
+          "evidence_sha256": "e3400de92de488e4e9d1a0161182af1a3b27494ab16b6c88232ad4dc8fea8bdd",
+          "id": "kv_store",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 0,
+          "evidence_sha256": "77486c8de8006e660b17ecb68356a3687a058cbc1ff14040acefe09f395b1157",
+          "id": "license",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 141,
+          "evidence_sha256": "60d620b68f942f4a8d09128c0c42804e5c91812f20f41320774cdb475ea8760b",
+          "id": "dashboard_load",
+          "status": "passed"
+        },
+        {
+          "duration_ms": 0,
+          "evidence_sha256": "ab9358e031f963085a4ff9976da9c578765953a2bb5f2ac701422b157ce16a2d",
+          "id": "configuration_check",
+          "status": "passed"
+        }
+      ],
+      "version": "9.4.13"
+    }
+  },
+  "project": {
+    "enterprise_security_layer": {
+      "compatibility_matrix_checked": false,
+      "status": "not-installed",
+      "version_after": null,
+      "version_before": null
+    },
+    "environment_alias": "lab-upgrade-drill",
+    "host_os": "Debian GNU/Linux 13 (laboratory evidence only)",
+    "os_evidence_boundary": "lab-method-validation-not-vendor-support-certification",
+    "source_version": "9.4.13",
+    "target_version": "10.2.1",
+    "topology": "standalone"
+  },
+  "public_redaction": {
+    "credentials_removed": true,
+    "hostnames_replaced_with_aliases": true,
+    "private_addresses_removed": true,
+    "raw_events_excluded": true
+  },
+  "run_id": "upgrade-20260807T140953Z-58a10c16",
+  "schema_version": "1.0"
+}

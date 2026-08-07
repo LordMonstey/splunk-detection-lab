@@ -1,0 +1,17 @@
+<dashboard version="1.1">
+  <label>Qualification de montée de version</label>
+  <description>Vue minimale utilisée uniquement pour vérifier le chargement d'un dashboard pendant le drill.</description>
+  <row>
+    <panel>
+      <single>
+        <title>État du harnais</title>
+        <search>
+          <query>| makeresults | eval status="PRÊT" | fields status</query>
+          <earliest>-5m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+      </single>
+    </panel>
+  </row>
+</dashboard>

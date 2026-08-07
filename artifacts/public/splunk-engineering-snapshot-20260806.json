@@ -1,0 +1,164 @@
+{
+  "schema_version": 2,
+  "snapshot_id": "public-validation-snapshot-2026-08-06",
+  "captured_at": "2026-08-06T17:36:00+03:00",
+  "mode": "sanitized_static_validation_checkpoint",
+  "scope": "Point-in-time platform, detection, CIM, and RBA evidence; no raw event is published.",
+  "platform": {
+    "product": "Splunk Enterprise",
+    "version": "10.2.1",
+    "application": "Detection & Platform Engineering",
+    "application_version": "0.6.4",
+    "license_mode": "Free",
+    "remote_cli_login": false,
+    "deployment": "single-instance validation environment"
+  },
+  "metrics": {
+    "lifetime_event_count": 173,
+    "searchable_event_count": 173,
+    "windows_telemetry_events": 152,
+    "configured_detection_searches": 18,
+    "validated_detection_searches": 18,
+    "positive_detection_scenarios": 5,
+    "detection_validation_errors": 0,
+    "validated_dashboard_searches": 49,
+    "dashboard_validation_errors": 0,
+    "configured_indexes": 4,
+    "cim_process_field_completeness_percent": 100
+  },
+  "rba": {
+    "implementation": "Splunk ES-compatible risk and finding schema",
+    "risk_modifiers": 19,
+    "cumulative_entity_risk": 1185,
+    "distinct_attack_techniques": 5,
+    "current_findings": 1,
+    "finding_versions": 2,
+    "native_enterprise_security_claimed_active": false
+  },
+  "searchable_sources": [
+    {
+      "index": "sysmon",
+      "sourcetype": "XmlWinEventLog:Microsoft-Windows-Sysmon/Operational",
+      "count": 148
+    },
+    {
+      "index": "windows",
+      "sourcetype": "XmlWinEventLog:Security",
+      "count": 4
+    },
+    {
+      "index": "risk",
+      "sourcetype": "stash",
+      "count": 19
+    },
+    {
+      "index": "notable",
+      "sourcetype": "stash",
+      "count": 2
+    }
+  ],
+  "sysmon_event_codes": [
+    {
+      "event_id": 1,
+      "count": 134,
+      "label": "Process Creation"
+    },
+    {
+      "event_id": 10,
+      "count": 12,
+      "label": "Process Access"
+    },
+    {
+      "event_id": 13,
+      "count": 2,
+      "label": "Registry Value Set"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "sysmon",
+      "lifetime_events": 148,
+      "searchable_events": 148,
+      "max_size_mb": 12000,
+      "retention_days": 90,
+      "purpose": "Windows Sysmon telemetry"
+    },
+    {
+      "name": "windows",
+      "lifetime_events": 4,
+      "searchable_events": 4,
+      "max_size_mb": 8000,
+      "retention_days": 90,
+      "purpose": "Native Windows event channels"
+    },
+    {
+      "name": "risk",
+      "lifetime_events": 19,
+      "searchable_events": 19,
+      "max_size_mb": 1000,
+      "retention_days": 365,
+      "purpose": "ES-compatible risk modifier store"
+    },
+    {
+      "name": "notable",
+      "lifetime_events": 2,
+      "searchable_events": 2,
+      "max_size_mb": 1000,
+      "retention_days": 365,
+      "purpose": "Versioned correlated finding store"
+    }
+  ],
+  "queries": {
+    "sources": "index=* | stats count by index sourcetype | sort - count",
+    "sysmon_event_codes": "index=sysmon | stats count by EventCode | sort - count",
+    "saved_search_count": "| rest /services/saved/searches | search disabled=0 | stats count"
+  },
+  "evidence": [
+    {
+      "path": "site/assets/evidence/engineering-command-center.png",
+      "sha256": "5d82b233056cfb9565234392b663f66c706e00bb8618ad68fb5a43d0082d715e",
+      "supports": [
+        "platform control plane",
+        "source distribution",
+        "index state",
+        "scheduled detection inventory"
+      ]
+    },
+    {
+      "path": "site/assets/evidence/detection-factory-control-plane.png",
+      "sha256": "8de5058b43dfd41c0d8cee4c4221bf26ae204d6b83e7ff31ec7c45cf2155f87f",
+      "supports": [
+        "18 of 18 dispatch validation",
+        "five positive scenarios",
+        "measured runtime",
+        "detection catalog"
+      ]
+    },
+    {
+      "path": "site/assets/evidence/risk-identity-investigation.png",
+      "sha256": "9b2e569d80acdb67647657cb2f59ee8babbbaa1ab32af5da0fde39ff97c02fb5",
+      "supports": [
+        "risk modifiers",
+        "entity risk",
+        "ATT&CK diversity",
+        "versioned finding"
+      ]
+    },
+    {
+      "path": "site/assets/evidence/cim-platform-assurance.png",
+      "sha256": "0523062938dad4209413b6884cf2c77ab9c728c2aa1d0c5215ff352c6a153c72",
+      "supports": [
+        "CIM process field completeness",
+        "platform health",
+        "KV Store readiness",
+        "administrative assurance"
+      ]
+    }
+  ],
+  "redaction": {
+    "credentials": "removed",
+    "private_addresses": "removed",
+    "raw_events": "not included",
+    "live_connectivity": "not required"
+  }
+}

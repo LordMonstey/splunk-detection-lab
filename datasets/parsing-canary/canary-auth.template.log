@@ -1,0 +1,5 @@
+event_time={event_time} run_id={run_id} event_id=evt-01 expected_event_time={event_time} user=alice src=192.0.2.10 action=success end_marker=CANARY_END
+event_time={event_time} run_id={run_id} event_id=evt-02 expected_event_time={event_time} user=bob src=192.0.2.11 action=failure end_marker=CANARY_END
+event_time={event_time} run_id={run_id} event_id=evt-03 expected_event_time={event_time} user=carol src=192.0.2.12 action=success end_marker=CANARY_END
+event_time={event_time} run_id={run_id} event_id=evt-04 expected_event_time={event_time} user=dave src=192.0.2.13 action=failure end_marker=CANARY_END
+event_time={event_time} run_id={run_id} event_id=evt-05 expected_event_time={event_time} user=erin src=192.0.2.14 action=success end_marker=CANARY_END

@@ -1,0 +1,156 @@
+<dashboard version="1.1" theme="dark" stylesheet="splunk_engineering.css">
+  <label>Reporting périodique MCO &amp; CIM</label>
+  <description>Agrégats quotidiens et hebdomadaires sans données événementielles, identités techniques ni secrets.</description>
+
+  <row id="reporting_header">
+    <panel>
+      <html>
+        <div class="ops-header">
+          <div class="ops-header__title">
+            <span>PILOTAGE DE SERVICE / QUALITÉ DES DONNÉES</span>
+            <h1>Reporting périodique MCO &amp; CIM</h1>
+            <p>Une mesure fermée par période, un schéma stable et des tendances affichées uniquement lorsque l'historique est suffisant.</p>
+          </div>
+          <div class="ops-header__facts">
+            <div><small>COLLECTE MCO</small><strong>QUOTIDIENNE</strong><span>journée close</span></div>
+            <div><small>CONTRÔLE CIM</small><strong>HEBDOMADAIRE</strong><span>semaine close</span></div>
+            <div><small>STOCKAGE</small><strong>KV STORE</strong><span>upsert idempotent</span></div>
+            <div><small>SCHÉMA</small><strong>V1</strong><span>métriques agrégées</span></div>
+            <div><small>CONFIDENTIALITÉ</small><strong>MINIMALE</strong><span>aucun événement brut</span></div>
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <row id="history_readiness">
+    <panel>
+      <single>
+        <title>Périodes MCO observées</title>
+        <search>
+          <query>| inputlookup mco_cim_periodic_history | search report_family="mco_daily" | stats dc(period_start) as value</query>
+          <earliest>0</earliest><latest>now</latest>
+        </search>
+        <option name="colorMode">none</option><option name="drilldown">none</option>
+        <option name="showSparkline">0</option><option name="showTrendIndicator">0</option>
+        <option name="underLabel">2 PÉRIODES MINIMUM POUR UNE TENDANCE</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Périodes CIM observées</title>
+        <search>
+          <query>| inputlookup mco_cim_periodic_history | search report_family="cim_weekly" | stats dc(period_start) as value</query>
+          <earliest>0</earliest><latest>now</latest>
+        </search>
+        <option name="colorMode">none</option><option name="drilldown">none</option>
+        <option name="showSparkline">0</option><option name="showTrendIndicator">0</option>
+        <option name="underLabel">2 PÉRIODES MINIMUM POUR UNE TENDANCE</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>État de l'historique</title>
+        <search>
+          <query>| inputlookup mco_cim_periodic_history | stats dc(eval(if(report_family="mco_daily",period_start,null()))) as mco_periods dc(eval(if(report_family="cim_weekly",period_start,null()))) as cim_periods | eval value=if(mco_periods&gt;=2 AND cim_periods&gt;=2,"TENDANCE DISPONIBLE","BASELINE SEULEMENT") | fields value</query>
+          <earliest>0</earliest><latest>now</latest>
+        </search>
+        <option name="colorMode">none</option><option name="drilldown">none</option>
+        <option name="showSparkline">0</option><option name="showTrendIndicator">0</option>
+        <option name="underLabel">AUCUNE EXTRAPOLATION SUR UN POINT UNIQUE</option>
+      </single>
+    </panel>
+  </row>
+
+  <row id="latest_periods">
+    <panel>
+      <table>
+        <title>Dernière journée MCO close</title>
+        <search>
+          <query>| inputlookup mco_cim_periodic_history | search report_family="mco_daily" | eventstats max(period_start) as latest_period | where period_start=latest_period | eval periode=strftime(period_start,"%Y-%m-%d"), valeur=round(metric_value,2) | rename metric_id as metrique metric_unit as unite status as etat sample_state as echantillon | table periode metrique valeur unite etat echantillon | sort metrique</query>
+          <earliest>0</earliest><latest>now</latest>
+        </search>
+        <option name="count">10</option><option name="dataOverlayMode">heatmap</option>
+        <option name="drilldown">none</option><option name="rowNumbers">0</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>Dernière semaine CIM close</title>
+        <search>
+          <query>| inputlookup mco_cim_periodic_history | search report_family="cim_weekly" | eventstats max(period_start) as latest_period | where period_start=latest_period | eval periode=strftime(period_start,"%Y-%m-%d"), valeur=round(metric_value,2) | rename metric_id as metrique metric_unit as unite status as etat sample_state as echantillon | table periode metrique valeur unite etat echantillon | sort metrique</query>
+          <earliest>0</earliest><latest>now</latest>
+        </search>
+        <option name="count">12</option><option name="dataOverlayMode">heatmap</option>
+        <option name="drilldown">none</option><option name="rowNumbers">0</option>
+      </table>
+    </panel>
+  </row>
+
+  <row id="mco_trends">
+    <panel>
+      <chart>
+        <title>MCO quotidien / taux de succès scheduler</title>
+        <search>
+          <query>| inputlookup mco_cim_periodic_history | search report_family="mco_daily" metric_id="scheduler.success_pct" | eventstats dc(period_start) as periods | where periods&gt;=2 | eval _time=period_start | timechart span=1d latest(metric_value) as "Succès scheduler (%)"</query>
+          <earliest>0</earliest><latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option><option name="charting.drilldown">none</option>
+        <option name="charting.axisY.minimumNumber">0</option><option name="charting.axisY.maximumNumber">100</option>
+        <option name="charting.legend.placement">bottom</option><option name="height">300</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>MCO quotidien / signaux nécessitant une action</title>
+        <search>
+          <query>| inputlookup mco_cim_periodic_history | search report_family="mco_daily" (metric_id="ingestion.late_datasets" OR metric_id="scheduler.skipped") | eventstats dc(period_start) as periods | where periods&gt;=2 | eval _time=period_start | timechart span=1d latest(metric_value) by metric_id useother=f usenull=f</query>
+          <earliest>0</earliest><latest>now</latest>
+        </search>
+        <option name="charting.chart">column</option><option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">bottom</option><option name="height">300</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row id="cim_trends">
+    <panel>
+      <chart>
+        <title>CIM hebdomadaire / complétude des lignes</title>
+        <search>
+          <query>| inputlookup mco_cim_periodic_history | search report_family="cim_weekly" metric_id="cim.rows_complete_pct" | eventstats dc(period_start) as periods | where periods&gt;=2 | eval _time=period_start | timechart span=1w latest(metric_value) as "Lignes complètes (%)"</query>
+          <earliest>0</earliest><latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option><option name="charting.drilldown">none</option>
+        <option name="charting.axisY.minimumNumber">0</option><option name="charting.axisY.maximumNumber">100</option>
+        <option name="charting.legend.placement">bottom</option><option name="height">300</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>CIM hebdomadaire / complétude par champ</title>
+        <search>
+          <query>| inputlookup mco_cim_periodic_history | search report_family="cim_weekly" metric_id="cim.field.*.pct" | eventstats dc(period_start) as periods | where periods&gt;=2 | eval _time=period_start | timechart span=1w latest(metric_value) by metric_id limit=10 useother=f usenull=f</query>
+          <earliest>0</earliest><latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option><option name="charting.drilldown">none</option>
+        <option name="charting.axisY.minimumNumber">0</option><option name="charting.axisY.maximumNumber">100</option>
+        <option name="charting.legend.placement">bottom</option><option name="height">300</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row id="data_contract">
+    <panel>
+      <table>
+        <title>Contrat d'agrégation</title>
+        <search>
+          <query>| inputlookup mco_cim_periodic_history | stats count as lignes dc(report_key) as clés min(schema_version) as schéma_min max(schema_version) as schéma_max dc(metric_id) as métriques dc(report_family) as familles | eval contrôle=if(lignes=clés AND schéma_min=1 AND schéma_max=1,"CONFORME","À CONTRÔLER") | table contrôle lignes clés familles métriques schéma_min schéma_max</query>
+          <earliest>0</earliest><latest>now</latest>
+        </search>
+        <option name="count">5</option><option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option><option name="rowNumbers">0</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>

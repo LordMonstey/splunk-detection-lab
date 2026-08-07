@@ -1,0 +1,194 @@
+{
+  "schema_version": 2,
+  "generated_at": "2026-08-07T15:51:18.121352+00:00",
+  "evidence_type": "live-aggregate-first-execution-and-idempotence",
+  "scope": "periodic-mco-cim-reporting",
+  "application": "splunk-detection-lab",
+  "status": "PASS",
+  "runtime_contract": {
+    "platform": {
+      "version": "10.2.1",
+      "health_green": true,
+      "kv_store_ready": true
+    },
+    "application": {
+      "expected_version": "0.7.3",
+      "observed_version": "0.7.3",
+      "version_match": true,
+      "enabled": true,
+      "configured": true
+    },
+    "collectors": [
+      {
+        "name": "report_mco_daily_aggregate",
+        "disabled": false,
+        "scheduled": true,
+        "cron_schedule": "15 1 * * *",
+        "closed_period": {
+          "earliest": "-1d@d",
+          "latest": "@d"
+        },
+        "next_run_present": true,
+        "schedule_match": true,
+        "search_contract_match": true,
+        "acl": {
+          "app_context_match": true,
+          "owner_is_nobody": true,
+          "sharing": "global",
+          "read_all": true,
+          "write_admin_only": true,
+          "policy_passed": true
+        }
+      },
+      {
+        "name": "report_cim_weekly_aggregate",
+        "disabled": false,
+        "scheduled": true,
+        "cron_schedule": "45 1 * * 1",
+        "closed_period": {
+          "earliest": "-1w@w",
+          "latest": "@w"
+        },
+        "next_run_present": true,
+        "schedule_match": true,
+        "search_contract_match": true,
+        "acl": {
+          "app_context_match": true,
+          "owner_is_nobody": true,
+          "sharing": "global",
+          "read_all": true,
+          "write_admin_only": true,
+          "policy_passed": true
+        }
+      }
+    ],
+    "collection": {
+      "configured": true,
+      "typed_schema_match": true,
+      "acl_policy_passed": true
+    },
+    "lookup": {
+      "configured": true,
+      "contract_match": true,
+      "acl_policy_passed": true
+    },
+    "dashboard": {
+      "configured": true,
+      "query_count": 10,
+      "aggregate_only": true,
+      "acl_policy_passed": true
+    },
+    "acl": {
+      "objects_checked": 5,
+      "read_scope": "all-roles",
+      "write_scope": "admin-only",
+      "policy_passed": true
+    },
+    "all_passed": true
+  },
+  "preservation": {
+    "tls_verified": true,
+    "kv_ready_before": true,
+    "kv_ready_after": true,
+    "platform_health_green_after": true
+  },
+  "dispatches": [
+    {
+      "name": "report_mco_daily_aggregate",
+      "dispatch_state": "DONE",
+      "duration_seconds": 0.352,
+      "result_count": 7,
+      "cycle": "first"
+    },
+    {
+      "name": "report_cim_weekly_aggregate",
+      "dispatch_state": "DONE",
+      "duration_seconds": 0.179,
+      "result_count": 9,
+      "cycle": "first"
+    },
+    {
+      "name": "report_mco_daily_aggregate",
+      "dispatch_state": "DONE",
+      "duration_seconds": 0.448,
+      "result_count": 7,
+      "cycle": "replay"
+    },
+    {
+      "name": "report_cim_weekly_aggregate",
+      "dispatch_state": "DONE",
+      "duration_seconds": 0.174,
+      "result_count": 9,
+      "cycle": "replay"
+    }
+  ],
+  "aggregate_execution": {
+    "before": {
+      "row_count": 0,
+      "valid_rows": 0,
+      "invalid_rows": 0,
+      "duplicate_keys": 0,
+      "family_count": 0,
+      "mco_daily_periods": 0,
+      "cim_weekly_periods": 0
+    },
+    "after_first_cycle": {
+      "row_count": 16,
+      "valid_rows": 16,
+      "invalid_rows": 0,
+      "duplicate_keys": 0,
+      "family_count": 2,
+      "mco_daily_periods": 1,
+      "cim_weekly_periods": 1
+    },
+    "after_idempotence_replay": {
+      "row_count": 16,
+      "valid_rows": 16,
+      "invalid_rows": 0,
+      "duplicate_keys": 0,
+      "family_count": 2,
+      "mco_daily_periods": 1,
+      "cim_weekly_periods": 1
+    },
+    "first_execution_from_empty_collection": true,
+    "keyed_replay_stable": true
+  },
+  "historical_periods_observed": {
+    "mco_daily": 1,
+    "cim_weekly": 1
+  },
+  "trend_eligible": false,
+  "trend_claimed": false,
+  "row_schema_sha256": "e67a61dfdc6beb23116a4caa9236f63568b6553f1f4897518ae2c28a622a1fd2",
+  "checks": {
+    "tls_chain_and_hostname_verified": true,
+    "preflight_contract_passed": true,
+    "first_cycle_completed": true,
+    "idempotence_replay_completed": true,
+    "postflight_contract_passed": true,
+    "kv_store_preserved": true,
+    "scheduler_contract_verified": true,
+    "acl_policy_verified": true,
+    "dashboard_aggregate_only": true,
+    "both_families_present": true,
+    "minimum_expected_rows_present": true,
+    "schema_rows_valid": true,
+    "report_keys_unique": true,
+    "mco_baseline_present": true,
+    "cim_baseline_present": true,
+    "keyed_replay_is_idempotent": true
+  },
+  "security": {
+    "credentials_included": false,
+    "management_endpoint_included": false,
+    "search_identifiers_included": false,
+    "raw_events_included": false,
+    "metric_values_included": false,
+    "host_source_or_index_names_included": false
+  },
+  "limitations": [
+    "Only aggregate row counts, object contracts and execution metadata are published.",
+    "No historical trend is claimed by this controlled qualification.",
+    "Late-dataset counts cover datasets observed during the closed period only."
+  ]
+}

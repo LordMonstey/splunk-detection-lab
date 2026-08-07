@@ -79,7 +79,7 @@ existing capture does not prove that the raw field was extracted and matched
 end to end. The rule therefore remains **Testing** until the test is rerun and a
 new Splunk result is committed.
 
-**Finding evidence**: ![evidence](../tests/atomic/evidence/T1140-certutil-decode.png)
+**Public finding evidence**: [aggregate live validation: 2 results, dispatch complete](../artifacts/public/live-detection-validation-20260806.json). Raw command lines and screenshots remain private.
 
 **Test command**: `Invoke-AtomicTest T1140 -TestNumbers 2`
 

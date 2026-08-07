@@ -1,0 +1,8 @@
+control,scope,state,evidence,last_validated
+Splunk service,Control plane,RESPONDING,REST server info,2026-08-06
+KV Store,Platform service,READY,server info health,2026-08-06
+Management API,Network exposure,LOOPBACK FILTERED,LAN probe and firewall policy,2026-08-06
+SSH authentication,Operating system,KEY ONLY,sshd effective configuration,2026-08-06
+Configuration syntax,Splunk application,PASS,validate_conf and btool check,2026-08-06
+Detection dispatch,Saved searches,18 OF 18 PASS,credential-free validation report,2026-08-06
+Static portfolio,Public surface,PASS,CSP and secret pattern audit,2026-08-06

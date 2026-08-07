@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-07T12:52:50.188236+00:00",
+  "scope": "isolated-lab-synthetic-linux-onboarding",
+  "environment": {
+    "version": "10.2.1",
+    "build": "c892b66d163d",
+    "product_type": "splunk",
+    "application_version": "0.7.2"
+  },
+  "batch": {
+    "id": "20260807-r2",
+    "replayed_during_run": true,
+    "dataset_sha256": {
+      "auditd.log": "15c059aec7590928f624a5dbe6b16320b64eb190e96ac991a7fe496d3b368089",
+      "journald.ndjson": "5579646dfe9033135d3ca6f9f022eb7fd19611a5c196d807591ed2413e7fb040",
+      "rsyslog.log": "0b101d43112f32d717961004f07657a2a01990e0aa131ade481ecec39acc3ce3"
+    },
+    "expected_events": 13
+  },
+  "inventory": {
+    "expected_by_sourcetype": {
+      "linux:auditd": 5,
+      "linux:journald": 3,
+      "linux:rsyslog": 5
+    },
+    "observed_by_sourcetype": {
+      "linux:auditd": 5,
+      "linux:journald": 3,
+      "linux:rsyslog": 5
+    }
+  },
+  "cim_field_contract": {
+    "Authentication": {
+      "events": 3,
+      "complete": 3,
+      "completeness_percent": 100.0
+    },
+    "Change": {
+      "events": 4,
+      "complete": 4,
+      "completeness_percent": 100.0
+    },
+    "Endpoint.Processes": {
+      "events": 2,
+      "complete": 2,
+      "completeness_percent": 100.0
+    },
+    "Endpoint.Services": {
+      "events": 4,
+      "complete": 4,
+      "completeness_percent": 100.0
+    }
+  },
+  "eventtype_counts": {
+    "Authentication": 3,
+    "Change.account": 2,
+    "Change.audit": 1,
+    "Change.privileged": 1,
+    "Endpoint.Processes": 2,
+    "Endpoint.Services": 4
+  },
+  "quality": {
+    "duplicate_events": 0,
+    "p95_commit_age_seconds": 3.0,
+    "max_commit_age_seconds": 3.0,
+    "max_raw_length": 366,
+    "truncation_risk_events": 0
+  },
+  "acceptance": {
+    "app_version_matches": true,
+    "expected_event_total": true,
+    "sourcetype_counts_match": true,
+    "four_cim_scopes_present": true,
+    "cim_completeness_at_least_95_percent": true,
+    "eventtypes_operational": true,
+    "no_duplicate_events": true,
+    "no_truncation_risk": true,
+    "recent_index_commit": true
+  },
+  "overall_pass": true,
+  "limitations": [
+    "Events are synthetic and prove the parsing contract, not a production source volume.",
+    "The host label is fictional and raw events are excluded from this public artifact.",
+    "Native CIM data-model acceleration requires the compatible CIM Add-on on the target search tier."
+  ],
+  "security": {
+    "credentials_written": false,
+    "management_uri_persisted": false,
+    "raw_events_persisted_in_artifact": false,
+    "private_addresses_persisted": false
+  }
+}

@@ -30,7 +30,7 @@ emitted by the macro. If `CommandLine` is empty, verify XML field extraction
 with `btool props list`. If aliases are empty, verify the macro definition with
 `btool macros list`.
 
-## CIM-oriented normalization
+## Normalisation orientée CIM
 
 ```spl
 `sysmon_process_creation`
@@ -39,9 +39,24 @@ with `btool props list`. If aliases are empty, verify the macro definition with
 | table dest user process process_name parent_process process_guid
 ```
 
-Expected: the macro returns stable endpoint-oriented field names. This app does
-not ship `eventtypes.conf`, `tags.conf`, or an accelerated Endpoint data model;
-the check proves macro normalization, not full CIM compliance.
+Expected: the macro returns stable endpoint-oriented field names. The app ships
+eventtypes, tags and a custom accelerated data model named
+`Security_Telemetry_Qualification`. That model is explicitly non-CIM and does
+not prove native CIM compliance. Native CIM validation still requires a
+compatible `Splunk_SA_CIM` installation on the target search tier.
+
+## Data model custom accéléré
+
+```spl
+| tstats summariesonly=t count latest(_time) as latest_event
+  from datamodel=Security_Telemetry_Qualification.Security_Telemetry
+```
+
+Expected: a non-zero count after the data model acceleration summary is
+complete. Compare it to the same time window over the root constraint before
+accepting the model. See
+[`custom-security-telemetry-data-model.md`](projects/custom-security-telemetry-data-model.md)
+for the complete live gate and the explicit non-CIM boundary.
 
 ## Clock skew
 

@@ -1,0 +1,138 @@
+<dashboard version="1.1" theme="dark" stylesheet="splunk_engineering.css">
+  <label>CIM &amp; Platform Assurance</label>
+  <description>Search-time normalization, data quality, retention, service health, and hardening evidence.</description>
+
+  <row id="cockpit_header">
+    <panel>
+      <html>
+        <div class="ops-header">
+          <div class="ops-header__title">
+            <span>PLATFORM ADMINISTRATION / DATA QUALITY</span>
+            <h1>CIM &amp; Platform Assurance</h1>
+            <p>Effective configuration, searchable telemetry and field-level quality — measured on the installed runtime.</p>
+          </div>
+          <div class="ops-header__facts">
+            <div><small>TOPOLOGY</small><strong>Standalone</strong><span>indexer + search head</span></div>
+            <div><small>PLATFORM</small><strong>Splunk 10.2.1</strong><span>Debian / 2 vCPU</span></div>
+            <div><small>INGEST</small><strong>HEC + 9997</strong><span>controlled replay / UF-ready</span></div>
+            <div><small>NORMALIZE</small><strong>CIM-oriented</strong><span>props + aliases + macros</span></div>
+            <div><small>EXPOSURE</small><strong>Filtered</strong><span>8089 management plane</span></div>
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <row id="state_row">
+    <panel>
+      <single>
+        <title>Platform health</title>
+        <search><query>| rest /services/server/info | head 1 | eval value=upper(health_info) | fields value</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="colorMode">block</option><option name="rangeColors">["0x67b94b"]</option><option name="showSparkline">0</option><option name="showTrendIndicator">0</option><option name="underLabel">SERVER INFO</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Windows telemetry</title>
+        <search><query>(index=sysmon OR index=windows) earliest=0 | stats count as value</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="colorMode">none</option><option name="showSparkline">0</option><option name="showTrendIndicator">0</option><option name="underLabel">SEARCHABLE EVENTS</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Process field quality</title>
+        <search><query>index=sysmon EventID=1 earliest=0 | stats count as total sum(eval(if(isnotnull(process) AND isnotnull(user) AND isnotnull(dest) AND isnotnull(process_cmdline) AND isnotnull(parent_process_path),1,0))) as complete | eval value=round((complete/total)*100,0) | fields value</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="unit">%</option><option name="colorMode">block</option><option name="rangeColors">["0xd84b55","0xd7a33d","0x67b94b"]</option><option name="rangeValues">[90,99]</option><option name="showSparkline">0</option><option name="showTrendIndicator">0</option><option name="underLabel">5 REQUIRED CIM FIELDS</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>KV Store</title>
+        <search><query>| rest /services/server/info | head 1 | eval value=upper(kvStoreStatus) | fields value</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="colorMode">none</option><option name="showSparkline">0</option><option name="showTrendIndicator">0</option><option name="underLabel">SERVICE STATE</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Application build</title>
+        <search><query>| rest /services/apps/local/splunk-detection-lab | head 1 | eval value=version | fields value</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="colorMode">none</option><option name="showSparkline">0</option><option name="showTrendIndicator">0</option><option name="underLabel">INSTALLED VERSION</option>
+      </single>
+    </panel>
+  </row>
+
+  <row id="quality_row">
+    <panel>
+      <chart>
+        <title>CIM process field completeness</title>
+        <search><query>index=sysmon EventID=1 earliest=0 | stats count as total count(eval(isnotnull(process))) as process count(eval(isnotnull(process_guid))) as process_guid count(eval(isnotnull(process_name))) as process_name count(eval(isnotnull(user))) as user count(eval(isnotnull(dest))) as dest count(eval(isnotnull(process_cmdline))) as process_cmdline count(eval(isnotnull(parent_process_path))) as parent_process_path | eval fields=mvappend("process","process_guid","process_name","user","dest","process_cmdline","parent_process_path"), present=mvappend(process,process_guid,process_name,user,dest,process_cmdline,parent_process_path), pair=mvzip(fields,present,"=") | mvexpand pair | rex field=pair "^(?&lt;field&gt;[^=]+)=(?&lt;present&gt;\d+)$" | eval completeness=round((present/total)*100,1) | table field completeness</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="charting.chart">bar</option><option name="charting.chart.showDataLabels">all</option><option name="charting.axisY.maximumNumber">100</option><option name="charting.axisY.minimumNumber">0</option><option name="charting.drilldown">none</option><option name="charting.fieldColors">{"completeness":"0x67b94b"}</option><option name="charting.legend.placement">none</option><option name="height">360</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>Event family distribution</title>
+        <search><query>index=sysmon earliest=0 | stats count by EventID | eval event_family=case(EventID=1,"Process creation",EventID=10,"Process access",EventID=13,"Registry value",1=1,"EventID ".EventID) | stats sum(count) as events by event_family | sort 0 - events</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="charting.chart">pie</option><option name="charting.chart.showDataLabels">all</option><option name="charting.drilldown">none</option><option name="charting.legend.placement">right</option><option name="height">360</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row id="freshness_row">
+    <panel>
+      <table>
+        <title>Source activity / freshness and volume</title>
+        <search><query>(index=sysmon OR index=windows OR index=risk OR index=notable) earliest=0 | stats count min(_time) as first_seen max(_time) as last_seen by index sourcetype | eval age_minutes=round((now()-last_seen)/60,1) | convert ctime(first_seen) ctime(last_seen) | eval state=case(count&gt;0,"SEARCHABLE",1=1,"EMPTY") | table index sourcetype count first_seen last_seen age_minutes state | sort index sourcetype</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="count">20</option><option name="dataOverlayMode">heatmap</option><option name="drilldown">none</option><option name="rowNumbers">0</option>
+      </table>
+    </panel>
+  </row>
+
+  <row id="storage_row">
+    <panel>
+      <table>
+        <title>Index capacity / retention policy</title>
+        <search><query>| rest /services/data/indexes count=0 | search title=sysmon OR title=windows OR title=risk OR title=notable | eval retention_days=round(frozenTimePeriodInSecs/86400,0), utilization_pct=round((currentDBSizeMB/maxTotalDataSizeMB)*100,3), state=if(disabled=0,"ENABLED","DISABLED") | rename title as index totalEventCount as lifetime_events currentDBSizeMB as current_mb maxTotalDataSizeMB as max_mb | table index state lifetime_events current_mb max_mb utilization_pct retention_days | sort index</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="count">10</option><option name="dataOverlayMode">heatmap</option><option name="drilldown">none</option><option name="rowNumbers">0</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>Server role and license posture</title>
+        <search><query>| rest /services/server/info | head 1 | eval roles=mvjoin(server_roles,", "), memory_mb=round(physicalMemoryMB,0) | rename serverName as server health_info as health kvStoreStatus as kv_store activeLicenseGroup as license_group licenseState as license_state numberOfVirtualCores as vcpu os_name as os | table server version build os vcpu memory_mb roles health kv_store license_group license_state</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="count">5</option><option name="dataOverlayMode">none</option><option name="drilldown">none</option><option name="rowNumbers">0</option>
+      </table>
+    </panel>
+  </row>
+
+  <row id="assurance_row">
+    <panel>
+      <table>
+        <title>Administrative assurance ledger</title>
+        <search><query>| inputlookup platform_assurance | table state control scope evidence last_validated | sort control</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="count">10</option><option name="dataOverlayMode">none</option><option name="drilldown">none</option><option name="rowNumbers">0</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>Knowledge-object inventory</title>
+        <search><query>| rest /servicesNS/-/splunk-detection-lab/configs/conf-macros count=0 | stats count as objects | eval family="macros" | append [| rest /servicesNS/-/splunk-detection-lab/configs/conf-transforms count=0 | stats count as objects | eval family="transforms / lookups"] | append [| rest /servicesNS/-/splunk-detection-lab/saved/searches count=0 | search title="detect_*" | stats count as objects | eval family="saved searches"] | append [| inputlookup detection_catalog | stats count as objects | eval family="catalog rows"] | table family objects</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="count">10</option><option name="dataOverlayMode">none</option><option name="drilldown">none</option><option name="rowNumbers">0</option>
+      </table>
+    </panel>
+  </row>
+
+  <row id="runbook_row">
+    <panel>
+      <html>
+        <div class="ops-runbook">
+          <div><small>01 / INGEST</small><strong>Separate data domains</strong><p>Dedicated indexes, explicit sourcetypes and bounded retention.</p></div>
+          <div><small>02 / PARSE</small><strong>Normalize at search time</strong><p>XML field extraction, aliases, eventtypes, tags and resilient coalescing.</p></div>
+          <div><small>03 / VERIFY</small><strong>Measure required fields</strong><p>Completeness, freshness, event family coverage and configuration precedence.</p></div>
+          <div><small>04 / HARDEN</small><strong>Reduce administrative exposure</strong><p>Key-only SSH, filtered management plane and credential-free artifacts.</p></div>
+          <div class="ops-runbook__signature"><small>PLATFORM OWNER</small><strong>A.S</strong><p>Splunk administration &amp; data quality</p></div>
+        </div>
+      </html>
+    </panel>
+  </row>
+</dashboard>

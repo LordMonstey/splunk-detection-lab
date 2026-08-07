@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "provenance": {
+    "kind": "synthetic",
+    "description": "Hand-authored observations for offline decision testing only.",
+    "live_target": false,
+    "contains_real_identifiers": false
+  },
+  "controls": {
+    "network_access_allowed": false,
+    "change_execution_allowed": false,
+    "destructive_actions_allowed": false
+  },
+  "scenarios": [
+    {
+      "id": "license_quota",
+      "before": {
+        "usage_pct": 104.0,
+        "critical_messages": 1,
+        "search_available": false,
+        "manager_contact_age_s": 30
+      },
+      "after": {
+        "usage_pct": 62.0,
+        "critical_messages": 0,
+        "search_available": true,
+        "manager_contact_age_s": 30
+      },
+      "expected": {
+        "before_state": "CRITICAL",
+        "before_decision": "CONTAIN_AND_ESCALATE_LICENSE",
+        "after_state": "HEALTHY",
+        "exit_pass": true
+      }
+    },
+    {
+      "id": "scheduler_skipped_searches",
+      "before": {
+        "executions": 120,
+        "skipped": 9,
+        "critical_skipped": 2,
+        "concurrency_saturated": true
+      },
+      "after": {
+        "executions": 120,
+        "skipped": 0,
+        "critical_skipped": 0,
+        "concurrency_saturated": false
+      },
+      "expected": {
+        "before_state": "CRITICAL",
+        "before_decision": "PROTECT_CRITICAL_SCHEDULES",
+        "after_state": "HEALTHY",
+        "exit_pass": true
+      }
+    },
+    {
+      "id": "kv_store_unavailable",
+      "before": {
+        "status": "failed",
+        "replication_status": "Down",
+        "quorum": true,
+        "canary_valid": false
+      },
+      "after": {
+        "status": "ready",
+        "replication_status": "KV store captain",
+        "quorum": true,
+        "canary_valid": true
+      },
+      "expected": {
+        "before_state": "CRITICAL",
+        "before_decision": "ISOLATE_KV_FAILURE",
+        "after_state": "HEALTHY",
+        "exit_pass": true
+      }
+    },
+    {
+      "id": "index_capacity_pressure",
+      "before": {
+        "disk_free_pct": 6.0,
+        "min_free_space_hit": true,
+        "max_queue_pct": 95.0,
+        "highest_index_fill_pct": 92.0
+      },
+      "after": {
+        "disk_free_pct": 35.0,
+        "min_free_space_hit": false,
+        "max_queue_pct": 20.0,
+        "highest_index_fill_pct": 60.0
+      },
+      "expected": {
+        "before_state": "CRITICAL",
+        "before_decision": "RESTORE_CAPACITY_MARGIN",
+        "after_state": "HEALTHY",
+        "exit_pass": true
+      }
+    },
+    {
+      "id": "source_silence",
+      "before": {
+        "age_s": 1800,
+        "sla_s": 300,
+        "maintenance": false,
+        "duplicate_pct": 0.0
+      },
+      "after": {
+        "age_s": 60,
+        "sla_s": 300,
+        "maintenance": false,
+        "duplicate_pct": 0.0
+      },
+      "expected": {
+        "before_state": "CRITICAL",
+        "before_decision": "RESTORE_SOURCE_PATH",
+        "after_state": "HEALTHY",
+        "exit_pass": true
+      }
+    },
+    {
+      "id": "parsing_cim_regression",
+      "before": {
+        "parse_success_pct": 76.0,
+        "cim_coverage_pct": 65.0,
+        "duplicate_count": 5,
+        "truncation_count": 3
+      },
+      "after": {
+        "parse_success_pct": 100.0,
+        "cim_coverage_pct": 98.0,
+        "duplicate_count": 0,
+        "truncation_count": 0
+      },
+      "expected": {
+        "before_state": "CRITICAL",
+        "before_decision": "ROLL_BACK_PARSING_PACKAGE",
+        "after_state": "HEALTHY",
+        "exit_pass": true
+      }
+    },
+    {
+      "id": "certificate_expiry",
+      "before": {
+        "days_remaining": 5,
+        "chain_valid": true,
+        "hostname_valid": true,
+        "tls_min_version": 1.2
+      },
+      "after": {
+        "days_remaining": 365,
+        "chain_valid": true,
+        "hostname_valid": true,
+        "tls_min_version": 1.2
+      },
+      "expected": {
+        "before_state": "CRITICAL",
+        "before_decision": "ROTATE_CERTIFICATE_URGENTLY",
+        "after_state": "HEALTHY",
+        "exit_pass": true
+      }
+    },
+    {
+      "id": "indexer_peer_loss",
+      "before": {
+        "peer_up": false,
+        "cluster_valid": true,
+        "cluster_complete": false,
+        "rf_met": false,
+        "sf_met": true,
+        "fixup_pending": 12
+      },
+      "after": {
+        "peer_up": true,
+        "cluster_valid": true,
+        "cluster_complete": true,
+        "rf_met": true,
+        "sf_met": true,
+        "fixup_pending": 0
+      },
+      "expected": {
+        "before_state": "CRITICAL",
+        "before_decision": "RECOVER_PEER_AND_RF",
+        "after_state": "HEALTHY",
+        "exit_pass": true
+      }
+    }
+  ]
+}

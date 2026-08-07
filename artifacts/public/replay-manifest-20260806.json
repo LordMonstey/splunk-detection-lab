@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "replay_id": "campaign-20260806-a",
+  "created_at": "2026-08-06T14:48:49.859621+00:00",
+  "dataset_owner": "Splunk Attack Data",
+  "target_host": "WIN10-LAB01",
+  "event_count": 152,
+  "scenarios": [
+    {
+      "name": "encoded_powershell",
+      "mitre_technique": "T1059.001",
+      "event_count": 12,
+      "index": "sysmon",
+      "sourcetype": "XmlWinEventLog:Microsoft-Windows-Sysmon/Operational",
+      "source_url": "https://media.githubusercontent.com/media/splunk/attack_data/master/datasets/attack_techniques/T1027/atomic_red_team/windows-sysmon.log"
+    },
+    {
+      "name": "registry_run_key",
+      "mitre_technique": "T1547.001",
+      "event_count": 2,
+      "index": "sysmon",
+      "sourcetype": "XmlWinEventLog:Microsoft-Windows-Sysmon/Operational",
+      "source_url": "https://media.githubusercontent.com/media/splunk/attack_data/master/datasets/attack_techniques/T1547.001/atomic_red_team/windows-sysmon.log"
+    },
+    {
+      "name": "lsass_memory_access",
+      "mitre_technique": "T1003.001",
+      "event_count": 12,
+      "index": "sysmon",
+      "sourcetype": "XmlWinEventLog:Microsoft-Windows-Sysmon/Operational",
+      "source_url": "https://media.githubusercontent.com/media/splunk/attack_data/master/datasets/attack_techniques/T1003.001/atomic_red_team/windows-sysmon.log"
+    },
+    {
+      "name": "certutil_decode",
+      "mitre_technique": "T1140",
+      "event_count": 2,
+      "index": "sysmon",
+      "sourcetype": "XmlWinEventLog:Microsoft-Windows-Sysmon/Operational",
+      "source_url": "https://media.githubusercontent.com/media/splunk/attack_data/master/datasets/attack_techniques/T1140/atomic_red_team/windows-sysmon.log"
+    },
+    {
+      "name": "local_account_creation",
+      "mitre_technique": "T1136.001",
+      "event_count": 4,
+      "index": "windows",
+      "sourcetype": "XmlWinEventLog:Security",
+      "source_url": "https://media.githubusercontent.com/media/splunk/attack_data/master/datasets/attack_techniques/T1136.001/atomic_red_team/windows-security.log"
+    },
+    {
+      "name": "process_baseline",
+      "mitre_technique": "BASELINE",
+      "event_count": 120,
+      "index": "sysmon",
+      "sourcetype": "XmlWinEventLog:Microsoft-Windows-Sysmon/Operational",
+      "source_url": "https://media.githubusercontent.com/media/splunk/attack_data/master/datasets/attack_techniques/T1027/atomic_red_team/windows-sysmon.log"
+    }
+  ],
+  "security": {
+    "hec_token_persisted": false,
+    "raw_events_published": false,
+    "private_addresses_published": false
+  }
+}

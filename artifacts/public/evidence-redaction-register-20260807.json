@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "public-evidence-redaction-register",
+  "created_at": "2026-08-07T00:00:00Z",
+  "status": "passed",
+  "policy": {
+    "public_visuals": "reviewed aggregate dashboards only",
+    "raw_events": "private ignored evidence area only",
+    "forbidden_public_identifiers": [
+      "private network addresses",
+      "endpoint or server names",
+      "user names and security identifiers",
+      "raw command lines and event payloads",
+      "local filesystem profile paths"
+    ],
+    "historical_artifacts_modified": false
+  },
+  "withdrawn_assets": [
+    {
+      "path": "screenshots/01-architecture.png",
+      "status": "withdrawn",
+      "reason": "environment-specific capture",
+      "replacement": "docs/architecture.md"
+    },
+    {
+      "path": "screenshots/02-debian-splunk-service-and-ports.png",
+      "status": "withdrawn",
+      "reason": "environment-specific capture",
+      "replacement": "artifacts/public/mco-live-read-only-qualification-20260807.json"
+    },
+    {
+      "path": "screenshots/03-windows-sysmon-events.png",
+      "status": "withdrawn",
+      "reason": "raw telemetry capture",
+      "replacement": "artifacts/public/splunk-engineering-snapshot-20260806.json"
+    },
+    {
+      "path": "screenshots/05-splunk-ingestion-overview.png",
+      "status": "withdrawn",
+      "reason": "environment-specific capture",
+      "replacement": "artifacts/public/splunk-engineering-snapshot-20260806.json"
+    },
+    {
+      "path": "screenshots/06-splunk-sysmon-validation.png",
+      "status": "withdrawn",
+      "reason": "raw telemetry capture",
+      "replacement": "artifacts/public/live-detection-validation-20260806.json"
+    },
+    {
+      "path": "screenshots/07-splunk-process-creation.png",
+      "status": "withdrawn",
+      "reason": "raw telemetry capture",
+      "replacement": "artifacts/public/live-detection-validation-20260806.json"
+    },
+    {
+      "path": "screenshots/08-splunk-network-connections.png",
+      "status": "withdrawn",
+      "reason": "raw telemetry capture",
+      "replacement": "artifacts/public/live-detection-validation-20260806.json"
+    },
+    {
+      "path": "screenshots/09-splunk-engineering-command-center.png",
+      "status": "withdrawn",
+      "reason": "redundant public capture",
+      "replacement": "site/assets/evidence/engineering-command-center.png"
+    },
+    {
+      "path": "screenshots/10-public-portfolio-hero.png",
+      "status": "withdrawn",
+      "reason": "redundant public capture",
+      "replacement": "site/assets/portfolio-preview.png"
+    },
+    {
+      "path": "site/assets/evidence/t1003-lsass.png",
+      "status": "withdrawn",
+      "reason": "raw telemetry capture",
+      "replacement": "artifacts/public/live-detection-validation-20260806.json"
+    },
+    {
+      "path": "site/assets/evidence/t1059-powershell.png",
+      "status": "withdrawn",
+      "reason": "raw telemetry capture",
+      "replacement": "artifacts/public/live-detection-validation-20260806.json"
+    },
+    {
+      "path": "site/assets/evidence/t1218-regsvr32.png",
+      "status": "withdrawn",
+      "reason": "raw telemetry capture",
+      "replacement": "artifacts/public/live-detection-validation-20260806.json"
+    },
+    {
+      "path": "tests/atomic/evidence/T1003.001-detection-fired.png",
+      "status": "withdrawn",
+      "reason": "raw telemetry capture",
+      "replacement": "artifacts/public/live-detection-validation-20260806.json"
+    },
+    {
+      "path": "tests/atomic/evidence/T1003.001-lsass-procdump.png",
+      "status": "withdrawn",
+      "reason": "raw telemetry capture",
+      "replacement": "artifacts/public/live-detection-validation-20260806.json"
+    },
+    {
+      "path": "tests/atomic/evidence/T1059.001-encoded-powershell.png",
+      "status": "withdrawn",
+      "reason": "raw telemetry capture",
+      "replacement": "artifacts/public/live-detection-validation-20260806.json"
+    },
+    {
+      "path": "tests/atomic/evidence/T1136.001-local-account.png",
+      "status": "withdrawn",
+      "reason": "raw telemetry capture",
+      "replacement": "artifacts/public/live-detection-validation-20260806.json"
+    },
+    {
+      "path": "tests/atomic/evidence/T1140-certutil-decode.png",
+      "status": "withdrawn",
+      "reason": "raw telemetry capture",
+      "replacement": "artifacts/public/live-detection-validation-20260806.json"
+    },
+    {
+      "path": "tests/atomic/evidence/T1218.005-mshta-vbscript.png",
+      "status": "withdrawn",
+      "reason": "raw telemetry capture",
+      "replacement": "artifacts/public/live-detection-validation-20260806.json"
+    },
+    {
+      "path": "tests/atomic/evidence/T1218.010-regsvr32-squiblydoo.png",
+      "status": "withdrawn",
+      "reason": "raw telemetry capture",
+      "replacement": "artifacts/public/live-detection-validation-20260806.json"
+    },
+    {
+      "path": "tests/atomic/evidence/T1218.011-rundll32.png",
+      "status": "withdrawn",
+      "reason": "raw telemetry capture",
+      "replacement": "artifacts/public/live-detection-validation-20260806.json"
+    },
+    {
+      "path": "tests/atomic/evidence/T1547.001-run-key.png",
+      "status": "withdrawn",
+      "reason": "raw telemetry capture",
+      "replacement": "artifacts/public/live-detection-validation-20260806.json"
+    },
+    {
+      "path": "site/assets/evidence/cim-platform-assurance.png",
+      "status": "withdrawn",
+      "reason": "environment-specific capture not committed",
+      "replacement": "artifacts/public/custom-datamodel-live-evidence-10.2.1-20260807.json"
+    },
+    {
+      "path": "site/assets/evidence/risk-identity-investigation.png",
+      "status": "withdrawn",
+      "reason": "historical environment-specific rendering replaced by an aggregate-only surface",
+      "replacement": "site/assets/evidence/risk-correlation-assurance.png"
+    }
+  ],
+  "summary": {
+    "withdrawn_assets": 23,
+    "historical_artifacts_preserved": true,
+    "public_raw_event_images_remaining": 0
+  }
+}

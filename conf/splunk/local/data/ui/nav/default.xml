@@ -1,8 +1,13 @@
 <nav search_view="search" color="#101926">
-  <view name="splunk_engineering_command_center" default="true"/>
-  <view name="search"/>
-  <collection label="Content">
-    <view name="alerts"/>
-    <view name="reports"/>
+  <view name="splunk_es_admin_operations_center" default="true"/>
+  <collection label="Splunk ES Administration">
+    <view name="splunk_engineering_command_center"/>
+    <view name="cim_admin_assurance"/>
+    <view name="periodic_mco_cim_reporting"/>
+    <view name="search"/>
+  </collection>
+  <collection label="Detection Engineering">
+    <view name="detection_factory_control_plane"/>
+    <view name="risk_identity_investigation"/>
   </collection>
 </nav>

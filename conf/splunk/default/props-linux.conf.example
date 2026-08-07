@@ -1,0 +1,103 @@
+# Linux security onboarding reference configuration.
+#
+# This file is intentionally suffixed .example: Splunk ignores it until the
+# reviewed stanzas are merged into an app's props.conf. Deploy parsing settings
+# to every parsing tier and search-time settings to every search head.
+
+[linux:auditd]
+SHOULD_LINEMERGE = false
+LINE_BREAKER = ([\r\n]+)
+TRUNCATE = 20000
+TIME_PREFIX = msg=audit\(
+TIME_FORMAT = %s.%3N
+MAX_TIMESTAMP_LOOKAHEAD = 14
+TZ = UTC
+KV_MODE = auto_escaped
+REPORT-linux-auditd-header = linux_auditd_header
+REPORT-linux-auditd-result = linux_auditd_result
+REPORT-linux-auditd-account = linux_auditd_account
+REPORT-linux-auditd-operation = linux_auditd_operation
+REPORT-linux-auditd-address = linux_auditd_address
+FIELDALIAS-linux-auditd-dest = host AS dest
+FIELDALIAS-linux-auditd-dvc = host AS dvc
+FIELDALIAS-linux-auditd-process-path = exe AS process_path
+FIELDALIAS-linux-auditd-process-id = pid AS process_id
+FIELDALIAS-linux-auditd-parent-process-id = ppid AS parent_process_id
+FIELDALIAS-linux-auditd-user-id = auid AS user_id
+FIELDALIAS-linux-auditd-process-name = comm AS process_name
+EVAL-action = case(audit_type="USER_MGMT", "created", audit_type="CONFIG_CHANGE", "modified", audit_type="SYSCALL" AND success="yes", "allowed", audit_type="SYSCALL" AND success="no", "blocked", audit_result="success" OR audit_result="1", "success", audit_result="failed" OR audit_result="0", "failure", true(), "unknown")
+EVAL-app = case(audit_type="USER_AUTH", replace(exe, "^.*/", ""), true(), null())
+EVAL-authentication_method = case(match(audit_operation, "(?i)^PAM"), "PAM", audit_type="USER_AUTH", "unknown", true(), null())
+EVAL-change_type = case(audit_type="USER_MGMT", "AAA", audit_type="CONFIG_CHANGE", "audit", true(), null())
+EVAL-command = coalesce(proctitle, exe, audit_operation, op)
+EVAL-object_id = case(audit_type="USER_MGMT", coalesce(id, audit_account), audit_type="CONFIG_CHANGE", coalesce(key, audit_serial), true(), null())
+EVAL-object_path = case(audit_type="USER_MGMT", "account:".audit_account, audit_type="CONFIG_CHANGE", "audit-rule:".key, true(), null())
+EVAL-process = coalesce(proctitle, exe, comm)
+EVAL-process_exec = coalesce(comm, replace(exe, "^.*/", ""))
+EVAL-src = case(audit_address="?", null(), isnotnull(audit_address), audit_address, true(), null())
+EVAL-src_user = case(audit_type="USER_MGMT" OR audit_type="CONFIG_CHANGE", tostring(auid), true(), null())
+EVAL-status = case(audit_result="success" OR audit_result="1" OR success="yes", "success", audit_result="failed" OR audit_result="0" OR success="no", "failure", true(), "unknown")
+EVAL-user = case(audit_type="CONFIG_CHANGE", tostring(auid), true(), coalesce(audit_account, tostring(uid), "unknown"))
+EVAL-vendor_product = "Linux auditd"
+
+[linux:journald]
+SHOULD_LINEMERGE = false
+LINE_BREAKER = ([\r\n]+)
+TRUNCATE = 20000
+KV_MODE = json
+AUTO_KV_JSON = true
+EXTRACT-linux-journald-hostname = \"_HOSTNAME\"\s*:\s*\"(?<linux_journal_hostname>[^\"]+)\"
+EXTRACT-linux-journald-pid = \"_PID\"\s*:\s*\"(?<linux_journal_pid>[^\"]+)\"
+EXTRACT-linux-journald-uid = \"_UID\"\s*:\s*\"(?<linux_journal_uid>[^\"]+)\"
+EXTRACT-linux-journald-exe = \"_EXE\"\s*:\s*\"(?<linux_journal_exe>[^\"]+)\"
+FIELDALIAS-linux-journald-dest = _HOSTNAME AS dest
+FIELDALIAS-linux-journald-dvc = _HOSTNAME AS dvc
+FIELDALIAS-linux-journald-process-id = _PID AS process_id
+FIELDALIAS-linux-journald-process-path = _EXE AS process_path
+FIELDALIAS-linux-journald-process-name = _COMM AS process_name
+FIELDALIAS-linux-journald-user-id = _UID AS user_id
+EVAL-app = coalesce(SYSLOG_IDENTIFIER, _SYSTEMD_UNIT, _COMM)
+EVAL-service = coalesce(_SYSTEMD_UNIT, UNIT)
+EVAL-service_name = replace(coalesce(_SYSTEMD_UNIT, UNIT), "\\.service$", "")
+EVAL-dest = coalesce(linux_journal_hostname, host)
+EVAL-dvc = coalesce(linux_journal_hostname, host)
+EVAL-process_id = coalesce(linux_journal_pid, _PID)
+EVAL-process_path = coalesce(linux_journal_exe, _EXE)
+EVAL-service_path = coalesce(linux_journal_exe, _EXE, "unknown")
+EVAL-start_mode = "unknown"
+EVAL-status = case(match(MESSAGE, "(?i)^(service )?(startup complete|started|starting)"), "started", match(MESSAGE, "(?i)^(service )?(shutdown complete|stopped|stopping)"), "stopped", match(MESSAGE, "(?i)(failed|failure|fatal)"), "critical", true(), "unknown")
+EVAL-user = coalesce(linux_journal_uid, "unknown")
+EVAL-vendor_product = "Linux systemd-journald"
+
+[linux:rsyslog]
+SHOULD_LINEMERGE = false
+LINE_BREAKER = ([\r\n]+)
+TRUNCATE = 20000
+TIME_PREFIX = ^
+TIME_FORMAT = %Y-%m-%dT%H:%M:%S
+MAX_TIMESTAMP_LOOKAHEAD = 19
+TZ = UTC
+KV_MODE = none
+REPORT-linux-rsyslog-header = linux_rsyslog_header
+REPORT-linux-rsyslog-ssh-auth = linux_rsyslog_ssh_auth
+REPORT-linux-rsyslog-sudo = linux_rsyslog_sudo
+REPORT-linux-rsyslog-account-change = linux_rsyslog_account_change
+REPORT-linux-rsyslog-systemd-service = linux_rsyslog_systemd_service
+EVAL-dest = host
+EVAL-dvc = host
+EVAL-action = case(linux_auth_result="Accepted", "success", linux_auth_result="Failed", "failure", app="useradd", "created", app="sudo", "modified", true(), "unknown")
+EVAL-authentication_method = lower(linux_auth_method)
+EVAL-change_type = case(app="useradd", "AAA", app="sudo", "endpoint", true(), null())
+EVAL-command = case(app="useradd", "/usr/sbin/useradd ".linux_target_user, true(), linux_command)
+EVAL-object_id = case(app="useradd", linux_target_uid, app="sudo", linux_command, true(), null())
+EVAL-object_path = case(app="useradd", "account:".linux_target_user, app="sudo", linux_command, true(), null())
+EVAL-service = linux_service_name
+EVAL-service_name = replace(linux_service_name, "\\.service$", "")
+EVAL-service_path = case(app="systemd", "/usr/lib/systemd/systemd", true(), "unknown")
+EVAL-src = linux_src
+EVAL-src_port = tonumber(linux_src_port)
+EVAL-src_user = linux_sudo_actor
+EVAL-start_mode = "unknown"
+EVAL-status = case(linux_service_state="Started", "started", linux_service_state="Stopped", "stopped", linux_service_state="Failed", "critical", app="useradd" OR app="sudo", "success", true(), null())
+EVAL-user = case(app="systemd" AND process_id="1", "root", true(), coalesce(linux_auth_user, linux_target_user, linux_sudo_target, "unknown"))
+EVAL-vendor_product = "Linux rsyslog"

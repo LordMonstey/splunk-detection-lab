@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-07T12:46:26.788645+00:00",
+  "scope": "isolated-lab-change-lifecycle",
+  "application": "splunk-detection-lab",
+  "phase": "rollback",
+  "package": {
+    "filename": "splunk-detection-lab-0.6.4.tar.gz",
+    "size_bytes": 34829,
+    "sha256": "16024110b46c97452768551a841f0aa5ad6ce6e15b2f20fbbd5c34fc13f3c427",
+    "member_count": 52,
+    "safe_paths": true
+  },
+  "before": {
+    "installed": true,
+    "version": "0.7.0",
+    "disabled": false,
+    "configured": true,
+    "visible": true,
+    "label": "Splunk ES Administration"
+  },
+  "target_version": "0.6.4",
+  "after": {
+    "installed": true,
+    "version": "0.6.4",
+    "disabled": false,
+    "configured": true,
+    "visible": true,
+    "label": "Detection & Platform Engineering"
+  },
+  "install_messages": [
+    {
+      "type": "INFO",
+      "text": "Restart required by: server"
+    }
+  ],
+  "elapsed_seconds": 0.469,
+  "smoke_tests": {
+    "version_matches": true,
+    "app_enabled": true,
+    "app_configured": true,
+    "admin_dashboard_available": true,
+    "splunkd_health_green": true,
+    "search_execution_ok": true
+  },
+  "overall_pass": true,
+  "security": {
+    "credentials_written": false,
+    "package_url_persisted": false,
+    "management_uri_persisted": false,
+    "raw_events_collected": false
+  }
+}

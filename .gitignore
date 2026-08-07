@@ -5,9 +5,14 @@ __pycache__/
 *.pyc
 
 screenshots/scratch/
-tests/atomic/evidence/raw/
+/screenshots/private/
+/tests/atomic/evidence/
+/site/assets/evidence/raw/
 tmp/
 artifacts/private/
+/artifacts/build/
+/output/
+/scripts/build_cv.py
 
 local_secrets.conf
 *.pem

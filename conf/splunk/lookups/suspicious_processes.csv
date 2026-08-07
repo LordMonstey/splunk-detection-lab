@@ -1,0 +1,8 @@
+process_name,severity,category,reference
+mimikatz.exe,critical,credential-access,T1003.001
+procdump.exe,high,credential-access,T1003.001
+psexec.exe,medium,lateral-movement,T1021.002
+nc.exe,medium,c2,T1071
+ncat.exe,medium,c2,T1071
+certutil.exe,low,defense-evasion,T1140
+bitsadmin.exe,low,ingress-tool-transfer,T1197

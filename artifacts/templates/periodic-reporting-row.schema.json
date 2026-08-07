@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/splunk-detection-lab/periodic-reporting-row.schema.json",
+  "title": "MCO and CIM periodic aggregate row",
+  "description": "Versioned, non-sensitive metric record stored in the application KV Store.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "_key",
+    "schema_version",
+    "report_key",
+    "report_family",
+    "period_start",
+    "period_end",
+    "generated_at",
+    "metric_id",
+    "metric_value",
+    "metric_unit",
+    "status",
+    "sample_state",
+    "threshold_profile"
+  ],
+  "properties": {
+    "_key": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "report_key": {
+      "type": "string",
+      "pattern": "^(mco_daily|cim_weekly):[0-9]{4}-[0-9]{2}-[0-9]{2}:[a-z0-9_.]+$"
+    },
+    "report_family": {
+      "enum": [
+        "mco_daily",
+        "cim_weekly"
+      ]
+    },
+    "period_start": {
+      "type": "number",
+      "minimum": 0
+    },
+    "period_end": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "generated_at": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "metric_id": {
+      "enum": [
+        "ingestion.events",
+        "ingestion.active_datasets",
+        "ingestion.late_datasets",
+        "scheduler.runs",
+        "scheduler.success_pct",
+        "scheduler.skipped",
+        "queues.peak_fill_pct",
+        "cim.events",
+        "cim.rows_complete_pct",
+        "cim.field.process.pct",
+        "cim.field.process_guid.pct",
+        "cim.field.process_name.pct",
+        "cim.field.user.pct",
+        "cim.field.dest.pct",
+        "cim.field.process_cmdline.pct",
+        "cim.field.parent_process_path.pct"
+      ]
+    },
+    "metric_value": {
+      "type": "number",
+      "minimum": 0
+    },
+    "metric_unit": {
+      "enum": [
+        "count",
+        "percent"
+      ]
+    },
+    "status": {
+      "enum": [
+        "GREEN",
+        "WATCH",
+        "ACTION",
+        "NO_DATA"
+      ]
+    },
+    "sample_state": {
+      "enum": [
+        "OBSERVED",
+        "NO_DATA"
+      ]
+    },
+    "threshold_profile": {
+      "enum": [
+        "mco-v1",
+        "cim-process-v1"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "report_family": {
+            "const": "mco_daily"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "metric_id": {
+            "enum": [
+              "ingestion.events",
+              "ingestion.active_datasets",
+              "ingestion.late_datasets",
+              "scheduler.runs",
+              "scheduler.success_pct",
+              "scheduler.skipped",
+              "queues.peak_fill_pct"
+            ]
+          },
+          "threshold_profile": {
+            "const": "mco-v1"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "report_family": {
+            "const": "cim_weekly"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "metric_id": {
+            "enum": [
+              "cim.events",
+              "cim.rows_complete_pct",
+              "cim.field.process.pct",
+              "cim.field.process_guid.pct",
+              "cim.field.process_name.pct",
+              "cim.field.user.pct",
+              "cim.field.dest.pct",
+              "cim.field.process_cmdline.pct",
+              "cim.field.parent_process_path.pct"
+            ]
+          },
+          "threshold_profile": {
+            "const": "cim-process-v1"
+          }
+        }
+      }
+    }
+  ]
+}

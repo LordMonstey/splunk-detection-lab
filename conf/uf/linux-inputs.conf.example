@@ -1,0 +1,54 @@
+# Linux Universal Forwarder inputs reference.
+#
+# Merge reviewed stanzas into a deployment app's local/inputs.conf. The active
+# set deliberately keeps SSH authentication in rsyslog and restricts journald
+# to selected service units, preventing collection of the same logical event by
+# two inputs. Replace the target index only through deployment policy.
+
+[monitor:///var/log/audit/audit.log]
+disabled = 0
+index = os_linux
+sourcetype = linux:auditd
+crcSalt = <SOURCE>
+ignoreOlderThan = 7d
+
+[monitor:///var/log/auth.log]
+disabled = 0
+index = os_linux
+sourcetype = linux:rsyslog
+crcSalt = <SOURCE>
+ignoreOlderThan = 7d
+
+# RHEL-family alternative to /var/log/auth.log. Never enable both for the same
+# event stream without proving that they contain distinct events.
+[monitor:///var/log/secure]
+disabled = 1
+index = os_linux
+sourcetype = linux:rsyslog
+crcSalt = <SOURCE>
+ignoreOlderThan = 7d
+
+[journald://linux-security-services]
+disabled = 0
+index = os_linux
+sourcetype = linux:journald
+journalctl-include-fields = PRIORITY,_HOSTNAME,_SYSTEMD_UNIT,UNIT,SYSLOG_IDENTIFIER,_PID,_UID,_COMM,_EXE,_TRANSPORT,MESSAGE
+journalctl-exclude-fields = __MONOTONIC_TIMESTAMP,__SOURCE_REALTIME_TIMESTAMP,_MACHINE_ID,_BOOT_ID,_SYSTEMD_INVOCATION_ID
+journalctl-filter = _SYSTEMD_UNIT=auditd.service + _SYSTEMD_UNIT=cron.service + _SYSTEMD_UNIT=systemd-logind.service
+
+# Alternative for hosts where the journald modular input is unavailable. Keep
+# disabled while the journald stanza above is active to avoid duplicate events.
+[monitor:///var/log/syslog]
+disabled = 1
+index = os_linux
+sourcetype = linux:rsyslog
+crcSalt = <SOURCE>
+ignoreOlderThan = 7d
+
+# RHEL-family alternative to /var/log/syslog.
+[monitor:///var/log/messages]
+disabled = 1
+index = os_linux
+sourcetype = linux:rsyslog
+crcSalt = <SOURCE>
+ignoreOlderThan = 7d

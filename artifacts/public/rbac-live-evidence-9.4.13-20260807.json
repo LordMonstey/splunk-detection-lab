@@ -1,0 +1,501 @@
+{
+  "application": [
+    {
+      "action": "unchanged",
+      "direct_capabilities": 55,
+      "role": "platform_admin",
+      "status": "passed"
+    },
+    {
+      "action": "unchanged",
+      "direct_capabilities": 26,
+      "role": "platform_operator",
+      "status": "passed"
+    },
+    {
+      "action": "unchanged",
+      "direct_capabilities": 18,
+      "role": "detection_engineer",
+      "status": "passed"
+    },
+    {
+      "action": "unchanged",
+      "direct_capabilities": 9,
+      "role": "soc_analyst",
+      "status": "passed"
+    },
+    {
+      "action": "unchanged",
+      "direct_capabilities": 9,
+      "role": "audit_reader",
+      "status": "passed"
+    },
+    {
+      "action": "unchanged",
+      "direct_capabilities": 17,
+      "role": "api_health",
+      "status": "passed"
+    }
+  ],
+  "artifact_type": "splunk_rbac_live_evidence",
+  "cleanup": {
+    "ephemeral_users_created": 6,
+    "ephemeral_users_removed": 6,
+    "errors": [],
+    "status": "passed",
+    "unexpected_roles_removed": 0,
+    "unexpected_users_removed": 0
+  },
+  "contract": {
+    "authorize_sha256": "3b8b5eac91457c4adf4193d7240f607430896c25789abd8d410dfafc4b31bd93",
+    "capabilities": {
+      "declared_unique": 67,
+      "missing": [],
+      "target_available": 166,
+      "version_incompatible": []
+    },
+    "matrix_sha256": "a9d69ded1ddb0dc7dd75f02eb9f64bc8aeb93d3e15f387ccfd15a310cf832a74",
+    "roles": 6,
+    "supported_versions": [
+      "9.4.13",
+      "10.2.1"
+    ]
+  },
+  "generated_at_utc": "2026-08-07T13:44:45Z",
+  "schema_version": 1,
+  "status": "passed",
+  "summary": {
+    "negative": 24,
+    "passed": 38,
+    "positive": 14,
+    "total": 38
+  },
+  "target": {
+    "build": "1d070b2427bf",
+    "enterprise_authentication_active": true,
+    "product_type": "enterprise",
+    "tls_verified": true,
+    "transport": "web",
+    "version": "9.4.13"
+  },
+  "tests": [
+    {
+      "control_id": "RBAC-CONTEXT",
+      "decision_signal": "exact_role_and_capability_set",
+      "direction": "positive",
+      "expected": "allow_exact_scope",
+      "http_status": 200,
+      "observed": "allow_exact_scope",
+      "role": "platform_admin",
+      "status": "passed",
+      "target_class": "mono_role_current_context"
+    },
+    {
+      "control_id": "RBAC-CONTEXT",
+      "decision_signal": "exact_role_and_capability_set",
+      "direction": "positive",
+      "expected": "allow_exact_scope",
+      "http_status": 200,
+      "observed": "allow_exact_scope",
+      "role": "platform_operator",
+      "status": "passed",
+      "target_class": "mono_role_current_context"
+    },
+    {
+      "control_id": "RBAC-CONTEXT",
+      "decision_signal": "exact_role_and_capability_set",
+      "direction": "positive",
+      "expected": "allow_exact_scope",
+      "http_status": 200,
+      "observed": "allow_exact_scope",
+      "role": "detection_engineer",
+      "status": "passed",
+      "target_class": "mono_role_current_context"
+    },
+    {
+      "control_id": "RBAC-CONTEXT",
+      "decision_signal": "exact_role_and_capability_set",
+      "direction": "positive",
+      "expected": "allow_exact_scope",
+      "http_status": 200,
+      "observed": "allow_exact_scope",
+      "role": "soc_analyst",
+      "status": "passed",
+      "target_class": "mono_role_current_context"
+    },
+    {
+      "control_id": "RBAC-CONTEXT",
+      "decision_signal": "exact_role_and_capability_set",
+      "direction": "positive",
+      "expected": "allow_exact_scope",
+      "http_status": 200,
+      "observed": "allow_exact_scope",
+      "role": "audit_reader",
+      "status": "passed",
+      "target_class": "mono_role_current_context"
+    },
+    {
+      "control_id": "RBAC-CONTEXT",
+      "decision_signal": "exact_role_and_capability_set",
+      "direction": "positive",
+      "expected": "allow_exact_scope",
+      "http_status": 200,
+      "observed": "allow_exact_scope",
+      "role": "api_health",
+      "status": "passed",
+      "target_class": "mono_role_current_context"
+    },
+    {
+      "control_id": "RBAC-001",
+      "decision_signal": "http_success",
+      "direction": "positive",
+      "expected": "allow",
+      "http_status": 200,
+      "observed": "allow",
+      "role": "platform_admin",
+      "status": "passed",
+      "target_class": "scoped_search"
+    },
+    {
+      "control_id": "RBAC-002",
+      "decision_signal": "http_success",
+      "direction": "positive",
+      "expected": "allow",
+      "http_status": 200,
+      "observed": "allow",
+      "role": "platform_operator",
+      "status": "passed",
+      "target_class": "scoped_search"
+    },
+    {
+      "control_id": "RBAC-001",
+      "decision_signal": "http_success",
+      "direction": "positive",
+      "expected": "allow",
+      "http_status": 200,
+      "observed": "allow",
+      "role": "detection_engineer",
+      "status": "passed",
+      "target_class": "scoped_search"
+    },
+    {
+      "control_id": "RBAC-001",
+      "decision_signal": "http_success",
+      "direction": "positive",
+      "expected": "allow",
+      "http_status": 200,
+      "observed": "allow",
+      "role": "soc_analyst",
+      "status": "passed",
+      "target_class": "scoped_search"
+    },
+    {
+      "control_id": "RBAC-003",
+      "decision_signal": "http_success",
+      "direction": "positive",
+      "expected": "allow",
+      "http_status": 200,
+      "observed": "allow",
+      "role": "audit_reader",
+      "status": "passed",
+      "target_class": "scoped_search"
+    },
+    {
+      "control_id": "RBAC-004",
+      "decision_signal": "http_success",
+      "direction": "positive",
+      "expected": "allow",
+      "http_status": 200,
+      "observed": "allow",
+      "role": "api_health",
+      "status": "passed",
+      "target_class": "platform_health"
+    },
+    {
+      "control_id": "RBAC-017",
+      "decision_signal": "http_success",
+      "direction": "positive",
+      "expected": "allow",
+      "http_status": 200,
+      "observed": "allow",
+      "role": "audit_reader",
+      "status": "passed",
+      "target_class": "identity_inventory"
+    },
+    {
+      "control_id": "RBAC-014",
+      "decision_signal": "http_success",
+      "direction": "positive",
+      "expected": "allow",
+      "http_status": 200,
+      "observed": "allow",
+      "role": "detection_engineer",
+      "status": "passed",
+      "target_class": "owned_scheduled_detection"
+    },
+    {
+      "control_id": "RBAC-INDEX-DENY",
+      "decision_signal": "effective_role_scope_excludes_index_and_search_returns_no_data",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 200,
+      "observed": "deny",
+      "role": "platform_admin",
+      "status": "passed",
+      "target_class": "forbidden_index_search"
+    },
+    {
+      "control_id": "RBAC-018",
+      "decision_signal": "http_authorization_denial",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 403,
+      "observed": "deny",
+      "role": "platform_admin",
+      "status": "passed",
+      "target_class": "identity_creation"
+    },
+    {
+      "control_id": "RBAC-019",
+      "decision_signal": "http_authorization_denial",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 403,
+      "observed": "deny",
+      "role": "platform_admin",
+      "status": "passed",
+      "target_class": "role_creation"
+    },
+    {
+      "control_id": "RBAC-020",
+      "decision_signal": "realtime_job_failed_without_rtsearch",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 200,
+      "observed": "deny",
+      "role": "platform_admin",
+      "status": "passed",
+      "target_class": "realtime_search"
+    },
+    {
+      "control_id": "RBAC-INDEX-DENY",
+      "decision_signal": "effective_role_scope_excludes_index_and_search_returns_no_data",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 200,
+      "observed": "deny",
+      "role": "platform_operator",
+      "status": "passed",
+      "target_class": "forbidden_index_search"
+    },
+    {
+      "control_id": "RBAC-018",
+      "decision_signal": "http_authorization_denial",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 403,
+      "observed": "deny",
+      "role": "platform_operator",
+      "status": "passed",
+      "target_class": "identity_creation"
+    },
+    {
+      "control_id": "RBAC-019",
+      "decision_signal": "http_authorization_denial",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 403,
+      "observed": "deny",
+      "role": "platform_operator",
+      "status": "passed",
+      "target_class": "role_creation"
+    },
+    {
+      "control_id": "RBAC-020",
+      "decision_signal": "realtime_job_failed_without_rtsearch",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 200,
+      "observed": "deny",
+      "role": "platform_operator",
+      "status": "passed",
+      "target_class": "realtime_search"
+    },
+    {
+      "control_id": "RBAC-INDEX-DENY",
+      "decision_signal": "effective_role_scope_excludes_index_and_search_returns_no_data",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 200,
+      "observed": "deny",
+      "role": "detection_engineer",
+      "status": "passed",
+      "target_class": "forbidden_index_search"
+    },
+    {
+      "control_id": "RBAC-018",
+      "decision_signal": "http_authorization_denial",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 403,
+      "observed": "deny",
+      "role": "detection_engineer",
+      "status": "passed",
+      "target_class": "identity_creation"
+    },
+    {
+      "control_id": "RBAC-019",
+      "decision_signal": "http_authorization_denial",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 403,
+      "observed": "deny",
+      "role": "detection_engineer",
+      "status": "passed",
+      "target_class": "role_creation"
+    },
+    {
+      "control_id": "RBAC-020",
+      "decision_signal": "realtime_job_failed_without_rtsearch",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 200,
+      "observed": "deny",
+      "role": "detection_engineer",
+      "status": "passed",
+      "target_class": "realtime_search"
+    },
+    {
+      "control_id": "RBAC-INDEX-DENY",
+      "decision_signal": "effective_role_scope_excludes_index_and_search_returns_no_data",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 200,
+      "observed": "deny",
+      "role": "soc_analyst",
+      "status": "passed",
+      "target_class": "forbidden_index_search"
+    },
+    {
+      "control_id": "RBAC-018",
+      "decision_signal": "http_authorization_denial",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 403,
+      "observed": "deny",
+      "role": "soc_analyst",
+      "status": "passed",
+      "target_class": "identity_creation"
+    },
+    {
+      "control_id": "RBAC-019",
+      "decision_signal": "http_authorization_denial",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 403,
+      "observed": "deny",
+      "role": "soc_analyst",
+      "status": "passed",
+      "target_class": "role_creation"
+    },
+    {
+      "control_id": "RBAC-020",
+      "decision_signal": "realtime_job_failed_without_rtsearch",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 200,
+      "observed": "deny",
+      "role": "soc_analyst",
+      "status": "passed",
+      "target_class": "realtime_search"
+    },
+    {
+      "control_id": "RBAC-INDEX-DENY",
+      "decision_signal": "effective_role_scope_excludes_index_and_search_returns_no_data",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 200,
+      "observed": "deny",
+      "role": "audit_reader",
+      "status": "passed",
+      "target_class": "forbidden_index_search"
+    },
+    {
+      "control_id": "RBAC-018",
+      "decision_signal": "protected_endpoint_concealment",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 404,
+      "observed": "deny",
+      "role": "audit_reader",
+      "status": "passed",
+      "target_class": "identity_creation"
+    },
+    {
+      "control_id": "RBAC-019",
+      "decision_signal": "protected_endpoint_concealment",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 404,
+      "observed": "deny",
+      "role": "audit_reader",
+      "status": "passed",
+      "target_class": "role_creation"
+    },
+    {
+      "control_id": "RBAC-020",
+      "decision_signal": "realtime_job_failed_without_rtsearch",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 200,
+      "observed": "deny",
+      "role": "audit_reader",
+      "status": "passed",
+      "target_class": "realtime_search"
+    },
+    {
+      "control_id": "RBAC-INDEX-DENY",
+      "decision_signal": "http_authorization_denial",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 403,
+      "observed": "deny",
+      "role": "api_health",
+      "status": "passed",
+      "target_class": "forbidden_index_search"
+    },
+    {
+      "control_id": "RBAC-018",
+      "decision_signal": "http_authorization_denial",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 403,
+      "observed": "deny",
+      "role": "api_health",
+      "status": "passed",
+      "target_class": "identity_creation"
+    },
+    {
+      "control_id": "RBAC-019",
+      "decision_signal": "http_authorization_denial",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 403,
+      "observed": "deny",
+      "role": "api_health",
+      "status": "passed",
+      "target_class": "role_creation"
+    },
+    {
+      "control_id": "RBAC-020",
+      "decision_signal": "http_authorization_denial",
+      "direction": "negative",
+      "expected": "deny",
+      "http_status": 403,
+      "observed": "deny",
+      "role": "api_health",
+      "status": "passed",
+      "target_class": "realtime_search"
+    }
+  ]
+}

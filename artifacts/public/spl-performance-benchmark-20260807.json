@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-07T12:36:33.451621+00:00",
+  "scope": "isolated-lab-aggregate-metrics",
+  "environment": {
+    "version": "10.2.1",
+    "build": "c892b66d163d",
+    "product_type": "splunk"
+  },
+  "method": {
+    "iterations_per_variant": 3,
+    "execution_order": "alternating AB/BA to limit warm-cache bias",
+    "results": "SHA-256 fingerprints of aggregate result rows",
+    "excluded": [
+      "credentials",
+      "URI",
+      "search SID",
+      "host names",
+      "raw events"
+    ]
+  },
+  "benchmarks": [
+    {
+      "id": "indexed_sourcetype_constraint",
+      "purpose": "Move an indexed sourcetype constraint into the base search.",
+      "searches": {
+        "baseline": "search index=winlab earliest=0 | eval keep=if(sourcetype=\"WinEventLog:Security\",1,0) | where keep=1 | stats count as event_count",
+        "optimized": "search index=winlab sourcetype=\"WinEventLog:Security\" earliest=0 | stats count as event_count"
+      },
+      "baseline": {
+        "iterations": 3,
+        "median_run_duration_seconds": 0.968,
+        "min_run_duration_seconds": 0.921,
+        "max_run_duration_seconds": 1.048,
+        "median_scan_count": 501532,
+        "median_event_count": 37103,
+        "result_sha256": "1ff3f2bec834bdca7a958706c9f3b88cf20ca775e4a94a5fc5c30866642bf1fa",
+        "all_runs_completed": true
+      },
+      "optimized": {
+        "iterations": 3,
+        "median_run_duration_seconds": 0.092,
+        "min_run_duration_seconds": 0.089,
+        "max_run_duration_seconds": 0.111,
+        "median_scan_count": 37103,
+        "median_event_count": 37103,
+        "result_sha256": "1ff3f2bec834bdca7a958706c9f3b88cf20ca775e4a94a5fc5c30866642bf1fa",
+        "all_runs_completed": true
+      },
+      "result_equivalence": true,
+      "duration_reduction_percent": 90.5,
+      "scan_reduction_percent": 92.6,
+      "acceptance": {
+        "equivalent_results": true,
+        "all_runs_completed": true,
+        "scan_count_not_increased": true
+      }
+    }
+  ],
+  "overall_pass": true
+}

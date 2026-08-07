@@ -1,0 +1,153 @@
+<form version="1.1" theme="dark" stylesheet="splunk_engineering.css">
+  <label>Risk &amp; Entity Investigation</label>
+  <description>ES-compatible risk aggregation, entity context, finding history, and analyst workflow.</description>
+
+  <fieldset submitButton="false" autoRun="true">
+    <input type="dropdown" token="replay">
+      <label>Campaign dataset</label>
+      <choice value="campaign-20260806-a">Windows multi-technique / 2026-08-06</choice>
+      <default>campaign-20260806-a</default>
+    </input>
+    <input type="time" token="time">
+      <label>Risk window</label>
+      <default>
+        <earliest>0</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+
+  <row id="cockpit_header">
+    <panel>
+      <html>
+        <div class="ops-header">
+          <div class="ops-header__title">
+            <span>RISK-BASED ALERTING / ENTITY INVESTIGATION</span>
+            <h1>Risk &amp; Entity Investigation</h1>
+            <p>Modifier → entity → finding → decision. Current state is deduplicated; prior finding versions remain auditable.</p>
+          </div>
+          <div class="ops-header__facts">
+            <div><small>PIPELINE</small><strong>ES-compatible RBA</strong><span>risk + notable indexes</span></div>
+            <div><small>ENTITY MODEL</small><strong>System-centered</strong><span>user context preserved</span></div>
+            <div><small>CORRELATION</small><strong>Multi-technique</strong><span>score + diversity gate</span></div>
+            <div><small>DISPOSITION</small><strong>Analyst-owned</strong><span>triage workflow below</span></div>
+            <div><small>DATA MODE</small><strong>Controlled replay</strong><span>official Attack Data subset</span></div>
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <row id="state_row">
+    <panel>
+      <single>
+        <title>Cumulative entity risk</title>
+        <search><query>index=risk replay_id="$replay$" | stats sum(risk_score) as value</query><earliest>$time.earliest$</earliest><latest>$time.latest$</latest></search>
+        <option name="colorMode">block</option><option name="rangeColors">["0x4d9f3d","0xd7a33d","0xd84b55"]</option><option name="rangeValues">[150,500]</option><option name="showSparkline">0</option><option name="showTrendIndicator">0</option><option name="underLabel">SUM OF RISK MODIFIERS</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Risk modifiers</title>
+        <search><query>index=risk replay_id="$replay$" | stats count as value</query><earliest>$time.earliest$</earliest><latest>$time.latest$</latest></search>
+        <option name="colorMode">none</option><option name="showSparkline">0</option><option name="showTrendIndicator">0</option><option name="underLabel">NORMALIZED RISK EVENTS</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>ATT&amp;CK techniques</title>
+        <search><query>index=risk replay_id="$replay$" | stats dc(mitre_technique) as value</query><earliest>$time.earliest$</earliest><latest>$time.latest$</latest></search>
+        <option name="colorMode">none</option><option name="showSparkline">0</option><option name="showTrendIndicator">0</option><option name="underLabel">DISTINCT CONTRIBUTIONS</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Current findings</title>
+        <search><query>index=notable replay_id="$replay$" | sort 0 - _time | dedup risk_object rule_title | stats count as value</query><earliest>$time.earliest$</earliest><latest>$time.latest$</latest></search>
+        <option name="colorMode">none</option><option name="showSparkline">0</option><option name="showTrendIndicator">0</option><option name="underLabel">DEDUPLICATED QUEUE</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Risk posture</title>
+        <search><query>index=risk replay_id="$replay$" | stats sum(risk_score) as score | eval value=case(score&gt;=500,"CRITICAL",score&gt;=250,"HIGH",score&gt;=150,"ELEVATED",1=1,"LOW") | fields value</query><earliest>$time.earliest$</earliest><latest>$time.latest$</latest></search>
+        <option name="colorMode">block</option><option name="rangeColors">["0xd84b55"]</option><option name="showSparkline">0</option><option name="showTrendIndicator">0</option><option name="underLabel">ENTITY CORRELATION</option>
+      </single>
+    </panel>
+  </row>
+
+  <row id="risk_analysis_row">
+    <panel>
+      <chart>
+        <title>Risk contribution by detection</title>
+        <search><query>index=risk replay_id="$replay$" | stats count as modifiers sum(risk_score) as total_risk by detection_id | sort 0 - total_risk</query><earliest>$time.earliest$</earliest><latest>$time.latest$</latest></search>
+        <option name="charting.chart">bar</option><option name="charting.chart.stackMode">stacked</option><option name="charting.chart.showDataLabels">all</option><option name="charting.drilldown">none</option><option name="charting.fieldColors">{"total_risk":"0xd84b55","modifiers":"0x8d72d9"}</option><option name="charting.legend.placement">bottom</option><option name="height">340</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>ATT&amp;CK risk contribution</title>
+        <search><query>index=risk replay_id="$replay$" | stats sum(risk_score) as risk count as modifiers by mitre_technique | sort 0 - risk</query><earliest>$time.earliest$</earliest><latest>$time.latest$</latest></search>
+        <option name="charting.chart">column</option><option name="charting.chart.showDataLabels">all</option><option name="charting.drilldown">none</option><option name="charting.fieldColors">{"risk":"0xd7a33d","modifiers":"0x55a9db"}</option><option name="charting.legend.placement">bottom</option><option name="height">340</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>Analytic story distribution</title>
+        <search><query>index=risk replay_id="$replay$" | stats sum(risk_score) as risk by analytic_story | sort 0 - risk</query><earliest>$time.earliest$</earliest><latest>$time.latest$</latest></search>
+        <option name="charting.chart">pie</option><option name="charting.chart.showDataLabels">minmax</option><option name="charting.drilldown">none</option><option name="charting.legend.placement">right</option><option name="height">340</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row id="entity_row">
+    <panel>
+      <table>
+        <title>Entity risk register / enrichment</title>
+        <search><query>index=risk replay_id="$replay$" | stats sum(risk_score) as cumulative_risk count as modifiers dc(detection_id) as detections dc(mitre_technique) as techniques values(user) as observed_users min(_time) as first_seen max(_time) as last_seen by risk_object risk_object_type | lookup asset_lookup host as risk_object OUTPUT ip os environment criticality vlan | convert ctime(first_seen) ctime(last_seen) | eval posture=case(cumulative_risk&gt;=500,"CRITICAL",cumulative_risk&gt;=250,"HIGH",1=1,"ELEVATED") | table risk_object risk_object_type posture cumulative_risk modifiers detections techniques observed_users os environment criticality vlan first_seen last_seen</query><earliest>$time.earliest$</earliest><latest>$time.latest$</latest></search>
+        <option name="count">10</option><option name="dataOverlayMode">heatmap</option><option name="drilldown">none</option><option name="rowNumbers">0</option>
+      </table>
+    </panel>
+  </row>
+
+  <row id="finding_row">
+    <panel>
+      <table>
+        <title>Current finding queue / latest version</title>
+        <search><query>index=notable replay_id="$replay$" | sort 0 - _time | dedup risk_object rule_title | eval techniques=mvjoin(mitre_techniques,", "), analytics=mvjoin(detections,", ") | convert ctime(_time) | rename _time as generated_at | table severity status rule_title risk_object risk_score technique_count risk_modifier_count techniques generated_at owner</query><earliest>$time.earliest$</earliest><latest>$time.latest$</latest></search>
+        <option name="count">10</option><option name="dataOverlayMode">heatmap</option><option name="drilldown">none</option><option name="rowNumbers">0</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>Finding version history</title>
+        <search><query>index=notable replay_id="$replay$" | sort 0 - _time | streamstats count as version by risk_object rule_title | convert ctime(_time) | rename _time as generated_at | table version generated_at risk_object risk_score technique_count risk_modifier_count severity</query><earliest>$time.earliest$</earliest><latest>$time.latest$</latest></search>
+        <option name="count">10</option><option name="dataOverlayMode">none</option><option name="drilldown">none</option><option name="rowNumbers">0</option>
+      </table>
+    </panel>
+  </row>
+
+  <row id="timeline_row">
+    <panel>
+      <table>
+        <title>Risk modifier timeline / preserved context</title>
+        <search><query>index=risk replay_id="$replay$" | eval observed_at=if(isnum(firstTime),strftime(firstTime,"%Y-%m-%d %H:%M:%S"),coalesce(firstTime,strftime(_time,"%Y-%m-%d %H:%M:%S"))) | eval technique=mitre_technique | sort 0 observed_at | table observed_at technique severity detection_id risk_score risk_object user risk_message</query><earliest>$time.earliest$</earliest><latest>$time.latest$</latest></search>
+        <option name="count">20</option><option name="dataOverlayMode">heatmap</option><option name="drilldown">none</option><option name="rowNumbers">1</option>
+      </table>
+    </panel>
+  </row>
+
+  <row id="runbook_row">
+    <panel>
+      <html>
+        <div class="ops-runbook">
+          <div><small>01 / VALIDATE</small><strong>Confirmer la diversité des techniques</strong><p>Comparer les modificateurs, les GUID de processus et les plages temporelles.</p></div>
+          <div><small>02 / ENRICH</small><strong>Qualifier l’entité</strong><p>Criticité, OS, utilisateur observé, parent process et exposition de l’actif.</p></div>
+          <div><small>03 / SCOPE</small><strong>Étendre la recherche</strong><p>Rechercher les mêmes indicateurs sur les systèmes homologues et les comptes liés.</p></div>
+          <div><small>04 / DECIDE</small><strong>Contenir ou fermer</strong><p>Documenter le verdict, le propriétaire et la raison de clôture dans le finding.</p></div>
+          <div class="ops-runbook__signature"><small>ENGINEERING OWNER</small><strong>A.S</strong><p>Detection Engineering &amp; Splunk Administration</p></div>
+        </div>
+      </html>
+    </panel>
+  </row>
+</form>

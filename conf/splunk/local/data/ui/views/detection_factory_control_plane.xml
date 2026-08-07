@@ -1,0 +1,138 @@
+<dashboard version="1.1" theme="dark" stylesheet="splunk_engineering.css">
+  <label>Detection Factory Control Plane</label>
+  <description>Detection-as-code lifecycle, live dispatch assurance, ATT&amp;CK coverage, and promotion evidence.</description>
+
+  <row id="cockpit_header">
+    <panel>
+      <html>
+        <div class="ops-header">
+          <div class="ops-header__title">
+            <span>DETECTION-AS-CODE / CONTENT LIFECYCLE</span>
+            <h1>Detection Factory Control Plane</h1>
+            <p>Specification → package → dispatch → evidence → promotion. Every metric resolves to a deployed knowledge object.</p>
+          </div>
+          <div class="ops-header__facts">
+            <div><small>SOURCE</small><strong>Markdown + .conf</strong><span>version-controlled content</span></div>
+            <div><small>PACKAGE</small><strong>Splunk app</strong><span>manifest + SHA-256</span></div>
+            <div><small>EXECUTION</small><strong>Sequential dispatch</strong><span>2-vCPU aware validation</span></div>
+            <div><small>EVIDENCE</small><strong>Atomic + Attack Data</strong><span>repeatable scenarios</span></div>
+            <div><small>OWNER</small><strong>A.S</strong><span>detection engineering</span></div>
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <row id="state_row">
+    <panel>
+      <single>
+        <title>Deployed analytics</title>
+        <search><query>| inputlookup detection_catalog | stats count as value</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="colorMode">none</option><option name="showSparkline">0</option><option name="showTrendIndicator">0</option><option name="underLabel">CATALOG DEFINITIONS</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Dispatch assurance</title>
+        <search><query>| inputlookup detection_validation | stats count(eval(like(validation_state,"PASS%"))) as value</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="colorMode">block</option><option name="rangeColors">["0xd84b55","0xd7a33d","0x67b94b"]</option><option name="rangeValues">[17,18]</option><option name="showSparkline">0</option><option name="showTrendIndicator">0</option><option name="underLabel">18 EXPECTED / 0 ERROR</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Scenario-positive</title>
+        <search><query>| inputlookup detection_validation | stats count(eval(result_count&gt;0)) as value</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="colorMode">none</option><option name="showSparkline">0</option><option name="showTrendIndicator">0</option><option name="underLabel">ATTACK DATA CAMPAIGN</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Mean runtime</title>
+        <search><query>| inputlookup detection_validation | stats avg(runtime_seconds) as average_seconds | eval value=round(average_seconds*1000,0) | fields value</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="unit">ms</option><option name="numberPrecision">0</option><option name="colorMode">none</option><option name="showSparkline">0</option><option name="showTrendIndicator">0</option><option name="underLabel">PER DETECTION / 2 VCPU</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Validation errors</title>
+        <search><query>| inputlookup detection_validation | stats count(eval(NOT like(validation_state,"PASS%"))) as value</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="colorMode">block</option><option name="rangeColors">["0x67b94b","0xd84b55"]</option><option name="rangeValues">[1]</option><option name="showSparkline">0</option><option name="showTrendIndicator">0</option><option name="underLabel">FATAL / ERROR MESSAGES</option>
+      </single>
+    </panel>
+  </row>
+
+  <row id="factory_row">
+    <panel>
+      <chart>
+        <title>Content lifecycle / promotion state</title>
+        <search><query>| inputlookup detection_catalog | eval lifecycle=case(status="PRODUCTION","Evidence-backed",status="TESTING","Validation queue",1=1,status) | stats count as analytics by lifecycle | append [| inputlookup detection_validation | stats count(eval(result_count&gt;0)) as analytics | eval lifecycle="Scenario-positive"] | append [| inputlookup detection_validation | stats count(eval(like(validation_state,"PASS%"))) as analytics | eval lifecycle="Dispatch-pass"] | eval order=case(lifecycle="Dispatch-pass",1,lifecycle="Scenario-positive",2,lifecycle="Evidence-backed",3,lifecycle="Validation queue",4,1=1,99) | sort order | fields lifecycle analytics</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="charting.chart">bar</option><option name="charting.chart.showDataLabels">all</option><option name="charting.drilldown">none</option><option name="charting.fieldColors">{"analytics":"0x67b94b"}</option><option name="charting.legend.placement">none</option><option name="height">330</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>Dispatch runtime by analytic</title>
+        <search><query>| inputlookup detection_validation | eval analytic=replace(saved_search,"^detect_win_(sysmon|secevt|pwsh)_","") | sort 0 - runtime_seconds | head 10 | table analytic runtime_seconds</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="charting.chart">bar</option><option name="charting.chart.showDataLabels">all</option><option name="charting.drilldown">none</option><option name="charting.fieldColors">{"runtime_seconds":"0x55a9db"}</option><option name="charting.legend.placement">none</option><option name="height">330</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>Risk score distribution</title>
+        <search><query>| inputlookup detection_catalog | eval band=case(risk_score&gt;=75,"75-90 / high",risk_score&gt;=60,"60-70 / elevated",1=1,"45-55 / medium") | stats count as analytics by band</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="charting.chart">pie</option><option name="charting.chart.showDataLabels">all</option><option name="charting.drilldown">none</option><option name="charting.legend.placement">bottom</option><option name="height">330</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row id="coverage_row">
+    <panel>
+      <chart>
+        <title>ATT&amp;CK technique coverage / configured content</title>
+        <search><query>| inputlookup detection_catalog | makemv delim=";" mitre_techniques | mvexpand mitre_techniques | stats count as analytics max(risk_score) as max_risk by mitre_techniques | sort 0 - max_risk - analytics</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="charting.chart">bar</option><option name="charting.chart.stackMode">stacked</option><option name="charting.chart.showDataLabels">all</option><option name="charting.drilldown">none</option><option name="charting.fieldColors">{"analytics":"0x8d72d9","max_risk":"0xd84b55"}</option><option name="charting.legend.placement">bottom</option><option name="height">380</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>Data source distribution</title>
+        <search><query>| inputlookup detection_catalog | eval source_family=case(like(data_source,"%sysmon%"),"Sysmon Operational",like(data_source,"%Security%"),"Windows Security",like(data_source,"%PowerShell%"),"PowerShell Operational",1=1,"Other") | stats count as analytics by source_family</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="charting.chart">donut</option><option name="charting.chart.showDataLabels">all</option><option name="charting.drilldown">none</option><option name="charting.legend.placement">right</option><option name="height">380</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row id="validation_row">
+    <panel>
+      <table>
+        <title>Live validation matrix / replay campaign</title>
+        <search><query>| inputlookup detection_catalog | eval saved_search="detect_".replace(detection_id,"\.","_") | lookup detection_validation saved_search OUTPUT result_count event_count scan_count runtime_seconds validation_state validated_at replay_id | eval verdict=case(validation_state="PASS_POSITIVE","PASS / MATCHED",validation_state="PASS_ZERO","PASS / OUT OF SCENARIO",1=1,coalesce(validation_state,"NOT RUN")) | table verdict title mitre_techniques severity risk_score result_count event_count scan_count runtime_seconds status validated_at | sort 0 verdict - risk_score</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="count">20</option><option name="dataOverlayMode">heatmap</option><option name="drilldown">none</option><option name="rowNumbers">0</option>
+      </table>
+    </panel>
+  </row>
+
+  <row id="catalog_row">
+    <panel>
+      <table>
+        <title>Detection catalog / deployable knowledge objects</title>
+        <search><query>| inputlookup detection_catalog | eval saved_search="detect_".replace(detection_id,"\.","_") | lookup detection_validation saved_search OUTPUT validation_state result_count runtime_seconds | eval evidence=if(evidence_count&gt;0,evidence_count." committed capture(s)","spec + live dispatch") | table status detection_id title severity risk_score mitre_techniques data_source schedule evidence validation_state result_count runtime_seconds source_path | sort 0 - risk_score title</query><earliest>0</earliest><latest>now</latest></search>
+        <option name="count">20</option><option name="dataOverlayMode">none</option><option name="drilldown">none</option><option name="rowNumbers">0</option>
+      </table>
+    </panel>
+  </row>
+
+  <row id="runbook_row">
+    <panel>
+      <html>
+        <div class="ops-runbook">
+          <div><small>01 / SPECIFY</small><strong>Hypothesis &amp; telemetry contract</strong><p>ATT&amp;CK mapping, required fields, false-positive model and response notes.</p></div>
+          <div><small>02 / BUILD</small><strong>Package deterministic content</strong><p>Application archive, lookup catalog, XML parsing and SHA-256 manifest.</p></div>
+          <div><small>03 / TEST</small><strong>Dispatch every analytic</strong><p>Controlled concurrency, fatal-message gate, count and runtime capture.</p></div>
+          <div><small>04 / PROMOTE</small><strong>Evidence before status</strong><p>Positive scenario, tuning decision and committed proof control promotion.</p></div>
+          <div class="ops-runbook__signature"><small>CONTENT OWNER</small><strong>A.S</strong><p>18 analytics / 0 dispatch error</p></div>
+        </div>
+      </html>
+    </panel>
+  </row>
+</dashboard>

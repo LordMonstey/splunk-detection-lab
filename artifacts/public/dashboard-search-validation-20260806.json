@@ -1,0 +1,355 @@
+{
+  "schema_version": 1,
+  "collected_at": "2026-08-06T16:54:13.842650+00:00",
+  "summary": {
+    "queries": 49,
+    "passed": 49,
+    "failed": 0,
+    "views": 4
+  },
+  "queries": [
+    {
+      "view": "cim_admin_assurance",
+      "query": 1,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "cim_admin_assurance",
+      "query": 2,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "cim_admin_assurance",
+      "query": 3,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "cim_admin_assurance",
+      "query": 4,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "cim_admin_assurance",
+      "query": 5,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "cim_admin_assurance",
+      "query": 6,
+      "status": "passed",
+      "result_count": 7,
+      "messages": []
+    },
+    {
+      "view": "cim_admin_assurance",
+      "query": 7,
+      "status": "passed",
+      "result_count": 3,
+      "messages": []
+    },
+    {
+      "view": "cim_admin_assurance",
+      "query": 8,
+      "status": "passed",
+      "result_count": 4,
+      "messages": []
+    },
+    {
+      "view": "cim_admin_assurance",
+      "query": 9,
+      "status": "passed",
+      "result_count": 4,
+      "messages": []
+    },
+    {
+      "view": "cim_admin_assurance",
+      "query": 10,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "cim_admin_assurance",
+      "query": 11,
+      "status": "passed",
+      "result_count": 7,
+      "messages": []
+    },
+    {
+      "view": "cim_admin_assurance",
+      "query": 12,
+      "status": "passed",
+      "result_count": 4,
+      "messages": []
+    },
+    {
+      "view": "detection_factory_control_plane",
+      "query": 1,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "detection_factory_control_plane",
+      "query": 2,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "detection_factory_control_plane",
+      "query": 3,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "detection_factory_control_plane",
+      "query": 4,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "detection_factory_control_plane",
+      "query": 5,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "detection_factory_control_plane",
+      "query": 6,
+      "status": "passed",
+      "result_count": 4,
+      "messages": []
+    },
+    {
+      "view": "detection_factory_control_plane",
+      "query": 7,
+      "status": "passed",
+      "result_count": 10,
+      "messages": []
+    },
+    {
+      "view": "detection_factory_control_plane",
+      "query": 8,
+      "status": "passed",
+      "result_count": 3,
+      "messages": []
+    },
+    {
+      "view": "detection_factory_control_plane",
+      "query": 9,
+      "status": "passed",
+      "result_count": 19,
+      "messages": []
+    },
+    {
+      "view": "detection_factory_control_plane",
+      "query": 10,
+      "status": "passed",
+      "result_count": 3,
+      "messages": []
+    },
+    {
+      "view": "detection_factory_control_plane",
+      "query": 11,
+      "status": "passed",
+      "result_count": 18,
+      "messages": []
+    },
+    {
+      "view": "detection_factory_control_plane",
+      "query": 12,
+      "status": "passed",
+      "result_count": 18,
+      "messages": []
+    },
+    {
+      "view": "risk_identity_investigation",
+      "query": 1,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "risk_identity_investigation",
+      "query": 2,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "risk_identity_investigation",
+      "query": 3,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "risk_identity_investigation",
+      "query": 4,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "risk_identity_investigation",
+      "query": 5,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "risk_identity_investigation",
+      "query": 6,
+      "status": "passed",
+      "result_count": 5,
+      "messages": []
+    },
+    {
+      "view": "risk_identity_investigation",
+      "query": 7,
+      "status": "passed",
+      "result_count": 5,
+      "messages": []
+    },
+    {
+      "view": "risk_identity_investigation",
+      "query": 8,
+      "status": "passed",
+      "result_count": 5,
+      "messages": []
+    },
+    {
+      "view": "risk_identity_investigation",
+      "query": 9,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "risk_identity_investigation",
+      "query": 10,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "risk_identity_investigation",
+      "query": 11,
+      "status": "passed",
+      "result_count": 2,
+      "messages": []
+    },
+    {
+      "view": "risk_identity_investigation",
+      "query": 12,
+      "status": "passed",
+      "result_count": 19,
+      "messages": []
+    },
+    {
+      "view": "splunk_engineering_command_center",
+      "query": 1,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "splunk_engineering_command_center",
+      "query": 2,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "splunk_engineering_command_center",
+      "query": 3,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "splunk_engineering_command_center",
+      "query": 4,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "splunk_engineering_command_center",
+      "query": 5,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "splunk_engineering_command_center",
+      "query": 6,
+      "status": "passed",
+      "result_count": 3,
+      "messages": []
+    },
+    {
+      "view": "splunk_engineering_command_center",
+      "query": 7,
+      "status": "passed",
+      "result_count": 4,
+      "messages": []
+    },
+    {
+      "view": "splunk_engineering_command_center",
+      "query": 8,
+      "status": "passed",
+      "result_count": 4,
+      "messages": []
+    },
+    {
+      "view": "splunk_engineering_command_center",
+      "query": 9,
+      "status": "passed",
+      "result_count": 3,
+      "messages": []
+    },
+    {
+      "view": "splunk_engineering_command_center",
+      "query": 10,
+      "status": "passed",
+      "result_count": 1,
+      "messages": []
+    },
+    {
+      "view": "splunk_engineering_command_center",
+      "query": 11,
+      "status": "passed",
+      "result_count": 3,
+      "messages": []
+    },
+    {
+      "view": "splunk_engineering_command_center",
+      "query": 12,
+      "status": "passed",
+      "result_count": 18,
+      "messages": []
+    },
+    {
+      "view": "splunk_engineering_command_center",
+      "query": 13,
+      "status": "passed",
+      "result_count": 18,
+      "messages": []
+    }
+  ]
+}

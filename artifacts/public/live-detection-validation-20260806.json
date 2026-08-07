@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "collected_at": "2026-08-06T16:54:13.607652+00:00",
+  "app": "splunk-detection-lab",
+  "time_window": {
+    "earliest": "0",
+    "latest": "now"
+  },
+  "summary": {
+    "detections": 18,
+    "completed": 18,
+    "positive": 5,
+    "errors": 0
+  },
+  "detections": [
+    {
+      "name": "detect_win_pwsh_t1059_001_amsi_bypass",
+      "dispatch_state": "DONE",
+      "result_count": 0,
+      "event_count": 0,
+      "scan_count": 0,
+      "run_duration_seconds": 0.124,
+      "messages": []
+    },
+    {
+      "name": "detect_win_secevt_t1110_001_failed_logon_burst",
+      "dispatch_state": "DONE",
+      "result_count": 0,
+      "event_count": 0,
+      "scan_count": 0,
+      "run_duration_seconds": 0.095,
+      "messages": []
+    },
+    {
+      "name": "detect_win_secevt_t1136_001_local_account_creation",
+      "dispatch_state": "DONE",
+      "result_count": 1,
+      "event_count": 4,
+      "scan_count": 4,
+      "run_duration_seconds": 0.309,
+      "messages": []
+    },
+    {
+      "name": "detect_win_sysmon_t1003_001_lsass_access_suspicious",
+      "dispatch_state": "DONE",
+      "result_count": 2,
+      "event_count": 10,
+      "scan_count": 12,
+      "run_duration_seconds": 0.195,
+      "messages": []
+    },
+    {
+      "name": "detect_win_sysmon_t1027_obfuscated_powershell_entropy",
+      "dispatch_state": "DONE",
+      "result_count": 0,
+      "event_count": 0,
+      "scan_count": 39,
+      "run_duration_seconds": 0.148,
+      "messages": []
+    },
+    {
+      "name": "detect_win_sysmon_t1053_005_scheduled_task_creation",
+      "dispatch_state": "DONE",
+      "result_count": 0,
+      "event_count": 0,
+      "scan_count": 0,
+      "run_duration_seconds": 0.205,
+      "messages": []
+    },
+    {
+      "name": "detect_win_sysmon_t1059_001_powershell_download_cradle",
+      "dispatch_state": "DONE",
+      "result_count": 0,
+      "event_count": 0,
+      "scan_count": 39,
+      "run_duration_seconds": 0.354,
+      "messages": []
+    },
+    {
+      "name": "detect_win_sysmon_t1059_001_powershell_encoded",
+      "dispatch_state": "DONE",
+      "result_count": 12,
+      "event_count": 12,
+      "scan_count": 39,
+      "run_duration_seconds": 0.183,
+      "messages": []
+    },
+    {
+      "name": "detect_win_sysmon_t1059_003_cmd_obfuscation",
+      "dispatch_state": "DONE",
+      "result_count": 0,
+      "event_count": 0,
+      "scan_count": 44,
+      "run_duration_seconds": 0.196,
+      "messages": []
+    },
+    {
+      "name": "detect_win_sysmon_t1105_curl_wget_download",
+      "dispatch_state": "DONE",
+      "result_count": 0,
+      "event_count": 0,
+      "scan_count": 0,
+      "run_duration_seconds": 0.147,
+      "messages": []
+    },
+    {
+      "name": "detect_win_sysmon_t1112_registry_persistence_helper",
+      "dispatch_state": "DONE",
+      "result_count": 0,
+      "event_count": 0,
+      "scan_count": 0,
+      "run_duration_seconds": 0.249,
+      "messages": []
+    },
+    {
+      "name": "detect_win_sysmon_t1140_certutil_decode",
+      "dispatch_state": "DONE",
+      "result_count": 2,
+      "event_count": 2,
+      "scan_count": 2,
+      "run_duration_seconds": 0.113,
+      "messages": []
+    },
+    {
+      "name": "detect_win_sysmon_t1218_005_mshta_execution",
+      "dispatch_state": "DONE",
+      "result_count": 0,
+      "event_count": 0,
+      "scan_count": 0,
+      "run_duration_seconds": 0.16,
+      "messages": []
+    },
+    {
+      "name": "detect_win_sysmon_t1218_010_regsvr32_remote",
+      "dispatch_state": "DONE",
+      "result_count": 0,
+      "event_count": 0,
+      "scan_count": 0,
+      "run_duration_seconds": 0.109,
+      "messages": []
+    },
+    {
+      "name": "detect_win_sysmon_t1218_011_rundll32_unusual_parent",
+      "dispatch_state": "DONE",
+      "result_count": 0,
+      "event_count": 0,
+      "scan_count": 0,
+      "run_duration_seconds": 0.111,
+      "messages": []
+    },
+    {
+      "name": "detect_win_sysmon_t1222_001_icacls_permissive",
+      "dispatch_state": "DONE",
+      "result_count": 0,
+      "event_count": 0,
+      "scan_count": 0,
+      "run_duration_seconds": 0.17,
+      "messages": []
+    },
+    {
+      "name": "detect_win_sysmon_t1547_001_run_key_modification",
+      "dispatch_state": "DONE",
+      "result_count": 2,
+      "event_count": 2,
+      "scan_count": 2,
+      "run_duration_seconds": 0.093,
+      "messages": []
+    },
+    {
+      "name": "detect_win_sysmon_t1562_001_defender_tamper",
+      "dispatch_state": "DONE",
+      "result_count": 0,
+      "event_count": 0,
+      "scan_count": 0,
+      "run_duration_seconds": 0.096,
+      "messages": []
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+control_id,domain,interface,method,target,required_control,platform_admin,platform_operator,detection_engineer,soc_analyst,audit_reader,api_health
+RBAC-001,Security telemetry,SPL,POST,/services/search/jobs,search plus security index scope,ALLOW,DENY,ALLOW,ALLOW,DENY,DENY
+RBAC-002,Platform diagnostics,SPL,POST,/services/search/jobs,search plus _internal index scope,ALLOW,ALLOW,DENY,DENY,DENY,DENY
+RBAC-003,Audit trail,SPL,POST,/services/search/jobs,search plus _audit index scope,ALLOW,DENY,DENY,DENY,ALLOW,DENY
+RBAC-004,Health,REST,GET,/services/server/health/splunkd,rest_access_server_endpoints plus list_health,ALLOW,ALLOW,DENY,DENY,DENY,ALLOW
+RBAC-005,Cluster topology,REST,GET,/services/cluster/manager/info,list_indexer_cluster,ALLOW,ALLOW,DENY,DENY,DENY,ALLOW
+RBAC-006,Licensing,REST,GET,/services/licenser/localslave,license_read,ALLOW,ALLOW,DENY,DENY,DENY,ALLOW
+RBAC-007,Certificates,REST,GET,/services/admin/security/certmgr/truststores/{service},10.2-only capability excluded from common baseline,DENY,DENY,DENY,DENY,DENY,DENY
+RBAC-008,Certificates,REST,POST,/services/admin/security/certmgr/truststores/{service},10.2-only capability excluded from common baseline,DENY,DENY,DENY,DENY,DENY,DENY
+RBAC-009,Indexes,REST,POST,/services/data/indexes,indexes_edit,ALLOW,DENY,DENY,DENY,DENY,DENY
+RBAC-010,Service control,REST,POST,/services/server/control/restart,restart_splunkd,ALLOW,DENY,DENY,DENY,DENY,DENY
+RBAC-011,Forwarding,REST,GET,/services/deployment/server/clients,list_deployment_server,ALLOW,ALLOW,DENY,DENY,DENY,DENY
+RBAC-012,Forwarding,REST,POST,/services/deployment/server/applications,edit_deployment_server,ALLOW,DENY,DENY,DENY,DENY,DENY
+RBAC-013,Knowledge objects,REST,POST,/servicesNS/{principal}/search/saved/searches,edit_own_objects,DENY,DENY,ALLOW,ALLOW,DENY,DENY
+RBAC-014,Detection scheduling,REST,POST,/servicesNS/{principal}/search/saved/searches/{name},schedule_search,DENY,DENY,ALLOW,DENY,DENY,DENY
+RBAC-015,Data model acceleration,REST,POST,/servicesNS/{principal}/search/datamodel/model/{name},accelerate_datamodel plus edit_own_objects,DENY,DENY,ALLOW,DENY,DENY,DENY
+RBAC-016,Lookup governance,SPL,POST,/services/search/jobs,output_file,DENY,DENY,ALLOW,DENY,DENY,DENY
+RBAC-017,Identity audit,REST,GET,/services/authentication/users,list_all_users plus list_all_roles,DENY,DENY,DENY,DENY,ALLOW,DENY
+RBAC-018,Identity administration,REST,POST,/services/authentication/users,edit_user,DENY,DENY,DENY,DENY,DENY,DENY
+RBAC-019,Role administration,REST,POST,/services/authorization/roles,edit_roles,DENY,DENY,DENY,DENY,DENY,DENY
+RBAC-020,Real-time search,SPL,POST,/services/search/jobs,rtsearch,DENY,DENY,DENY,DENY,DENY,DENY

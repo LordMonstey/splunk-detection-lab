@@ -1,0 +1,542 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Splunk Enterprise 9.4.13 to 10.2.1 live upgrade evidence",
+  "description": "Contract for sanitized evidence collected during a live isolated-lab upgrade, restoration rollback, and final upgrade. This schema is not execution evidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "evidence_kind",
+    "run_id",
+    "project",
+    "change",
+    "backup",
+    "phases",
+    "decisions",
+    "public_redaction"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "evidence_kind": {
+      "const": "live-isolated-lab"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^upgrade-[0-9]{8}T[0-9]{6}Z-[a-z0-9]{6,16}$"
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_version",
+        "target_version",
+        "topology",
+        "environment_alias",
+        "host_os",
+        "os_evidence_boundary",
+        "enterprise_security_layer"
+      ],
+      "properties": {
+        "source_version": {
+          "const": "9.4.13"
+        },
+        "target_version": {
+          "const": "10.2.1"
+        },
+        "topology": {
+          "enum": [
+            "standalone"
+          ]
+        },
+        "environment_alias": {
+          "type": "string",
+          "pattern": "^lab-[a-z0-9-]{3,48}$"
+        },
+        "host_os": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 80
+        },
+        "os_evidence_boundary": {
+          "const": "lab-method-validation-not-vendor-support-certification"
+        },
+        "enterprise_security_layer": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "version_before",
+            "version_after",
+            "compatibility_matrix_checked"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "not-installed",
+                "installed-and-validated"
+              ]
+            },
+            "version_before": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "version_after": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "compatibility_matrix_checked": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "change": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "started_at",
+        "completed_at",
+        "execution_mode",
+        "upgrade_strategy",
+        "rollback_method",
+        "direct_path_checked_against_vendor_documentation",
+        "compatibility_matrix_reviewed"
+      ],
+      "properties": {
+        "started_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "completed_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "execution_mode": {
+          "const": "live-lab"
+        },
+        "upgrade_strategy": {
+          "const": "in-place-upgrade-with-restorable-baseline"
+        },
+        "rollback_method": {
+          "const": "snapshot-and-backup-restoration"
+        },
+        "direct_path_checked_against_vendor_documentation": {
+          "const": true
+        },
+        "compatibility_matrix_reviewed": {
+          "const": true
+        }
+      }
+    },
+    "backup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "captured_at",
+        "restore_tested_at",
+        "snapshot_alias",
+        "snapshot_metadata_sha256",
+        "configuration_archive_sha256",
+        "custom_apps_archive_sha256",
+        "kv_store_archive_sha256",
+        "manifest_sha256",
+        "restore_test_status"
+      ],
+      "properties": {
+        "captured_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "restore_tested_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "snapshot_alias": {
+          "type": "string",
+          "pattern": "^snapshot-[a-z0-9-]{3,64}$"
+        },
+        "snapshot_metadata_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "configuration_archive_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "custom_apps_archive_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "kv_store_archive_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "restore_test_status": {
+          "const": "verified"
+        }
+      }
+    },
+    "phases": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pre_upgrade",
+        "post_upgrade",
+        "rollback",
+        "final"
+      ],
+      "properties": {
+        "pre_upgrade": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/phase"
+            },
+            {
+              "properties": {
+                "version": {
+                  "const": "9.4.13"
+                }
+              }
+            }
+          ]
+        },
+        "post_upgrade": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/phase"
+            },
+            {
+              "properties": {
+                "version": {
+                  "const": "10.2.1"
+                }
+              }
+            }
+          ]
+        },
+        "rollback": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/phase"
+            },
+            {
+              "properties": {
+                "version": {
+                  "const": "9.4.13"
+                }
+              }
+            }
+          ]
+        },
+        "final": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/phase"
+            },
+            {
+              "properties": {
+                "version": {
+                  "const": "10.2.1"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "decisions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pre_upgrade",
+        "post_upgrade",
+        "rollback",
+        "final"
+      ],
+      "properties": {
+        "pre_upgrade": {
+          "$ref": "#/$defs/decision"
+        },
+        "post_upgrade": {
+          "$ref": "#/$defs/decision"
+        },
+        "rollback": {
+          "$ref": "#/$defs/decision"
+        },
+        "final": {
+          "$ref": "#/$defs/decision"
+        }
+      }
+    },
+    "public_redaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "private_addresses_removed",
+        "credentials_removed",
+        "hostnames_replaced_with_aliases",
+        "raw_events_excluded"
+      ],
+      "properties": {
+        "private_addresses_removed": {
+          "const": true
+        },
+        "credentials_removed": {
+          "const": true
+        },
+        "hostnames_replaced_with_aliases": {
+          "const": true
+        },
+        "raw_events_excluded": {
+          "const": true
+        }
+      }
+    }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "health": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "splunkd_status",
+        "searchable",
+        "fatal_error_count",
+        "skipped_search_count"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "green",
+            "yellow",
+            "red"
+          ]
+        },
+        "splunkd_status": {
+          "enum": [
+            "running",
+            "stopped"
+          ]
+        },
+        "searchable": {
+          "type": "boolean"
+        },
+        "fatal_error_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "skipped_search_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "installed_app_count",
+        "custom_app_count",
+        "saved_search_count",
+        "enabled_saved_search_count"
+      ],
+      "properties": {
+        "installed_app_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "custom_app_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "saved_search_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "enabled_saved_search_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "kv_store": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "collection_count"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "ready",
+            "degraded",
+            "failed"
+          ]
+        },
+        "collection_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "license": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "violation_count"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "OK",
+            "WARN",
+            "ERROR"
+          ]
+        },
+        "violation_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "hashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "managed_configuration_manifest_sha256",
+        "custom_apps_manifest_sha256",
+        "saved_searches_export_sha256",
+        "kv_store_export_sha256"
+      ],
+      "properties": {
+        "managed_configuration_manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "custom_apps_manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "saved_searches_export_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "kv_store_export_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "smoke_test": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "status",
+        "duration_ms",
+        "evidence_sha256"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{2,64}$"
+        },
+        "status": {
+          "enum": [
+            "passed",
+            "failed"
+          ]
+        },
+        "duration_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "evidence_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "phase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "captured_at",
+        "version",
+        "build",
+        "health",
+        "inventory",
+        "kv_store",
+        "license",
+        "hashes",
+        "smoke_tests"
+      ],
+      "properties": {
+        "captured_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "version": {
+          "type": "string"
+        },
+        "build": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9._-]{4,64}$"
+        },
+        "health": {
+          "$ref": "#/$defs/health"
+        },
+        "inventory": {
+          "$ref": "#/$defs/inventory"
+        },
+        "kv_store": {
+          "$ref": "#/$defs/kv_store"
+        },
+        "license": {
+          "$ref": "#/$defs/license"
+        },
+        "hashes": {
+          "$ref": "#/$defs/hashes"
+        },
+        "smoke_tests": {
+          "type": "array",
+          "minItems": 8,
+          "items": {
+            "$ref": "#/$defs/smoke_test"
+          }
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision",
+        "reason"
+      ],
+      "properties": {
+        "decision": {
+          "enum": [
+            "GO",
+            "NO-GO",
+            "GO-ROLLBACK-DRILL",
+            "GO-FINAL-UPGRADE",
+            "CLOSE"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 500
+        }
+      }
+    }
+  }
+}

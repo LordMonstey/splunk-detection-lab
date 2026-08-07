@@ -1,0 +1,172 @@
+{
+  "artifact_type": "splunk_tls_rotation_live_evidence",
+  "certificate_profiles": {
+    "rotation-a": {
+      "days_remaining_at_validation": 396,
+      "dns_sans": [
+        "splunk-probe.lab.test"
+      ],
+      "kv_store_compatible": false,
+      "not_after": "2027-09-08T13:25:27Z",
+      "not_before": "2026-08-07T13:25:27Z",
+      "offline_checks": {
+        "basic_constraints": "PASS",
+        "chain_and_sslserver_purpose": "PASS",
+        "dns_san_policy": "PASS",
+        "key_usage": "PASS",
+        "signature_algorithm": "PASS",
+        "validity_window": "PASS"
+      },
+      "public_key": {
+        "algorithm": "RSA",
+        "bits": 4096
+      },
+      "qualified_scope": "web_and_management_only",
+      "serial": "C4BB5B6C5AB300CB8A0916B60240E8F6",
+      "sha256_fingerprint": "41:CA:44:0B:62:45:4E:B2:CA:6B:DA:72:2A:CF:6A:35:E2:88:3C:B5:09:FC:D5:93:21:CE:5E:CC:F0:AA:94:C7",
+      "signature_algorithm": "sha384WithRSAEncryption"
+    },
+    "rotation-b": {
+      "days_remaining_at_validation": 396,
+      "dns_sans": [
+        "splunk-probe.lab.test"
+      ],
+      "kv_store_compatible": false,
+      "not_after": "2027-09-08T13:25:35Z",
+      "not_before": "2026-08-07T13:25:35Z",
+      "offline_checks": {
+        "basic_constraints": "PASS",
+        "chain_and_sslserver_purpose": "PASS",
+        "dns_san_policy": "PASS",
+        "key_usage": "PASS",
+        "signature_algorithm": "PASS",
+        "validity_window": "PASS"
+      },
+      "public_key": {
+        "algorithm": "RSA",
+        "bits": 4096
+      },
+      "qualified_scope": "web_and_management_only",
+      "serial": "D2B463C8B57B5F80EBB2CAA85576030B",
+      "sha256_fingerprint": "5C:A1:CF:1E:4B:B1:A1:FF:B0:61:7D:46:87:D0:7E:CB:1F:A6:EE:1C:3D:4E:30:19:70:5F:6A:0C:12:3E:64:69",
+      "signature_algorithm": "sha384WithRSAEncryption"
+    },
+    "rotation-c": {
+      "days_remaining_at_validation": 396,
+      "dns_sans": [
+        "splunk-probe.lab.test"
+      ],
+      "extended_key_usage": [
+        "serverAuth",
+        "clientAuth"
+      ],
+      "kv_store_compatible": true,
+      "not_after": "2027-09-08T13:56:44Z",
+      "not_before": "2026-08-07T13:56:44Z",
+      "offline_checks": {
+        "basic_constraints": "PASS",
+        "chain_and_sslserver_sslclient_purpose": "PASS",
+        "dns_san_policy": "PASS",
+        "key_usage": "PASS",
+        "signature_algorithm": "PASS",
+        "validity_window": "PASS"
+      },
+      "public_key": {
+        "algorithm": "RSA",
+        "bits": 4096
+      },
+      "qualified_scope": "web_management_and_kv_store",
+      "serial": "EDB4906502616CF3CAF7C6897E978451",
+      "sha256_fingerprint": "E2:C3:6F:60:38:67:75:82:0A:17:06:FE:E4:DE:4F:31:5B:97:64:D7:0D:E2:67:24:17:C4:77:D3:FC:7C:11:91",
+      "signature_algorithm": "sha384WithRSAEncryption"
+    }
+  },
+  "change_sequence": [
+    {
+      "configuration_sha256": {
+        "server.conf": "03e32ff3ffaf0ae6b905473ca17daabff245f27bafd7a8ff06ca385a63ec1cff",
+        "web.conf": "94901c9074edd89297139f8c22a66108db60231e1d5c09c059d281585d8329cc"
+      },
+      "post_change_validation": "passed",
+      "status": "passed",
+      "step": "rollback_to_rotation_a"
+    },
+    {
+      "configuration_sha256": {
+        "server.conf": "94734dca8ce949b1d81e72087fa165c9d7412e83b403a3572b17a77daed5390f",
+        "web.conf": "c2f69a95d27539fa6177979bc028ac586b03847bde78d296d4d79d3291a275f8"
+      },
+      "post_change_validation": "passed",
+      "status": "passed",
+      "step": "final_activation_rotation_b"
+    },
+    {
+      "decision": "do_not_close_change",
+      "finding": "certificate_extended_key_usage_incompatible_with_kv_store",
+      "status": "failed_as_expected_by_gate",
+      "step": "post_change_dependency_gate_rotation_b"
+    },
+    {
+      "configuration_sha256": {
+        "server.conf": "3c656c76e26b640ed256b25212a4fde830098bf80e9a7bdaeb317ab54fc59c01",
+        "web.conf": "8c6efe576db5635d0c56668fb7ed5f01bc6ee9313cd9a7bad391dd6ed9138836"
+      },
+      "kv_store_status": "ready",
+      "post_change_validation": "passed",
+      "status": "passed",
+      "step": "remediate_and_activate_rotation_c"
+    }
+  ],
+  "dependency_regression_and_recovery": {
+    "backup_restore_status": "Ready",
+    "corrective_action": "regenerated_leaf_with_serverAuth_and_clientAuth",
+    "detected_failure": "certificate_extended_key_usage_incompatible_with_kv_store",
+    "failure_gate": "kv_store_status_failed",
+    "final_status": "ready"
+  },
+  "generated_at_utc": "2026-08-07T13:59:12Z",
+  "limitations": [
+    "The evidence validates one standalone laboratory instance, not a production topology.",
+    "External client-certificate authentication and forwarder-to-indexer mTLS are outside this execution.",
+    "The certificate common name uses the reserved lab.test namespace."
+  ],
+  "live_controls": {
+    "authenticated_post_change_audit": true,
+    "ca_private_key_absent_from_splunk_tree": true,
+    "cleartext_web_rejected": true,
+    "hostname_mismatch_rejected": true,
+    "hsts_present": true,
+    "kv_store_ready_after_rotation": true,
+    "management_chain_and_hostname_verified": true,
+    "private_key_mode_0600": true,
+    "ssl_client_and_server_purposes_verified": true,
+    "tls_1_1_rejected": true,
+    "unrelated_ca_rejected": true,
+    "web_https_status_200": true
+  },
+  "negative_tests": {
+    "cleartext_splunk_web": "rejected",
+    "hostname_mismatch": "rejected",
+    "obsolete_protocol_tls_1_1": "rejected",
+    "untrusted_chain": "rejected"
+  },
+  "proof_boundary": {
+    "lab_only": true,
+    "native_enterprise_security_installed": false,
+    "platform": "Splunk Enterprise",
+    "production_os_compatibility_claimed": false
+  },
+  "schema_version": 1,
+  "status": "passed_after_remediation",
+  "target": {
+    "active_rotation": "rotation-c",
+    "build": "1d070b2427bf",
+    "cipher": "ECDHE-RSA-AES256-GCM-SHA384",
+    "kv_store_status": "ready",
+    "license_state": "OK",
+    "product_type": "enterprise",
+    "protocol": "TLSv1.2",
+    "splunkd_health": "green",
+    "version": "9.4.13"
+  }
+}

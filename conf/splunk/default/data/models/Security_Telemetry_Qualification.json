@@ -1,0 +1,289 @@
+{
+  "modelName": "Security_Telemetry_Qualification",
+  "displayName": "Security Telemetry Qualification",
+  "description": "Custom security telemetry qualification model backed by this app's eventtypes and tags. This is not a native Splunk CIM data model.",
+  "objectSummary": {
+    "Event-Based": 7,
+    "Transaction-Based": 0,
+    "Search-Based": 0
+  },
+  "objects": [
+    {
+      "objectName": "Security_Telemetry",
+      "displayName": "Security Telemetry",
+      "parentName": "BaseEvent",
+      "comment": "Custom, non-CIM root dataset scoped to the Windows, Sysmon, and Linux indexes managed by the lab app.",
+      "fields": [
+        {
+          "fieldName": "action",
+          "owner": "Security_Telemetry",
+          "type": "string",
+          "fieldSearch": "action=*",
+          "required": false,
+          "multivalue": false,
+          "hidden": false,
+          "editable": true,
+          "displayName": "action",
+          "comment": "Normalized action emitted by app search-time knowledge."
+        },
+        {
+          "fieldName": "user",
+          "owner": "Security_Telemetry",
+          "type": "string",
+          "fieldSearch": "user=*",
+          "required": false,
+          "multivalue": false,
+          "hidden": false,
+          "editable": true,
+          "displayName": "user",
+          "comment": "Normalized actor or target user when available."
+        },
+        {
+          "fieldName": "dest",
+          "owner": "Security_Telemetry",
+          "type": "string",
+          "fieldSearch": "dest=*",
+          "required": false,
+          "multivalue": false,
+          "hidden": false,
+          "editable": true,
+          "displayName": "dest",
+          "comment": "Normalized destination asset when available."
+        },
+        {
+          "fieldName": "src",
+          "owner": "Security_Telemetry",
+          "type": "string",
+          "fieldSearch": "src=*",
+          "required": false,
+          "multivalue": false,
+          "hidden": false,
+          "editable": true,
+          "displayName": "src",
+          "comment": "Normalized source entity when available."
+        },
+        {
+          "fieldName": "process_name",
+          "owner": "Security_Telemetry",
+          "type": "string",
+          "fieldSearch": "process_name=*",
+          "required": false,
+          "multivalue": false,
+          "hidden": false,
+          "editable": true,
+          "displayName": "process_name",
+          "comment": "Normalized process name when available."
+        },
+        {
+          "fieldName": "process_path",
+          "owner": "Security_Telemetry",
+          "type": "string",
+          "fieldSearch": "process_path=*",
+          "required": false,
+          "multivalue": false,
+          "hidden": false,
+          "editable": true,
+          "displayName": "process_path",
+          "comment": "Normalized process path when available."
+        },
+        {
+          "fieldName": "process_id",
+          "owner": "Security_Telemetry",
+          "type": "string",
+          "fieldSearch": "process_id=*",
+          "required": false,
+          "multivalue": false,
+          "hidden": false,
+          "editable": true,
+          "displayName": "process_id",
+          "comment": "Normalized process identifier when available."
+        },
+        {
+          "fieldName": "parent_process_name",
+          "owner": "Security_Telemetry",
+          "type": "string",
+          "fieldSearch": "parent_process_name=*",
+          "required": false,
+          "multivalue": false,
+          "hidden": false,
+          "editable": true,
+          "displayName": "parent_process_name",
+          "comment": "Normalized parent process name when available."
+        },
+        {
+          "fieldName": "service_name",
+          "owner": "Security_Telemetry",
+          "type": "string",
+          "fieldSearch": "service_name=*",
+          "required": false,
+          "multivalue": false,
+          "hidden": false,
+          "editable": true,
+          "displayName": "service_name",
+          "comment": "Normalized service name when available."
+        },
+        {
+          "fieldName": "file_path",
+          "owner": "Security_Telemetry",
+          "type": "string",
+          "fieldSearch": "file_path=*",
+          "required": false,
+          "multivalue": false,
+          "hidden": false,
+          "editable": true,
+          "displayName": "file_path",
+          "comment": "Normalized file path when available."
+        },
+        {
+          "fieldName": "query",
+          "owner": "Security_Telemetry",
+          "type": "string",
+          "fieldSearch": "query=*",
+          "required": false,
+          "multivalue": false,
+          "hidden": false,
+          "editable": true,
+          "displayName": "query",
+          "comment": "Normalized DNS query when available."
+        },
+        {
+          "fieldName": "vendor_product",
+          "owner": "Security_Telemetry",
+          "type": "string",
+          "fieldSearch": "vendor_product=*",
+          "required": false,
+          "multivalue": false,
+          "hidden": false,
+          "editable": true,
+          "displayName": "vendor_product",
+          "comment": "Telemetry producer label emitted by app search-time knowledge."
+        },
+        {
+          "fieldName": "_time",
+          "owner": "BaseEvent",
+          "type": "timestamp",
+          "fieldSearch": "",
+          "required": false,
+          "multivalue": false,
+          "hidden": false,
+          "editable": true,
+          "displayName": "_time",
+          "comment": ""
+        },
+        {
+          "fieldName": "host",
+          "owner": "BaseEvent",
+          "type": "string",
+          "fieldSearch": "",
+          "required": false,
+          "multivalue": false,
+          "hidden": false,
+          "editable": true,
+          "displayName": "host",
+          "comment": ""
+        },
+        {
+          "fieldName": "source",
+          "owner": "BaseEvent",
+          "type": "string",
+          "fieldSearch": "",
+          "required": false,
+          "multivalue": false,
+          "hidden": false,
+          "editable": true,
+          "displayName": "source",
+          "comment": ""
+        },
+        {
+          "fieldName": "sourcetype",
+          "owner": "BaseEvent",
+          "type": "string",
+          "fieldSearch": "",
+          "required": false,
+          "multivalue": false,
+          "hidden": false,
+          "editable": true,
+          "displayName": "sourcetype",
+          "comment": ""
+        }
+      ],
+      "calculations": [],
+      "constraints": [
+        {
+          "search": "(index=sysmon OR index=windows OR index=os_linux) (eventtype=sysmon_process_create OR eventtype=sysmon_network_connection OR eventtype=sysmon_image_load OR eventtype=sysmon_process_terminate OR eventtype=sysmon_file_create OR eventtype=sysmon_registry OR eventtype=sysmon_dns_query OR eventtype=sysmon_process_access OR eventtype=sysmon_file_delete OR eventtype=wineventlog_logon_success OR eventtype=wineventlog_logon_failed OR eventtype=wineventlog_account_created OR eventtype=wineventlog_service_install OR eventtype=wineventlog_powershell_script OR eventtype=linux_authentication OR eventtype=linux_account_change OR eventtype=linux_audit_change OR eventtype=linux_privileged_endpoint_change OR eventtype=linux_process_start OR eventtype=linux_service_state) (tag=authentication OR tag=change OR tag=process OR tag=network OR tag=filesystem OR tag=registry OR tag=service)",
+          "owner": "Security_Telemetry"
+        }
+      ],
+      "lineage": "Security_Telemetry"
+    },
+    {
+      "objectName": "Authentication_Activity",
+      "displayName": "Authentication Activity",
+      "parentName": "Security_Telemetry",
+      "comment": "Authentication events selected through the app's authentication tag.",
+      "fields": [],
+      "calculations": [],
+      "constraints": [{"search": "tag=authentication", "owner": "Security_Telemetry.Authentication_Activity"}],
+      "lineage": "Security_Telemetry.Authentication_Activity"
+    },
+    {
+      "objectName": "Change_Activity",
+      "displayName": "Change Activity",
+      "parentName": "Security_Telemetry",
+      "comment": "Account, audit, endpoint, and service changes selected through the app's change tag.",
+      "fields": [],
+      "calculations": [],
+      "constraints": [{"search": "tag=change", "owner": "Security_Telemetry.Change_Activity"}],
+      "lineage": "Security_Telemetry.Change_Activity"
+    },
+    {
+      "objectName": "Process_Activity",
+      "displayName": "Process Activity",
+      "parentName": "Security_Telemetry",
+      "comment": "Process telemetry selected through the app's process tag.",
+      "fields": [],
+      "calculations": [],
+      "constraints": [{"search": "tag=process", "owner": "Security_Telemetry.Process_Activity"}],
+      "lineage": "Security_Telemetry.Process_Activity"
+    },
+    {
+      "objectName": "Network_Activity",
+      "displayName": "Network Activity",
+      "parentName": "Security_Telemetry",
+      "comment": "Network and DNS telemetry selected through the app's network tag.",
+      "fields": [],
+      "calculations": [],
+      "constraints": [{"search": "tag=network", "owner": "Security_Telemetry.Network_Activity"}],
+      "lineage": "Security_Telemetry.Network_Activity"
+    },
+    {
+      "objectName": "File_Registry_Activity",
+      "displayName": "File and Registry Activity",
+      "parentName": "Security_Telemetry",
+      "comment": "File-system and registry telemetry selected through the app's filesystem and registry tags.",
+      "fields": [],
+      "calculations": [],
+      "constraints": [{"search": "tag=filesystem OR tag=registry", "owner": "Security_Telemetry.File_Registry_Activity"}],
+      "lineage": "Security_Telemetry.File_Registry_Activity"
+    },
+    {
+      "objectName": "Service_Activity",
+      "displayName": "Service Activity",
+      "parentName": "Security_Telemetry",
+      "comment": "Service state telemetry selected through the app's service tag.",
+      "fields": [],
+      "calculations": [],
+      "constraints": [{"search": "tag=service", "owner": "Security_Telemetry.Service_Activity"}],
+      "lineage": "Security_Telemetry.Service_Activity"
+    }
+  ],
+  "objectNameList": [
+    "Security_Telemetry",
+    "Authentication_Activity",
+    "Change_Activity",
+    "Process_Activity",
+    "Network_Activity",
+    "File_Registry_Activity",
+    "Service_Activity"
+  ]
+}

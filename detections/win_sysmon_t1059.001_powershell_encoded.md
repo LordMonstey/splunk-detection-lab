@@ -66,8 +66,8 @@ powershell.exe -EncodedCommand $encoded
 ```
 
 
-**Validated**: 2026-04-29 by manual reproduction on lab host `win10-sysmon-client`
-**Evidence**: [`tests/atomic/evidence/T1059.001-encoded-powershell.png`](../tests/atomic/evidence/T1059.001-encoded-powershell.png)
+**Validated**: 2026-04-29 by manual reproduction on an isolated Windows lab endpoint.
+**Public evidence**: [aggregate live validation: 12 results, dispatch complete](../artifacts/public/live-detection-validation-20260806.json). Raw command lines and screenshots remain private.
 **Latency observed**: < 30 seconds
 
 ## Response

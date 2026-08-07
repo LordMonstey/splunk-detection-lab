@@ -1,0 +1,7 @@
+[]
+access = read : [ * ], write : [ admin ]
+export = system
+
+[datamodels/Security_Telemetry_Qualification]
+access = read : [ * ], write : [ admin ]
+export = system

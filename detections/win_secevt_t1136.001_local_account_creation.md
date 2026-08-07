@@ -66,11 +66,11 @@ net user atomic-test /delete
 ```
 
 
-**Validated**: 2026-04-30 via Atomic Red Team T1136.001-4 (Create a new user in a command prompt) on lab host `win10-sysmon-client`.
+**Validated**: 2026-04-30 via Atomic Red Team T1136.001-4 (Create a new user in a command prompt) on an isolated Windows lab endpoint.
 
 Detection pivots on Windows Security EID 4720 (account created). Lab requires `auditpol /set /category:'Account Management' /success:enable` for this to work - this is a real production gotcha worth documenting.
 
-**Evidence**: ![evidence](../tests/atomic/evidence/T1136.001-local-account.png)
+**Public evidence**: [aggregate live validation: 1 result, 4 events, dispatch complete](../artifacts/public/live-detection-validation-20260806.json). Account names and raw events remain private.
 
 **Test command**: `Invoke-AtomicTest T1136.001 -TestNumbers 4`
 

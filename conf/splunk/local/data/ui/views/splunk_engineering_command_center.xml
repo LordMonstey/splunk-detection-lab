@@ -1,6 +1,6 @@
 <dashboard version="1.1" theme="dark" stylesheet="splunk_engineering.css">
   <label>Splunk Engineering Command Center</label>
-  <description>Standalone platform controls, sanitized telemetry snapshot, and configured detection content.</description>
+  <description>Live platform state, normalized Windows telemetry, detection assurance, and RBA outcomes.</description>
 
   <row id="cockpit_header">
     <panel>
@@ -9,7 +9,7 @@
           <div class="ops-header__title">
             <span>PLATFORM / CONTENT CONTROL SURFACE</span>
             <h1>Splunk Engineering Command Center</h1>
-            <p>Standalone administration and detection-content posture. Read-only operator view.</p>
+            <p>Administration, data quality, detection content and risk-based outcomes on one operator surface.</p>
           </div>
           <div class="ops-header__facts">
             <div>
@@ -20,7 +20,7 @@
             <div>
               <small>PLATFORM</small>
               <strong>Splunk 10.2.1</strong>
-              <span>Debian / Splunk Free</span>
+              <span>Debian / health green</span>
             </div>
             <div>
               <small>ENDPOINT SCOPE</small>
@@ -28,14 +28,14 @@
               <span>Sysmon + native channels</span>
             </div>
             <div>
-              <small>PUBLIC SNAPSHOT</small>
-              <strong>473 events</strong>
-              <span>390 Sysmon / 83 Windows</span>
+              <small>WINDOWS TELEMETRY</small>
+              <strong>152 events</strong>
+              <span>148 Sysmon / 4 Security</span>
             </div>
             <div>
               <small>OUTPUT INDEXES</small>
-              <strong>risk / notable</strong>
-              <span>configured / empty</span>
+              <strong>19 / 1</strong>
+              <span>risk modifiers / current finding</span>
             </div>
           </div>
         </div>
@@ -64,11 +64,10 @@
     </panel>
     <panel>
       <single>
-        <title>Sanitized telemetry</title>
+        <title>Windows telemetry</title>
         <search>
-          <query>| makeresults
-| eval snapshot_events=473
-| fields snapshot_events</query>
+          <query>(index=sysmon OR index=windows) earliest=0
+| stats count as searchable_events</query>
           <earliest>0</earliest>
           <latest>now</latest>
         </search>
@@ -77,7 +76,7 @@
         <option name="numberPrecision">0</option>
         <option name="showSparkline">0</option>
         <option name="showTrendIndicator">0</option>
-        <option name="underLabel">PUBLIC SNAPSHOT / 2026-07-25</option>
+        <option name="underLabel">OFFICIAL ATTACK DATA REPLAY</option>
         <option name="useThousandSeparators">1</option>
       </single>
     </panel>
@@ -100,11 +99,10 @@
     </panel>
     <panel>
       <single>
-        <title>Production content</title>
+        <title>Risk modifiers</title>
         <search>
-          <query>| makeresults
-| eval production=7
-| fields production</query>
+          <query>index=risk source="splunk-detection-lab:rba"
+| stats count as modifiers</query>
           <earliest>0</earliest>
           <latest>now</latest>
         </search>
@@ -112,16 +110,17 @@
         <option name="drilldown">none</option>
         <option name="showSparkline">0</option>
         <option name="showTrendIndicator">0</option>
-        <option name="underLabel">VALIDATED / EVIDENCE COMMITTED</option>
+        <option name="underLabel">ES-COMPATIBLE RBA EVENTS</option>
       </single>
     </panel>
     <panel>
       <single>
-        <title>Testing content</title>
+        <title>Current findings</title>
         <search>
-          <query>| makeresults
-| eval testing=11
-| fields testing</query>
+          <query>index=notable source="splunk-detection-lab:rba"
+| sort 0 - _time
+| dedup risk_object rule_title
+| stats count as findings</query>
           <earliest>0</earliest>
           <latest>now</latest>
         </search>
@@ -129,7 +128,7 @@
         <option name="drilldown">none</option>
         <option name="showSparkline">0</option>
         <option name="showTrendIndicator">0</option>
-        <option name="underLabel">CONFIGURED / PROMOTION PENDING</option>
+        <option name="underLabel">DEDUPLICATED NOTABLE QUEUE</option>
       </single>
     </panel>
   </row>
@@ -172,12 +171,11 @@
 | eval purpose=case(
     title="sysmon","Sysmon telemetry",
     title="windows","Native Windows channels",
-    title="risk","RBA target / inactive",
-    title="notable","Summary target / inactive",
+    title="risk","RBA modifier store",
+    title="notable","Finding version store",
     true(),"Other"
   )
 | eval state=case(
-    (title="risk" OR title="notable") AND totalEventCount=0,"CONFIGURED / EMPTY",
     totalEventCount&gt;=0,"SEARCHABLE",
     true(),"UNKNOWN"
   )
@@ -198,20 +196,13 @@
   <row id="telemetry_row">
     <panel>
       <chart>
-        <title>Public snapshot / source composition</title>
+        <title>Source composition / searchable telemetry</title>
         <search>
-          <query>| makeresults count=4
-| streamstats count as row
-| eval index=case(row=1,"sysmon",row&gt;1,"windows")
-| eval sourcetype=case(
-    row=1,"Sysmon Operational",
-    row=2,"Windows Security",
-    row=3,"Windows Application",
-    row=4,"Windows System"
-  )
-| eval events=case(row=1,390,row=2,76,row=3,6,row=4,1)
+          <query>(index=sysmon OR index=windows OR index=risk OR index=notable) earliest=0
+| stats count as events by index sourcetype
 | eval source=index." / ".sourcetype
-| fields source events</query>
+| fields source events
+| sort 0 - events</query>
           <earliest>0</earliest>
           <latest>now</latest>
         </search>
@@ -225,22 +216,14 @@
     </panel>
     <panel>
       <chart>
-        <title>Public snapshot / Sysmon EventID distribution</title>
+        <title>Sysmon EventID distribution</title>
         <search>
-          <query>| makeresults count=6
-| streamstats count as row
-| eval EventID=case(row=1,23,row=2,11,row=3,13,row=4,10,row=5,7,row=6,17)
-| eval event_name=case(
-    row=1,"File Delete",
-    row=2,"File Create",
-    row=3,"Registry Value",
-    row=4,"Process Access",
-    row=5,"Image Load",
-    row=6,"Named Pipe"
-  )
-| eval events=case(row=1,171,row=2,131,row=3,68,row=4,13,row=5,5,row=6,2)
+          <query>index=sysmon earliest=0
+| stats count as events by EventID
+| eval event_name=case(EventID=1,"Process creation",EventID=10,"Process access",EventID=13,"Registry value",1=1,"Other")
 | eval event_type="EID ".EventID." / ".event_name
-| fields event_type events</query>
+| fields event_type events
+| sort 0 - events</query>
           <earliest>0</earliest>
           <latest>now</latest>
         </search>
@@ -338,16 +321,14 @@
   <row id="promotion_row">
     <panel>
       <table>
-        <title>Promotion queue / open validation blocker</title>
+        <title>Validation frontier / scenario coverage</title>
         <search>
-          <query>| makeresults
-| eval analytic="win_sysmon_t1140_certutil_decode"
-| eval technique="T1140 / T1105"
-| eval state="TESTING"
-| eval blocker="OriginalFileName extraction and renamed-binary match are not yet proven end to end"
-| eval required_evidence="Rerun Atomic T1140 test 2; commit the matching Splunk result"
-| eval candidate_logic="Image=certutil.exe OR OriginalFileName=CertUtil.exe"
-| table analytic technique state blocker candidate_logic required_evidence</query>
+          <query>| inputlookup detection_catalog
+| eval saved_search="detect_".replace(detection_id,"\.","_")
+| lookup detection_validation saved_search OUTPUT result_count event_count scan_count runtime_seconds validation_state validated_at
+| eval state=case(validation_state="PASS_POSITIVE","SCENARIO POSITIVE",validation_state="PASS_ZERO","DISPATCH PASS / OUT OF SCENARIO",1=1,"NOT VALIDATED")
+| table state detection_id mitre_techniques result_count event_count scan_count runtime_seconds validated_at
+| sort 0 state - result_count detection_id</query>
           <earliest>0</earliest>
           <latest>now</latest>
         </search>

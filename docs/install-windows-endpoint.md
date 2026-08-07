@@ -103,7 +103,7 @@ New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 
 @'
 [default]
-host = win10-sysmon-client
+host = win-endpoint-lab
 
 [WinEventLog://Application]
 disabled = 0

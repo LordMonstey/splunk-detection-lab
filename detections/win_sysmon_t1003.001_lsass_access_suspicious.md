@@ -83,10 +83,10 @@ ProcDump and ProcDump64 opened LSASS with `GrantedAccess=0x1fffff`. Sysmon
 recorded the process-access events and tagged the activity with the T1003
 credential-dumping technique.
 
-Evidence:
+Public evidence:
 
-- [Atomic execution and raw events](../tests/atomic/evidence/T1003.001-lsass-procdump.png)
-- [Detection results in Splunk](../tests/atomic/evidence/T1003.001-detection-fired.png)
+- [Aggregate live validation: 2 results, 10 events, dispatch complete](../artifacts/public/live-detection-validation-20260806.json)
+- Raw events and screenshots remain in the ignored private evidence area.
 
 ## Response
 

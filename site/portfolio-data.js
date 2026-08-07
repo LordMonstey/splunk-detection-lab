@@ -1,8 +1,9 @@
 window.LAB_DATA = {
   meta: {
-    project: "Splunk Platform & Detection Engineering Lab",
+    project: "Splunk Administration & Detection Engineering Lab",
     author: "A.S",
     splunkVersion: "10.2.1",
+    appVersion: "0.7.3",
     operatingSystem: "Debian",
     topology: {
       fr: "Instance standalone · 1 endpoint Windows",
@@ -13,11 +14,11 @@ window.LAB_DATA = {
 
   provenance: {
     snapshot: {
-      id: "public-search-snapshot-2026-07-25",
-      capturedAt: "2026-07-25",
-      totalEvents: 473,
-      sysmonEvents: 390,
-      windowsEvents: 83,
+      id: "public-validation-snapshot-2026-08-06",
+      capturedAt: "2026-08-06",
+      totalEvents: 173,
+      sysmonEvents: 148,
+      windowsEvents: 4,
       source: {
         fr: "Export de recherche Splunk · snapshot public assaini",
         en: "Splunk search export · sanitized public snapshot"
@@ -28,24 +29,49 @@ window.LAB_DATA = {
       }
     },
     lifetime: {
-      capturedAt: "2026-07-25",
-      totalEvents: 19946,
+      capturedAt: "2026-08-06",
+      totalEvents: 173,
       source: {
         fr: "Métadonnées des indexes Splunk · agrégat vérifié",
         en: "Splunk index metadata · verified aggregate"
       },
       scope: {
-        fr: "Compteurs cumulés des indexes sysmon et windows.",
-        en: "Cumulative counters for the sysmon and windows indexes."
+        fr: "Compteurs de la campagne contrôlée, y compris les sorties RBA versionnées.",
+        en: "Controlled-campaign counters, including versioned RBA outputs."
       }
     },
     detections: {
-      capturedAt: "2026-07-25",
-      source: "conf/splunk/local/savedsearches.conf + detections/*.md",
+      capturedAt: "2026-08-06",
+      source: "savedsearches.conf + detection catalog + validation report",
       scope: {
-        fr: "Inventaire versionné de recherches planifiées, pas un flux ES actif.",
-        en: "Versioned scheduled-search inventory, not an active ES feed."
+        fr: "18 analytiques exécutées séquentiellement ; cinq scénarios positifs observés.",
+        en: "18 analytics dispatched sequentially; five positive scenarios observed."
       }
+    }
+  },
+
+  validation: {
+    dispatched: 18,
+    passed: 18,
+    positive: 5,
+    errors: 0,
+    dashboardSearches: 49,
+    dashboardErrors: 0,
+    meanRuntimeMs: 317,
+    cimProcessCompleteness: 100,
+    appVersion: "0.6.4"
+  },
+
+  rba: {
+    riskModifiers: 19,
+    cumulativeRisk: 1185,
+    techniques: 5,
+    currentFindings: 1,
+    findingVersions: 2,
+    posture: "critical",
+    mode: {
+      fr: "RBA compatible Splunk ES · matérialisation contrôlée",
+      en: "Splunk ES-compatible RBA · controlled materialization"
     }
   },
 
@@ -54,33 +80,33 @@ window.LAB_DATA = {
       index: "sysmon",
       sourcetype: "XmlWinEventLog:Microsoft-Windows-Sysmon/Operational",
       channel: "Sysmon Operational",
-      count: 390
+      count: 148
     },
     {
       index: "windows",
       sourcetype: "XmlWinEventLog:Security",
       channel: "Windows Security",
-      count: 76
+      count: 4
     },
     {
-      index: "windows",
-      sourcetype: "XmlWinEventLog:Application",
-      channel: "Windows Application",
-      count: 6
+      index: "risk",
+      sourcetype: "stash",
+      channel: "RBA risk modifiers",
+      count: 19
     },
     {
-      index: "windows",
-      sourcetype: "XmlWinEventLog:System",
-      channel: "Windows System",
-      count: 1
+      index: "notable",
+      sourcetype: "stash",
+      channel: "Finding versions",
+      count: 2
     }
   ],
 
   indexes: [
     {
       name: "sysmon",
-      lifetime: 15227,
-      snapshot: 390,
+      lifetime: 148,
+      snapshot: 148,
       maxMb: 12000,
       retentionDays: 90,
       role: { fr: "Télémétrie Sysmon", en: "Sysmon telemetry" },
@@ -88,8 +114,8 @@ window.LAB_DATA = {
     },
     {
       name: "windows",
-      lifetime: 4719,
-      snapshot: 83,
+      lifetime: 4,
+      snapshot: 4,
       maxMb: 8000,
       retentionDays: 90,
       role: { fr: "Canaux Windows natifs", en: "Native Windows channels" },
@@ -97,31 +123,28 @@ window.LAB_DATA = {
     },
     {
       name: "risk",
-      lifetime: 0,
-      snapshot: 0,
+      lifetime: 19,
+      snapshot: 19,
       maxMb: 1000,
       retentionDays: 365,
-      role: { fr: "Destination RBA préparée", en: "Prepared RBA destination" },
-      state: "configured-inactive"
+      role: { fr: "Modificateurs RBA ES-compatible", en: "ES-compatible RBA modifiers" },
+      state: "searchable"
     },
     {
       name: "notable",
-      lifetime: 0,
-      snapshot: 0,
+      lifetime: 2,
+      snapshot: 2,
       maxMb: 1000,
       retentionDays: 365,
-      role: { fr: "Destination de synthèse préparée", en: "Prepared summary destination" },
-      state: "configured-inactive"
+      role: { fr: "Versions du finding corrélé", en: "Correlated finding versions" },
+      state: "searchable"
     }
   ],
 
   eventCodes: [
-    { code: "23", fr: "Suppression de fichier", en: "File Delete", count: 171 },
-    { code: "11", fr: "Création de fichier", en: "File Create", count: 131 },
-    { code: "13", fr: "Valeur de registre", en: "Registry Value", count: 68 },
-    { code: "10", fr: "Accès processus", en: "Process Access", count: 13 },
-    { code: "7", fr: "Chargement d’image", en: "Image Load", count: 5 },
-    { code: "17", fr: "Named Pipe", en: "Named Pipe", count: 2 }
+    { code: "1", fr: "Création de processus", en: "Process Creation", count: 134 },
+    { code: "10", fr: "Accès processus", en: "Process Access", count: 12 },
+    { code: "13", fr: "Valeur de registre", en: "Registry Value", count: 2 }
   ],
 
   tacticOrder: [
@@ -166,7 +189,7 @@ window.LAB_DATA = {
       techniques: ["T1059.001"],
       dataSource: "Sysmon · EventID 1",
       schedule: { cron: "*/5 * * * *", earliest: "-10m@m", latest: "-1m@m" },
-      validation: { type: "manual", evidence: "assets/evidence/t1059-powershell.png" },
+      validation: { type: "manual", evidence: null },
       spl: "`sysmon_process_creation` (Image=\"*\\\\powershell.exe\" OR Image=\"*\\\\pwsh.exe\") | where match(CommandLine, \"(?i)\\\\s-(e|ec|en|enc|enco|encod|encode|encoded|encodedc|encodedco|encodedcom|encodedcomm|encodedcomma|encodedcomman|encodedcommand)\\\\s\") | eval encoded_blob = mvindex(split(CommandLine, \" \"), -1) | eval blob_len = len(encoded_blob) | `cim_endpoint_processes_rename` | stats count min(_time) as firstTime max(_time) as lastTime values(CommandLine) as commandlines values(parent_process_name) as parents values(blob_len) as blob_lengths by dest user process_name process_guid"
     },
     {
@@ -306,7 +329,7 @@ window.LAB_DATA = {
       techniques: ["T1218.010"],
       dataSource: "Sysmon · EventID 1",
       schedule: { cron: "*/5 * * * *", earliest: "-10m@m", latest: "-1m@m" },
-      validation: { type: "atomic", evidence: "assets/evidence/t1218-regsvr32.png" },
+      validation: { type: "atomic", evidence: null },
       spl: "`sysmon_process_creation` Image=\"*\\\\regsvr32.exe\" | where match(CommandLine, \"(?i)https?://|/i:.+\\\\\\\\.+|scrobj\\\\.dll\") | `cim_endpoint_processes_rename` | stats count min(_time) as firstTime max(_time) as lastTime values(CommandLine) as commandlines values(parent_process_name) as parents by dest user process_name process_guid"
     },
     {
@@ -376,7 +399,7 @@ window.LAB_DATA = {
       techniques: ["T1003.001"],
       dataSource: "Sysmon · EventID 10",
       schedule: { cron: "*/5 * * * *", earliest: "-10m@m", latest: "-1m@m" },
-      validation: { type: "atomic", evidence: "assets/evidence/t1003-lsass.png" },
+      validation: { type: "atomic", evidence: null },
       spl: "`sysmon_process_access` TargetImage=\"*\\\\lsass.exe\" | eval source_name = mvindex(split(SourceImage,\"\\\\\"), -1) | where NOT match(source_name, \"(?i)^(wininit|svchost|lsass|services|TaskMgr|SgrmBroker)\\\\.exe$\") AND (GrantedAccess=\"0x1010\" OR GrantedAccess=\"0x1410\" OR GrantedAccess=\"0x1438\" OR GrantedAccess=\"0x143a\" OR GrantedAccess=\"0x1fffff\") | lookup allowlist_lsass_access source_process_name AS source_name OUTPUTNEW signer AS allowlisted_signer reason AS allowlist_reason | where isnull(allowlisted_signer) | `cim_endpoint_processes_rename` | eval user=coalesce(user, SourceUser, \"unknown\") | stats count min(_time) as firstTime max(_time) as lastTime values(SourceImage) as source_images values(SourceCommandLine) as source_cmds values(GrantedAccess) as access_masks values(CallTrace) as call_traces by dest user SourceProcessGUID | `security_content_ctime(firstTime)` | `security_content_ctime(lastTime)`"
     },
     {
@@ -421,15 +444,15 @@ window.LAB_DATA = {
         fr: "Noms de processus Microsoft connus exclus, puis contrôle explicite des masques 0x1010, 0x1410, 0x1438, 0x143a et 0x1fffff.",
         en: "Known Microsoft process names are excluded, followed by explicit checks for masks 0x1010, 0x1410, 0x1438, 0x143a, and 0x1fffff."
       },
-      evidence: "assets/evidence/t1003-lsass.png",
+      evidence: "assets/evidence/risk-correlation-assurance.png",
       evidenceAlt: {
-        fr: "Résultat Splunk validant l’accès suspect à LSASS",
-        en: "Splunk result validating suspicious LSASS access"
+        fr: "Surface agrégée RBA et entité utilisée pour illustrer le workflow LSASS ; aucun événement brut du cas n’est publié.",
+        en: "Aggregate RBA and entity surface used to illustrate the LSASS workflow; no raw case event is published."
       },
       fields: [
-        ["SourceImage", "C:\\Tools\\procdump64.exe"],
-        ["TargetImage", "C:\\Windows\\System32\\lsass.exe"],
-        ["GrantedAccess", "0x1fffff"],
+        ["SourceImage", "[processus hors allowlist]"],
+        ["TargetImage", "*\\lsass.exe"],
+        ["GrantedAccess", "0x1010 | 0x1410 | 0x1438 | 0x143a | 0x1fffff"],
         ["RuleName", "technique_id=T1003.001"]
       ],
       response: {
@@ -448,15 +471,15 @@ window.LAB_DATA = {
         fr: "Présence d’une URI, d’un argument /i ou de scrobj.dll ; contexte parent et ligne de commande conservés.",
         en: "URI, /i argument, or scrobj.dll indicator required; parent context and command line are preserved."
       },
-      evidence: "assets/evidence/t1218-regsvr32.png",
+      evidence: "assets/evidence/detection-factory-control-plane.png",
       evidenceAlt: {
-        fr: "Résultat Splunk validant Regsvr32 Squiblydoo",
-        en: "Splunk result validating Regsvr32 Squiblydoo"
+        fr: "Surface agrégée Detection Factory utilisée pour illustrer le workflow Regsvr32 ; aucun événement brut du cas n’est publié.",
+        en: "Aggregate Detection Factory surface used to illustrate the Regsvr32 workflow; no raw case event is published."
       },
       fields: [
-        ["Image", "C:\\Windows\\System32\\regsvr32.exe"],
-        ["CommandLine", "regsvr32.exe /s /n /u /i:[remote] scrobj.dll"],
-        ["ParentImage", "C:\\Windows\\System32\\cmd.exe"],
+        ["Image", "*\\regsvr32.exe"],
+        ["CommandLine", "[URI ou /i:... associé à scrobj.dll]"],
+        ["ParentImage", "[processus parent à qualifier]"],
         ["Technique", "T1218.010"]
       ],
       response: {
@@ -475,15 +498,15 @@ window.LAB_DATA = {
         fr: "Variantes complètes du paramètre, extraction de la longueur du blob et conservation de l’ascendance.",
         en: "Full flag variants, encoded blob length extraction, and preserved ancestry."
       },
-      evidence: "assets/evidence/t1059-powershell.png",
+      evidence: "assets/evidence/engineering-command-center.png",
       evidenceAlt: {
-        fr: "Résultat Splunk validant PowerShell EncodedCommand",
-        en: "Splunk result validating PowerShell EncodedCommand"
+        fr: "Surface agrégée Command Center utilisée pour illustrer le workflow PowerShell ; aucun événement brut du cas n’est publié.",
+        en: "Aggregate Command Center surface used to illustrate the PowerShell workflow; no raw case event is published."
       },
       fields: [
-        ["Image", "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"],
-        ["CommandLine", "powershell.exe -EncodedCommand [truncated]"],
-        ["ParentImage", "C:\\Windows\\System32\\cmd.exe"],
+        ["Image", "*\\powershell.exe | *\\pwsh.exe"],
+        ["CommandLine", "-[e|enc|encodedcommand] [blob]"],
+        ["ParentImage", "[processus parent à qualifier]"],
         ["Technique", "T1059.001"]
       ],
       response: {
@@ -497,42 +520,200 @@ window.LAB_DATA = {
     {
       id: "command-center",
       image: "assets/evidence/engineering-command-center.png",
-      title: { fr: "Dashboard natif Splunk", en: "Native Splunk dashboard" },
+      title: { fr: "Command Center Splunk", en: "Splunk Command Center" },
       caption: {
-        fr: "Simple XML déployé sur Splunk 10.2.1.",
-        en: "Simple XML deployed on Splunk 10.2.1."
+        fr: "Capture agrégée revue : contrôle de plateforme, télémétrie, indexes, scheduler et inventaire des 18 détections.",
+        en: "Reviewed aggregate capture: platform control, telemetry, indexes, scheduler, and 18-detection inventory."
       },
       claim: "conf/splunk/local/data/ui/views/splunk_engineering_command_center.xml"
     },
     {
-      id: "lsass-proof",
-      image: "assets/evidence/t1003-lsass.png",
-      title: { fr: "LSASS · T1003.001", en: "LSASS · T1003.001" },
+      id: "detection-factory",
+      image: "assets/evidence/detection-factory-control-plane.png",
+      title: { fr: "Detection Factory", en: "Detection Factory" },
       caption: {
-        fr: "Atomic Red Team + Sysmon EventID 10.",
-        en: "Atomic Red Team + Sysmon EventID 10."
+        fr: "Capture agrégée revue : 18/18 dispatchs, cinq scénarios positifs, runtime mesuré et catalogue déployable.",
+        en: "Reviewed aggregate capture: 18/18 dispatches, five positive scenarios, measured runtime, and deployable catalog."
       },
-      claim: "tests/atomic/evidence/T1003.001-detection-fired.png"
+      claim: "49/49 dashboard searches · 18/18 detection dispatches"
     },
     {
-      id: "regsvr32-proof",
-      image: "assets/evidence/t1218-regsvr32.png",
-      title: { fr: "Regsvr32 · T1218.010", en: "Regsvr32 · T1218.010" },
+      id: "risk-investigation",
+      image: "assets/evidence/risk-correlation-assurance.png",
+      title: { fr: "Investigation RBA & entité", en: "RBA & Entity Investigation" },
       caption: {
-        fr: "Chemin Squiblydoo observé et retrouvé.",
-        en: "Squiblydoo path observed and retrieved."
+        fr: "Capture agrégée revue : 19 modificateurs, cinq techniques, finding corrélé versionné et contexte d’entité.",
+        en: "Reviewed aggregate capture: 19 modifiers, five techniques, versioned correlated finding, and entity context."
       },
-      claim: "tests/atomic/evidence/T1218.010-regsvr32-squiblydoo.png"
+      claim: "risk=19 · cumulative_risk=1185 · current_finding=1"
+    }
+  ],
+
+  adminEvidence: [
+    {
+      id: "custom-datamodel",
+      category: { fr: "MODÈLE DE DONNÉES", en: "DATA MODEL" },
+      title: {
+        fr: "Data model custom accéléré et qualifié",
+        en: "Qualified accelerated custom data model"
+      },
+      metric: "13/13",
+      metricLabel: { fr: "contrôles d’acceptation", en: "acceptance checks" },
+      reference: {
+        fr: "parité 100 % · 4 buckets · fraîcheur < 900 s",
+        en: "100% parity · 4 buckets · freshness < 900 s"
+      },
+      detail: {
+        fr: "Security Telemetry Qualification est un modèle custom, explicitement distinct d’un data model CIM natif. Définition, ACL, accélération, tstats summariesonly=t, parité et fraîcheur ont été contrôlés sur le runtime 0.7.3.",
+        en: "Security Telemetry Qualification is a custom model, explicitly distinct from a native CIM data model. Definition, ACLs, acceleration, tstats summariesonly=t, parity, and freshness were checked on runtime 0.7.3."
+      },
+      artifact: "artifacts/public/custom-datamodel-live-evidence-10.2.1-20260807.json"
     },
     {
-      id: "powershell-proof",
-      image: "assets/evidence/t1059-powershell.png",
-      title: { fr: "PowerShell · T1059.001", en: "PowerShell · T1059.001" },
-      caption: {
-        fr: "EncodedCommand capturé avec le contexte processus.",
-        en: "EncodedCommand captured with process context."
+      id: "upgrade-rollback",
+      category: { fr: "GESTION DU CHANGEMENT", en: "CHANGE MANAGEMENT" },
+      title: {
+        fr: "Upgrade avec retour arrière qualifié",
+        en: "Qualified upgrade and rollback"
       },
-      claim: "tests/atomic/evidence/T1059.001-encoded-powershell.png"
+      metric: "32/32",
+      metricLabel: { fr: "smoke tests", en: "smoke tests" },
+      reference: "9.4.13 → 10.2.1 → 9.4.13 → 10.2.1",
+      detail: {
+        fr: "Montée en version directe, retour au snapshot, contrôle d’intégrité des inventaires puis seconde montée en version. Décision finale CLOSE.",
+        en: "Direct upgrade, snapshot rollback, inventory integrity checks, then a second upgrade. Final decision: CLOSE."
+      },
+      artifact: "artifacts/public/upgrade-evidence-9-4-13-to-10-2-1-live.json"
+    },
+    {
+      id: "tls-lifecycle",
+      category: { fr: "SÉCURITÉ DU TRANSPORT", en: "TRANSPORT SECURITY" },
+      title: {
+        fr: "Rotation TLS et reprise du KV Store",
+        en: "TLS rotation and KV Store recovery"
+      },
+      metric: "12/12",
+      metricLabel: { fr: "contrôles actifs", en: "live controls" },
+      reference: "TLS 1.2 · rotation C · KV ready",
+      detail: {
+        fr: "Le profil serverAuth-only a révélé une dépendance KV Store. Le certificat à double usage serverAuth/clientAuth a rétabli le service et validé les tests négatifs.",
+        en: "A serverAuth-only profile exposed a KV Store dependency. A dual-purpose serverAuth/clientAuth certificate restored service and passed the negative tests."
+      },
+      artifact: "artifacts/public/tls-rotation-evidence-20260807.json"
+    },
+    {
+      id: "rbac-governance",
+      category: { fr: "GOUVERNANCE DES ACCÈS", en: "ACCESS GOVERNANCE" },
+      title: {
+        fr: "Contrat RBAC testé en conditions réelles",
+        en: "Live-tested RBAC contract"
+      },
+      metric: "38/38",
+      metricLabel: { fr: "tests d’autorisation", en: "authorization tests" },
+      reference: {
+        fr: "6 rôles · 14 positifs · 24 négatifs",
+        en: "6 roles · 14 positive · 24 negative"
+      },
+      detail: {
+        fr: "Six rôles, 67 capabilities déclarées et une matrice d’accès vérifiée. Les six comptes éphémères du test ont été supprimés après qualification.",
+        en: "Six roles, 67 declared capabilities, and a verified access matrix. All six ephemeral test accounts were removed after qualification."
+      },
+      artifact: "artifacts/public/rbac-live-evidence-9.4.13-20260807.json"
+    },
+    {
+      id: "mco-readonly",
+      category: { fr: "MCO ET OBSERVABILITÉ", en: "OPERATIONS & OBSERVABILITY" },
+      title: {
+        fr: "Qualification MCO en lecture seule",
+        en: "Read-only operations qualification"
+      },
+      metric: "5/5",
+      metricLabel: { fr: "domaines qualifiés", en: "qualified domains" },
+      reference: {
+        fr: "santé · KV · licence · scheduler · capacité",
+        en: "health · KV · license · scheduler · capacity"
+      },
+      detail: {
+        fr: "Santé, KV Store, licence, scheduler et fraîcheur/capacité vérifiés sans publier les noms d’index, les recherches ni les événements bruts.",
+        en: "Health, KV Store, license, scheduler, and freshness/capacity verified without publishing index names, searches, or raw events."
+      },
+      artifact: "artifacts/public/mco-live-read-only-qualification-20260807.json"
+    },
+    {
+      id: "periodic-reporting",
+      category: { fr: "REPORTING PÉRIODIQUE", en: "PERIODIC REPORTING" },
+      title: {
+        fr: "Collecte quotidienne et hebdomadaire idempotente",
+        en: "Idempotent daily and weekly collection"
+      },
+      metric: "16/16",
+      metricLabel: { fr: "contrôles live", en: "live checks" },
+      reference: {
+        fr: "2 schedules · 16 lignes · 0 doublon · 10 requêtes agrégées",
+        en: "2 schedules · 16 rows · 0 duplicates · 10 aggregate queries"
+      },
+      detail: {
+        fr: "Les collecteurs quotidien MCO et hebdomadaire CIM ont été dispatchés puis rejoués sans créer de doublon. Le dashboard utilise dix requêtes aggregate-only. Une seule période existe par famille : aucune tendance n’est revendiquée.",
+        en: "The daily operations and weekly CIM collectors were dispatched and replayed without creating duplicates. The dashboard uses ten aggregate-only queries. Only one period exists per family, so no trend is claimed."
+      },
+      artifact: "artifacts/public/periodic-reporting-live-evidence-10.2.1-20260807.json"
+    },
+    {
+      id: "parsing-rollback",
+      category: { fr: "QUALITÉ & ROLLBACK", en: "QUALITY & ROLLBACK" },
+      title: {
+        fr: "Régression de parsing interceptée avant promotion",
+        en: "Parsing regression intercepted before promotion"
+      },
+      metric: "100 → 0 → 100",
+      metricLabel: { fr: "complétude (%)", en: "completeness (%)" },
+      reference: {
+        fr: "baseline PASS · candidat NO-GO · rollback PASS",
+        en: "baseline PASS · candidate NO-GO · rollback PASS"
+      },
+      detail: {
+        fr: "Le candidat a conservé 5/5 événements mais cassé les champs obligatoires et l’horodatage. Le gate a bloqué sa promotion, puis le même package baseline et la même configuration effective ont restauré 100 % de conformité.",
+        en: "The candidate retained 5/5 events but broke required fields and timestamp conformance. The gate blocked promotion, then the same baseline package and effective configuration restored 100% compliance."
+      },
+      artifact: "artifacts/public/parsing-canary-rollback-evidence-20260807.json"
+    },
+    {
+      id: "cluster-resilience",
+      category: { fr: "RÉSILIENCE", en: "RESILIENCE" },
+      title: {
+        fr: "Continuité de recherche sur cluster dédié",
+        en: "Search continuity on a dedicated cluster"
+      },
+      metric: "RF2 / SF2",
+      metricLabel: { fr: "facteurs rétablis", en: "factors restored" },
+      reference: {
+        fr: "1 CM · 2 peers · 1 SH · reprise 222 s",
+        en: "1 CM · 2 peers · 1 SH · recovery 222 s"
+      },
+      detail: {
+        fr: "Perte contrôlée d’un pair : recherche maintenue pendant l’incident, facteurs de réplication et de recherche rétablis, puis retour complet au vert.",
+        en: "Controlled peer loss: search remained available, replication and search factors recovered, then the topology returned fully green."
+      },
+      artifact: "artifacts/public/cluster-resilience-evidence-20260806.json"
+    },
+    {
+      id: "linux-onboarding",
+      category: { fr: "ONBOARDING ET CIM", en: "ONBOARDING & CIM" },
+      title: {
+        fr: "Sources Linux normalisées et contrôlées",
+        en: "Normalized and controlled Linux sources"
+      },
+      metric: "13/13",
+      metricLabel: { fr: "événements attendus", en: "expected events" },
+      reference: {
+        fr: "3 sourcetypes · 4 périmètres CIM · app 0.7.2",
+        en: "3 sourcetypes · 4 CIM scopes · app 0.7.2"
+      },
+      detail: {
+        fr: "Rsyslog, journald et auditd intégrés avec quatre contrats CIM à 100 %, zéro doublon, aucun risque de troncature et un p95 d’indexation de 3 s.",
+        en: "Rsyslog, journald, and auditd onboarded with four 100% CIM contracts, zero duplicates, no truncation risk, and 3-second p95 indexing latency."
+      },
+      artifact: "artifacts/public/linux-onboarding-evidence-20260807.json"
     }
   ],
 
